@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-At the moment, **Yen Language** is in its **early development stage** (Alpha).  
+At the moment, **Yen Language** is in its **early development stage** (Beta).  
 Only the latest commit on the `main` branch is supported.
 
 | Version | Supported |
@@ -19,7 +19,7 @@ If you discover a vulnerability or a security issue, **please do not open a publ
 
 Instead, report it privately:
 
-- Send an email to: **security@yen-lang.dev** (⚡ _placeholder – you can update when you have a real email_)
+- Send an email to: **IN CREATION** (⚡ _placeholder – you can update when you have a real email_)
 - Provide as much detail as possible:
   - Description of the vulnerability
   - Steps to reproduce
