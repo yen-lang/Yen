@@ -122,18 +122,6 @@ Example:
 
 ---
 
-## License
-
-MIT License.
-
----
-
-**Let me know if you want me to also already generate an example of the repository structure and suggestion for folders (like `examples/`, `docs/`, `src/`)! 🚀**
-
-Claro! Vou adicionar uma seção de **"Contributing"** e um convite bonito para colaborar, igual repositórios sérios fazem. Aqui a atualização para o final do seu `README.md`:
-
----
-
 ## Contributing
 
 We warmly welcome contributions!
@@ -170,3 +158,8 @@ If you find a bug, want to add a feature, or simply improve the documentation, f
 > Please try to keep the code style clean and consistent with the existing code.  
 > Discussions, ideas, and improvements are always welcome!
 
+---
+
+## License
+
+MIT License.
