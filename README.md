@@ -163,3 +163,6 @@ If you find a bug, want to add a feature, or simply improve the documentation, f
 ## License
 
 MIT License.
+
+![AI Assisted](https://img.shields.io/badge/Code%2040%25%20AI%20-%2060%25%20Human-blueviolet?style=for-the-badge&logo=openai&logoColor=white)
+
