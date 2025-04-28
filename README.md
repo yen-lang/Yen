@@ -27,37 +27,52 @@ The syntax of Yen is heavily inspired by Python and Rust, aiming for intuitive c
 
 ## Example
 
-```plaintext
-let x = 5;
-print(x + 10);
+```
+# Complete test of YenLang language with functions, conditionals, input, operations, and blocks
+/* Block comment
+   still here
+   and ending below */
+func test() {
+    print "Working!";
+}
+test();
+
+func greeting(name) {
+    print "Hello, " + name + "!";
+}
 
 func add(a, b) {
     return a + b;
 }
 
-print(add(10, 20));
-
-struct Point {
-    x;
-    y;
-}
-
-let p = Point { x: 10, y: 20 };
-print(p["x"]);
-
-class Person {
-    let name;
-    
-    func greet() {
-        print("Hello, " + this.name);
+func check_majority(age) {
+    if (age >= 18) {
+        print "You are an adult.";
+    } else {
+        print "You are a minor.";
     }
 }
 
-let john = Person { name: "John" };
-john.greet();
-```
+func interact() {
+    let name = input("What is your name?");
+    let age = input<int>("What is your age?");
+    greeting(name);
+    check_majority(age);
+    let result = add(10, 5);
+    print "10 + 5 = " + result;
+}
 
----
+interact();
+
+func test() {
+    let pi = 3.14;
+    let radius = 5;
+    let area = pi * radius * radius;
+    print "Circle area: " + area;
+}
+test();
+
+```
 
 ## Features Planned
 
