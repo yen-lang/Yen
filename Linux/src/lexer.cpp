@@ -58,7 +58,7 @@ void Lexer::skipBlockComment() {
         if (peek() == '\n') line++;
         advance();
     }
-    std::cerr << "Comentário de bloco não terminado antes do fim do arquivo\n";
+    std::cerr << "Unfinished block comment before end of file\n";
 }
 
 
@@ -78,12 +78,12 @@ void Lexer::scanToken() {
         case ']': addToken(TokenType::RBracket); break;        
         case '/':
             if (peek() == '/') {
-                advance();      // consome segundo '/'
-                skipComment();  // ignora o resto da linha
+                advance();      
+                skipComment();  
                 return;
             } else if (peek() == '*') {
-                advance();      // consome '*'
-                skipBlockComment(); // ignora bloco de comentário
+                advance();      
+                skipBlockComment(); 
                 return;
             } else {
                 addToken(TokenType::Slash);
@@ -99,19 +99,19 @@ void Lexer::scanToken() {
         case '#': skipComment(); break;
         case '!': addToken(match('=') ? TokenType::BangEqual : TokenType::Not); break;
         case '&':
-            if (match('&')) addToken(TokenType::AndAnd);  // && lógico
-            else addToken(TokenType::Invalid);            // caso venha só &
+            if (match('&')) addToken(TokenType::AndAnd);  // && 
+            else addToken(TokenType::Invalid);            //  &
             break;
         case '|':
-            if (match('|')) addToken(TokenType::OrOr);    // || lógico
-            else addToken(TokenType::Invalid);            // caso venha só |
+            if (match('|')) addToken(TokenType::OrOr);    // || 
+            else addToken(TokenType::Invalid);            //  |
             break;
         case '=':
             if (peek() == '>') {
-                advance();  // consome o '>'
+                advance();  //  '>'
                 addToken(TokenType::Arrow, "=>");
             } else if (peek() == '=') {
-                advance();  // consome o segundo '='
+                advance();  // '='
                 addToken(TokenType::EqualEqual, "==");
             } else {
                 addToken(TokenType::Assign, "=");
@@ -140,12 +140,12 @@ void Lexer::identifier() {
         {"while", TokenType::While}, {"func", TokenType::Func}, {"return", TokenType::Return},
         {"true", TokenType::True}, {"false", TokenType::False}, {"print", TokenType::Print},
         {"input", TokenType::Input},
-        // Funções de cast
+        //  cast
         {"int", TokenType::Int},
         {"float", TokenType::Float},
         {"bool", TokenType::Bool},
         {"str", TokenType::Str},
-        // Tipos literais para input<T>
+        // input<T>
         {"_int", TokenType::IntType},
         {"_float", TokenType::FloatType},
         {"_bool", TokenType::BoolType},
@@ -179,7 +179,7 @@ void Lexer::number() {
 
     if (peek() == '.' && std::isdigit(peekNext())) {
         isFloat = true;
-        advance(); // consome '.'
+        advance(); //  '.'
         while (std::isdigit(peek())) advance();
     }
 
@@ -195,11 +195,11 @@ void Lexer::string() {
     }
 
     if (isAtEnd()) {
-        std::cerr << "String não terminada na linha " << line << "\n";
+        std::cerr << "Unterminated string in line " << line << "\n";
         return;
     }
 
-    advance(); // fecha aspas
+    advance(); 
     std::string value = source.substr(start + 1, current - start - 2);
     addToken(TokenType::String, value);
 }
