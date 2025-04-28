@@ -15,7 +15,7 @@ Value Interpreter::evalExpr(const Expression* expr) {
         return lit->value;
     }
     if (auto thisExpr = dynamic_cast<const ThisExpr*>(expr)) {
-        return environment->get("this"); // ou como você guardou o `this`
+        return environment->get("this"); 
     }
     if (auto getExpr = dynamic_cast<const GetExpr*>(expr)) {
         Value object = evalExpr(getExpr->object.get());
@@ -26,16 +26,16 @@ Value Interpreter::evalExpr(const Expression* expr) {
             if (it != instance->fields.end()) {
                 return it->second;
             } else {
-                throw std::runtime_error("Campo '" + getExpr->name + "' não encontrado.");
+                throw std::runtime_error("Field '" + getExpr->name + "' not found.");
             }
         }
     
-        throw std::runtime_error("Tentativa de acessar campo em algo que não é objeto.");
+        throw std::runtime_error("Attempt to access a field on something that is not an object.");
     }        
     if (auto var = dynamic_cast<const VariableExpr*>(expr)) {
         auto it = variables.find(var->name);
         if (it == variables.end())
-            throw std::runtime_error("Variável não definida: " + var->name);
+            throw std::runtime_error("Undefined variable: " + var->name);
         return it->second;
     }
     if (auto var = dynamic_cast<const VariableExpr*>(expr)) {
@@ -43,14 +43,14 @@ Value Interpreter::evalExpr(const Expression* expr) {
         if (it == variables.end()) {
             auto classIt = classes.find(var->name);
             if (classIt != classes.end()) {
-                // Criar instância nova
+                // Create new instance
                 auto instance = std::make_shared<ClassInstance>();
                 for (const auto& field : classIt->second->fields) {
                     instance->fields[field] = Value();
                 }
                 return instance;
             }
-            throw std::runtime_error("Variável não definida: " + var->name);
+            throw std::runtime_error("Undefined variable: " + var->name);
         }
         return it->second;
     }    
@@ -66,17 +66,17 @@ Value Interpreter::evalExpr(const Expression* expr) {
             if (it != instance->fields.end()) {
                 return it->second;
             } else {
-                throw std::runtime_error("Campo '" + get->name + "' não encontrado.");
+                throw std::runtime_error("Field '" + get->name + "' not found.");
             }
         }
     
-        throw std::runtime_error("Tentativa de acessar campo em algo que não é objeto.");
+        throw std::runtime_error("Attempt to access a field on something that is not an object.");
     }    
     if (auto input = dynamic_cast<const InputExpr*>(expr)) {
         std::string response;
         std::cout << input->prompt << " ";
         std::getline(std::cin, response);
-
+    
         if (input->type == "int") {
             return std::stoi(response);
         } else if (input->type == "bool") {
@@ -85,7 +85,7 @@ Value Interpreter::evalExpr(const Expression* expr) {
             return response;
         }
     }
-
+    
     if (auto list = dynamic_cast<const ListExpr*>(expr)) {
         std::vector<Value> result;
         for (const auto& e : list->elements) {
@@ -98,53 +98,53 @@ Value Interpreter::evalExpr(const Expression* expr) {
         Value index = evalExpr(indexExpr->indexExpr.get());
     
         if (std::holds_alternative<std::vector<Value>>(container)) {
-            // É lista
+            // It's a list
             const auto& list = std::get<std::vector<Value>>(container);
     
             if (!std::holds_alternative<int>(index))
-                throw std::runtime_error("Índice da lista deve ser inteiro.");
+                throw std::runtime_error("List index must be an integer.");
     
             int idx = std::get<int>(index);
             if (idx < 0 || idx >= (int)list.size())
-                throw std::runtime_error("Índice da lista fora dos limites.");
+                throw std::runtime_error("List index out of bounds.");
     
             return list[idx];
         }
         else if (std::holds_alternative<std::unordered_map<std::string, Value>>(container)) {
-            // É struct
+            // It's a struct
             const auto& map = std::get<std::unordered_map<std::string, Value>>(container);
     
             if (!std::holds_alternative<std::string>(index))
-                throw std::runtime_error("Campo da struct deve ser string.");
+                throw std::runtime_error("Struct field must be a string.");
     
             const std::string& key = std::get<std::string>(index);
     
             auto it = map.find(key);
             if (it == map.end())
-                throw std::runtime_error("Campo '" + key + "' não encontrado na struct.");
+                throw std::runtime_error("Field '" + key + "' not found in struct.");
     
             return it->second;
         }
         else {
-            throw std::runtime_error("Tentativa de indexar algo que não é lista nem struct.");
+            throw std::runtime_error("Attempt to index something that is neither a list nor a struct.");
         }
     }    
     if (auto index = dynamic_cast<const IndexExpr*>(expr)) {
         auto listVal = evalExpr(index->listExpr.get());
         auto idxVal = evalExpr(index->indexExpr.get());
-
+    
         if (!std::holds_alternative<std::vector<Value>>(listVal))
-            throw std::runtime_error("Tentativa de indexar algo que não é lista.");
-
+            throw std::runtime_error("Attempt to index something that is not a list.");
+    
         int idx = std::get<int>(idxVal);
         auto& list = std::get<std::vector<Value>>(listVal);
-
+    
         if (idx < 0 || idx >= (int)list.size())
-            throw std::runtime_error("Índice fora dos limites da lista.");
-
+            throw std::runtime_error("List index out of bounds.");
+    
         return list[idx];
     }
-
+    
     if (auto interp = dynamic_cast<const InterpolatedStringExpr*>(expr)) {
         std::string result;
         std::string src = interp->raw;
@@ -159,7 +159,8 @@ Value Interpreter::evalExpr(const Expression* expr) {
     
             result += src.substr(pos, start - pos);
             size_t end = src.find("}", start);
-            if (end == std::string::npos) throw std::runtime_error("Interpolação inválida.");
+            if (end == std::string::npos) 
+                throw std::runtime_error("Invalid string interpolation.");
     
             std::string varName = src.substr(start + 2, end - start - 2);
             Value val = variables[varName];
@@ -174,11 +175,12 @@ Value Interpreter::evalExpr(const Expression* expr) {
     
         return result;
     }
+    
     if (auto call = dynamic_cast<const CallExpr*>(expr)) {
         if (auto var = dynamic_cast<VariableExpr*>(call->callee.get())) {
             if (var->name == "int" || var->name == "float" || var->name == "str" || var->name == "bool") {
                 if (call->arguments.size() != 1)
-                    throw std::runtime_error("Casting espera exatamente 1 argumento.");
+                    throw std::runtime_error("Casting expects exactly 1 argument.");
 
                 Value arg = evalExpr(call->arguments[0].get());
 
@@ -221,7 +223,7 @@ Value Interpreter::evalExpr(const Expression* expr) {
 
             if (var->name == "len") {
                 if (call->arguments.size() != 1)
-                    throw std::runtime_error("len espera exatamente 1 argumento.");
+                    throw std::runtime_error("len expects exactly 1 argument.");
             
                 Value arg = evalExpr(call->arguments[0].get());
             
@@ -230,20 +232,20 @@ Value Interpreter::evalExpr(const Expression* expr) {
                 } else if (std::holds_alternative<std::vector<Value>>(arg)) {
                     return static_cast<int>(std::get<std::vector<Value>>(arg).size());
                 } else {
-                    throw std::runtime_error("len só funciona com strings ou listas.");
+                    throw std::runtime_error("len only works with strings or lists.");
                 }
             }
             if (var->name == "push") {
                 if (call->arguments.size() != 2)
-                    throw std::runtime_error("push espera 2 argumentos: lista e valor.");
+                    throw std::runtime_error("push expects 2 arguments: list and value.");
 
                 auto listExpr = dynamic_cast<const VariableExpr*>(call->arguments[0].get());
                 if (!listExpr)
-                    throw std::runtime_error("push: o primeiro argumento deve ser o nome de uma variável de lista.");
+                    throw std::runtime_error("push: The first argument must be the name of a list variable.");
 
                 Value& listVal = variables[listExpr->name];
                 if (!std::holds_alternative<std::vector<Value>>(listVal))
-                    throw std::runtime_error("push: variável não é uma lista.");
+                    throw std::runtime_error("push: variable is not a list.");
 
                 Value val = evalExpr(call->arguments[1].get());
                 std::get<std::vector<Value>>(listVal).push_back(val);
@@ -251,99 +253,103 @@ Value Interpreter::evalExpr(const Expression* expr) {
             }
             if (var->name == "pop") {
                 if (call->arguments.size() != 1)
-                    throw std::runtime_error("pop espera 1 argumento: lista.");
-
+                    throw std::runtime_error("pop expects 1 argument: list.");
+            
                 auto listExpr = dynamic_cast<const VariableExpr*>(call->arguments[0].get());
                 if (!listExpr)
-                    throw std::runtime_error("pop: o argumento deve ser o nome de uma variável de lista.");
-
+                    throw std::runtime_error("pop: the argument must be the name of a list variable.");
+            
                 Value& listVal = variables[listExpr->name];
                 if (!std::holds_alternative<std::vector<Value>>(listVal))
-                    throw std::runtime_error("pop: variável não é uma lista.");
-
+                    throw std::runtime_error("pop: variable is not a list.");
+            
                 auto& vec = std::get<std::vector<Value>>(listVal);
                 if (vec.empty())
-                    throw std::runtime_error("pop: lista vazia.");
-
+                    throw std::runtime_error("pop: list is empty.");
+            
                 Value removed = vec.back();
                 vec.pop_back();
                 return removed;
             }
+            
             if (var->name == "insert") {
                 if (call->arguments.size() != 3)
-                    throw std::runtime_error("insert espera 3 argumentos: lista, posição, valor.");
-
+                    throw std::runtime_error("insert expects 3 arguments: list, position, value.");
+            
                 auto listExpr = dynamic_cast<const VariableExpr*>(call->arguments[0].get());
                 if (!listExpr)
-                    throw std::runtime_error("insert: o primeiro argumento deve ser o nome de uma variável de lista.");
-
+                    throw std::runtime_error("insert: the first argument must be the name of a list variable.");
+            
                 Value& listVal = variables[listExpr->name];
                 if (!std::holds_alternative<std::vector<Value>>(listVal))
-                    throw std::runtime_error("insert: variável não é uma lista.");
-
+                    throw std::runtime_error("insert: variable is not a list.");
+            
                 Value posVal = evalExpr(call->arguments[1].get());
                 if (!std::holds_alternative<int>(posVal))
-                    throw std::runtime_error("insert: a posição deve ser um inteiro.");
-
+                    throw std::runtime_error("insert: position must be an integer.");
+            
                 int pos = std::get<int>(posVal);
                 auto& vec = std::get<std::vector<Value>>(listVal);
                 if (pos < 0 || pos > static_cast<int>(vec.size()))
-                    throw std::runtime_error("insert: posição fora dos limites da lista.");
-
+                    throw std::runtime_error("insert: position out of list bounds.");
+            
                 Value val = evalExpr(call->arguments[2].get());
                 vec.insert(vec.begin() + pos, val);
                 return Value(); // void
             }
+            
             if (var->name == "remove_at") {
                 if (call->arguments.size() != 2)
-                    throw std::runtime_error("remove_at espera 2 argumentos: lista e posição.");
-
+                    throw std::runtime_error("remove_at expects 2 arguments: list and position.");
+            
                 auto listExpr = dynamic_cast<const VariableExpr*>(call->arguments[0].get());
                 if (!listExpr)
-                    throw std::runtime_error("remove_at: o primeiro argumento deve ser o nome de uma variável de lista.");
-
+                    throw std::runtime_error("remove_at: the first argument must be the name of a list variable.");
+            
                 Value& listVal = variables[listExpr->name];
                 if (!std::holds_alternative<std::vector<Value>>(listVal))
-                    throw std::runtime_error("remove_at: variável não é uma lista.");
-
+                    throw std::runtime_error("remove_at: variable is not a list.");
+            
                 Value posVal = evalExpr(call->arguments[1].get());
                 if (!std::holds_alternative<int>(posVal))
-                    throw std::runtime_error("remove_at: a posição deve ser um inteiro.");
-
+                    throw std::runtime_error("remove_at: position must be an integer.");
+            
                 int pos = std::get<int>(posVal);
                 auto& vec = std::get<std::vector<Value>>(listVal);
                 if (pos < 0 || pos >= static_cast<int>(vec.size()))
-                    throw std::runtime_error("remove_at: posição inválida.");
-
+                    throw std::runtime_error("remove_at: invalid position.");
+            
                 Value removed = vec[pos];
                 vec.erase(vec.begin() + pos);
                 return removed;
             }
+            
             if (var->name == "clear") {
                 if (call->arguments.size() != 1)
-                    throw std::runtime_error("clear espera 1 argumento: a lista.");
-
+                    throw std::runtime_error("clear expects 1 argument: the list.");
+            
                 auto listExpr = dynamic_cast<const VariableExpr*>(call->arguments[0].get());
                 if (!listExpr)
-                    throw std::runtime_error("clear: o argumento deve ser o nome de uma variável de lista.");
-
+                    throw std::runtime_error("clear: the argument must be the name of a list variable.");
+            
                 Value& listVal = variables[listExpr->name];
                 if (!std::holds_alternative<std::vector<Value>>(listVal))
-                    throw std::runtime_error("clear: variável não é uma lista.");
-
+                    throw std::runtime_error("clear: variable is not a list.");
+            
                 std::get<std::vector<Value>>(listVal).clear();
                 return Value(); // void
             }
+            
             if (var->name == "contains") {
                 if (call->arguments.size() != 2)
-                    throw std::runtime_error("contains espera 2 argumentos: lista e valor.");
-
+                    throw std::runtime_error("contains expects 2 arguments: list and value.");
+            
                 Value listVal = evalExpr(call->arguments[0].get());
                 Value val = evalExpr(call->arguments[1].get());
-
+            
                 if (!std::holds_alternative<std::vector<Value>>(listVal))
-                    throw std::runtime_error("contains: primeiro argumento não é uma lista.");
-
+                    throw std::runtime_error("contains: first argument is not a list.");
+            
                 const auto& vec = std::get<std::vector<Value>>(listVal);
                 for (const auto& item : vec) {
                     if (item == val)
@@ -351,58 +357,61 @@ Value Interpreter::evalExpr(const Expression* expr) {
                 }
                 return false;
             }
+            
             if (var->name == "reverse") {
                 if (call->arguments.size() != 1)
-                    throw std::runtime_error("reverse espera 1 argumento (lista).");
-
+                    throw std::runtime_error("reverse expects 1 argument (list).");
+            
                 auto listExpr = dynamic_cast<const VariableExpr*>(call->arguments[0].get());
                 if (!listExpr)
-                    throw std::runtime_error("reverse: argumento deve ser uma variável.");
-
+                    throw std::runtime_error("reverse: argument must be a variable.");
+            
                 Value& listVal = variables[listExpr->name];
                 if (!std::holds_alternative<std::vector<Value>>(listVal))
-                    throw std::runtime_error("reverse: argumento não é uma lista.");
-
+                    throw std::runtime_error("reverse: argument is not a list.");
+            
                 std::reverse(std::get<std::vector<Value>>(listVal).begin(), std::get<std::vector<Value>>(listVal).end());
                 return Value();
             }
+            
             if (var->name == "sort") {
                 if (call->arguments.size() != 1)
-                    throw std::runtime_error("sort espera 1 argumento (lista).");
+                    throw std::runtime_error("sort expects 1 argument (list).");
             
                 auto listExpr = dynamic_cast<const VariableExpr*>(call->arguments[0].get());
                 if (!listExpr)
-                    throw std::runtime_error("sort: argumento deve ser uma variável.");
+                    throw std::runtime_error("sort: argument must be a variable.");
             
                 Value& listVal = variables[listExpr->name];
                 if (!std::holds_alternative<std::vector<Value>>(listVal))
-                    throw std::runtime_error("sort: argumento não é uma lista.");
+                    throw std::runtime_error("sort: argument is not a list.");
             
                 auto& vec = std::get<std::vector<Value>>(listVal);
             
                 for (const auto& item : vec) {
                     if (std::holds_alternative<std::unordered_map<std::string, Value>>(item)) {
-                        throw std::runtime_error("sort: não é possível ordenar lista de structs.");
+                        throw std::runtime_error("sort: cannot sort a list of structs.");
                     }
                 }
             
                 std::sort(vec.begin(), vec.end(), [](const Value& a, const Value& b) {
                     if (a.index() != b.index())
-                        throw std::runtime_error("sort: tipos diferentes na lista.");
+                        throw std::runtime_error("sort: different types in list.");
                     return a < b;
                 });
             
-                return Value(); // <<< Faltava esse return também para 'sort'
-            }                      
+                return Value();
+            }
+            
             if (var->name == "join") {
                 if (call->arguments.size() != 2)
-                    throw std::runtime_error("join espera 2 argumentos.");
+                    throw std::runtime_error("join expects 2 arguments.");
             
                 Value listVal = evalExpr(call->arguments[0].get());
                 Value sepVal = evalExpr(call->arguments[1].get());
             
                 if (!std::holds_alternative<std::vector<Value>>(listVal) || !std::holds_alternative<std::string>(sepVal))
-                    throw std::runtime_error("join espera (lista, separador).");
+                    throw std::runtime_error("join expects (list, separator).");
             
                 const auto& list = std::get<std::vector<Value>>(listVal);
                 const std::string& sep = std::get<std::string>(sepVal);
@@ -419,22 +428,23 @@ Value Interpreter::evalExpr(const Expression* expr) {
                     else if (std::holds_alternative<bool>(item))
                         result += std::get<bool>(item) ? "true" : "false";
                     else
-                        throw std::runtime_error("join só suporta lista de strings, ints, floats ou bools.");
+                        throw std::runtime_error("join only supports lists of strings, ints, floats, or bools.");
             
                     if (i + 1 < list.size()) result += sep;
                 }
             
                 return result;
-            }        
+            }
+            
             if (var->name == "split") {
                 if (call->arguments.size() != 2)
-                    throw std::runtime_error("split espera 2 argumentos.");
+                    throw std::runtime_error("split expects 2 arguments.");
             
                 Value strVal = evalExpr(call->arguments[0].get());
                 Value sepVal = evalExpr(call->arguments[1].get());
             
                 if (!std::holds_alternative<std::string>(strVal) || !std::holds_alternative<std::string>(sepVal))
-                    throw std::runtime_error("split espera (string, separador).");
+                    throw std::runtime_error("split expects (string, separator).");
             
                 const std::string& str = std::get<std::string>(strVal);
                 const std::string& sep = std::get<std::string>(sepVal);
@@ -447,24 +457,26 @@ Value Interpreter::evalExpr(const Expression* expr) {
                 }
                 result.push_back(str.substr(prev));
                 return result;
-            }
+            }            
             if (var->name == "map") {
                 if (call->arguments.size() != 2)
-                    throw std::runtime_error("map espera 2 argumentos (lista, função).");
+                    throw std::runtime_error("map expects 2 arguments (list, function).");
             
                 Value listVal = evalExpr(call->arguments[0].get());
                 auto funcVar = dynamic_cast<const VariableExpr*>(call->arguments[1].get());
-                if (!funcVar) throw std::runtime_error("Segundo argumento de map deve ser nome de função.");
+                if (!funcVar) 
+                    throw std::runtime_error("The second argument to map must be a function name.");
             
                 auto it = functions.find(funcVar->name);
-                if (it == functions.end()) throw std::runtime_error("Função não encontrada: " + funcVar->name);
+                if (it == functions.end()) 
+                    throw std::runtime_error("Function not found: " + funcVar->name);
             
                 const FunctionStmt* func = it->second;
                 if (func->parameters.size() != 1)
-                    throw std::runtime_error("Função usada em map deve ter 1 parâmetro.");
+                    throw std::runtime_error("Function used in map must take 1 parameter.");
             
                 if (!std::holds_alternative<std::vector<Value>>(listVal))
-                    throw std::runtime_error("map espera uma lista.");
+                    throw std::runtime_error("map expects a list.");
             
                 std::vector<Value> result;
                 for (const auto& item : std::get<std::vector<Value>>(listVal)) {
@@ -479,24 +491,27 @@ Value Interpreter::evalExpr(const Expression* expr) {
                 }
             
                 return result;
-            }        
+            }
+            
             if (var->name == "filter") {
                 if (call->arguments.size() != 2)
-                    throw std::runtime_error("filter espera 2 argumentos (lista, função).");
+                    throw std::runtime_error("filter expects 2 arguments (list, function).");
             
                 Value listVal = evalExpr(call->arguments[0].get());
                 auto funcVar = dynamic_cast<const VariableExpr*>(call->arguments[1].get());
-                if (!funcVar) throw std::runtime_error("Segundo argumento de filter deve ser nome de função.");
+                if (!funcVar) 
+                    throw std::runtime_error("The second argument to filter must be a function name.");
             
                 auto it = functions.find(funcVar->name);
-                if (it == functions.end()) throw std::runtime_error("Função não encontrada: " + funcVar->name);
+                if (it == functions.end()) 
+                    throw std::runtime_error("Function not found: " + funcVar->name);
             
                 const FunctionStmt* func = it->second;
                 if (func->parameters.size() != 1)
-                    throw std::runtime_error("Função usada em filter deve ter 1 parâmetro.");
+                    throw std::runtime_error("Function used in filter must take 1 parameter.");
             
                 if (!std::holds_alternative<std::vector<Value>>(listVal))
-                    throw std::runtime_error("filter espera uma lista.");
+                    throw std::runtime_error("filter expects a list.");
             
                 std::vector<Value> result;
                 for (const auto& item : std::get<std::vector<Value>>(listVal)) {
@@ -512,26 +527,29 @@ Value Interpreter::evalExpr(const Expression* expr) {
                 }
             
                 return result;
-            }        
+            }
+            
             if (var->name == "reduce") {
                 if (call->arguments.size() != 3)
-                    throw std::runtime_error("reduce espera 3 argumentos (lista, função, valor inicial).");
+                    throw std::runtime_error("reduce expects 3 arguments (list, function, initial value).");
             
                 Value listVal = evalExpr(call->arguments[0].get());
                 auto funcVar = dynamic_cast<const VariableExpr*>(call->arguments[1].get());
                 Value accInit = evalExpr(call->arguments[2].get());
             
-                if (!funcVar) throw std::runtime_error("Segundo argumento de reduce deve ser nome de função.");
+                if (!funcVar) 
+                    throw std::runtime_error("The second argument to reduce must be a function name.");
             
                 auto it = functions.find(funcVar->name);
-                if (it == functions.end()) throw std::runtime_error("Função não encontrada: " + funcVar->name);
+                if (it == functions.end()) 
+                    throw std::runtime_error("Function not found: " + funcVar->name);
             
                 const FunctionStmt* func = it->second;
                 if (func->parameters.size() != 2)
-                    throw std::runtime_error("Função usada em reduce deve ter 2 parâmetros.");
+                    throw std::runtime_error("Function used in reduce must take 2 parameters.");
             
                 if (!std::holds_alternative<std::vector<Value>>(listVal))
-                    throw std::runtime_error("reduce espera uma lista.");
+                    throw std::runtime_error("reduce expects a list.");
             
                 Value acc = accInit;
                 for (const auto& item : std::get<std::vector<Value>>(listVal)) {
@@ -549,16 +567,17 @@ Value Interpreter::evalExpr(const Expression* expr) {
                 }
             
                 return acc;
-            }        
+            }
+            
             if (var->name == "range") {
                 if (call->arguments.size() != 2)
-                    throw std::runtime_error("range espera 2 argumentos: início e fim.");
+                    throw std::runtime_error("range expects 2 arguments: start and end.");
             
                 Value startVal = evalExpr(call->arguments[0].get());
                 Value endVal = evalExpr(call->arguments[1].get());
             
                 if (!std::holds_alternative<int>(startVal) || !std::holds_alternative<int>(endVal))
-                    throw std::runtime_error("range só funciona com inteiros.");
+                    throw std::runtime_error("range only works with integers.");
             
                 int start = std::get<int>(startVal);
                 int end = std::get<int>(endVal);
@@ -569,32 +588,33 @@ Value Interpreter::evalExpr(const Expression* expr) {
                 }
             
                 return rangeVec;
-            }        
-            // função definida pelo usuário
+            }
+            
+            // User-defined function
             auto it = functions.find(var->name);
             if (it == functions.end()) {
-                throw std::runtime_error("Função não encontrada: " + var->name);
+                throw std::runtime_error("Function not found: " + var->name);
             }
-
+            
             const FunctionStmt* func = it->second;
-
+            
             if (func->parameters.size() != call->arguments.size()) {
-                throw std::runtime_error("Número incorreto de argumentos na função: " + var->name);
+                throw std::runtime_error("Incorrect number of arguments for function: " + var->name);
             }
-
+            
             auto oldVars = variables;
             for (size_t i = 0; i < call->arguments.size(); ++i) {
                 Value argVal = evalExpr(call->arguments[i].get());
                 variables[func->parameters[i]] = argVal;
             }
-
+            
             try {
                 execute(func->body.get());
             } catch (const Value& retVal) {
                 variables = oldVars;
                 return retVal;
             }
-
+            
             variables = oldVars;
             return Value(); // void
         }
@@ -602,7 +622,7 @@ Value Interpreter::evalExpr(const Expression* expr) {
     if (auto bin = dynamic_cast<const BinaryExpr*>(expr)) {
         Value left = evalExpr(bin->left.get());
         Value right = evalExpr(bin->right.get());
-
+    
         switch (bin->op) {
             case BinaryOp::Add:
                 return std::visit(overloaded {
@@ -615,9 +635,9 @@ Value Interpreter::evalExpr(const Expression* expr) {
                     [](double l, int r) { return Value(l + static_cast<double>(r)); },
                     [](float l, double r) { return Value(static_cast<double>(l) + r); },
                     [](double l, float r) { return Value(l + static_cast<double>(r)); },
-
+    
                     [](const std::string& l, const std::string& r) { return Value(l + r); },
-
+    
                     [](const std::string& l, auto r) -> Value {
                         using T = std::decay_t<decltype(r)>;
                         if constexpr (std::is_same_v<T, std::monostate>) {
@@ -627,10 +647,10 @@ Value Interpreter::evalExpr(const Expression* expr) {
                         } else if constexpr (std::is_arithmetic_v<T>) {
                             return Value(l + std::to_string(r));
                         } else {
-                            throw std::runtime_error("Tipo inválido para concatenação com string (direita).");
+                            throw std::runtime_error("Invalid type for string concatenation (right side).");
                         }
                     },
-
+    
                     [](auto l, const std::string& r) -> Value {
                         using T = std::decay_t<decltype(l)>;
                         if constexpr (std::is_same_v<T, std::monostate>) {
@@ -640,16 +660,15 @@ Value Interpreter::evalExpr(const Expression* expr) {
                         } else if constexpr (std::is_arithmetic_v<T>) {
                             return Value(std::to_string(l) + r);
                         } else {
-                            throw std::runtime_error("Tipo inválido para concatenação com string (esquerda).");
+                            throw std::runtime_error("Invalid type for string concatenation (left side).");
                         }
                     },
-
+    
                     [](auto, auto) -> Value {
-                        throw std::runtime_error("Tipos incompatíveis para +");
+                        throw std::runtime_error("Incompatible types for + operator.");
                     }
                 }, left, right);
-
-
+    
             case BinaryOp::Sub:
                 return std::visit(overloaded {
                     [](int l, int r) { return Value(l - r); },
@@ -661,10 +680,11 @@ Value Interpreter::evalExpr(const Expression* expr) {
                     [](double l, int r) { return Value(l - static_cast<double>(r)); },
                     [](float l, double r) { return Value(static_cast<double>(l) - r); },
                     [](double l, float r) { return Value(l - static_cast<double>(r)); },
-                    [](auto, auto) -> Value { throw std::runtime_error("Tipos incompatíveis para -"); }
+                    [](auto, auto) -> Value { 
+                        throw std::runtime_error("Incompatible types for - operator."); 
+                    }
                 }, left, right);
-            
-
+    
             case BinaryOp::Mul:
                 return std::visit(overloaded {
                     [](int l, int r) { return Value(l * r); },
@@ -676,51 +696,53 @@ Value Interpreter::evalExpr(const Expression* expr) {
                     [](double l, int r) { return Value(l * static_cast<double>(r)); },
                     [](float l, double r) { return Value(static_cast<double>(l) * r); },
                     [](double l, float r) { return Value(l * static_cast<double>(r)); },
-                    [](auto, auto) -> Value { throw std::runtime_error("Tipos incompatíveis para *"); }
+                    [](auto, auto) -> Value { 
+                        throw std::runtime_error("Incompatible types for * operator."); 
+                    }
                 }, left, right);
-
-
+    
             case BinaryOp::Div:
                 return std::visit(overloaded {
                     [](int l, int r) {
-                        if (r == 0) throw std::runtime_error("Divisão por zero.");
+                        if (r == 0) throw std::runtime_error("Division by zero.");
                         return Value(static_cast<float>(l) / r);
                     },
                     [](float l, float r) {
-                        if (r == 0.0f) throw std::runtime_error("Divisão por zero.");
+                        if (r == 0.0f) throw std::runtime_error("Division by zero.");
                         return Value(l / r);
                     },
                     [](double l, double r) {
-                        if (r == 0.0) throw std::runtime_error("Divisão por zero.");
+                        if (r == 0.0) throw std::runtime_error("Division by zero.");
                         return Value(l / r);
                     },
                     [](int l, float r) {
-                        if (r == 0.0f) throw std::runtime_error("Divisão por zero.");
+                        if (r == 0.0f) throw std::runtime_error("Division by zero.");
                         return Value(l / r);
                     },
                     [](float l, int r) {
-                        if (r == 0) throw std::runtime_error("Divisão por zero.");
+                        if (r == 0) throw std::runtime_error("Division by zero.");
                         return Value(l / r);
                     },
                     [](int l, double r) {
-                        if (r == 0.0) throw std::runtime_error("Divisão por zero.");
+                        if (r == 0.0) throw std::runtime_error("Division by zero.");
                         return Value(static_cast<double>(l) / r);
                     },
                     [](double l, int r) {
-                        if (r == 0) throw std::runtime_error("Divisão por zero.");
+                        if (r == 0) throw std::runtime_error("Division by zero.");
                         return Value(l / static_cast<double>(r));
                     },
                     [](float l, double r) {
-                        if (r == 0.0) throw std::runtime_error("Divisão por zero.");
+                        if (r == 0.0) throw std::runtime_error("Division by zero.");
                         return Value(static_cast<double>(l) / r);
                     },
                     [](double l, float r) {
-                        if (r == 0.0f) throw std::runtime_error("Divisão por zero.");
+                        if (r == 0.0f) throw std::runtime_error("Division by zero.");
                         return Value(l / static_cast<double>(r));
                     },
-                    [](auto, auto) -> Value { throw std::runtime_error("Tipos incompatíveis para /"); }
-                }, left, right);
-
+                    [](auto, auto) -> Value { 
+                        throw std::runtime_error("Incompatible types for / operator."); 
+                    }
+                }, left, right);    
 
             case BinaryOp::Equal: return left == right;
             case BinaryOp::NotEqual: return left != right;
@@ -736,7 +758,7 @@ Value Interpreter::evalExpr(const Expression* expr) {
                     [](double l, int r) { return Value(l < static_cast<double>(r)); },
                     [](float l, double r) { return Value(static_cast<double>(l) < r); },
                     [](double l, float r) { return Value(l < static_cast<double>(r)); },
-                    [](auto, auto) -> Value { throw std::runtime_error("Tipos incompatíveis para <"); }
+                    [](auto, auto) -> Value { throw std::runtime_error("Incompatible types for <"); }
                 }, left, right);
 
 
@@ -746,7 +768,7 @@ Value Interpreter::evalExpr(const Expression* expr) {
                     [](float l, float r) { return Value(l > r); },
                     [](int l, float r) { return Value(l > r); },
                     [](float l, int r) { return Value(l > r); },
-                    [](auto, auto) -> Value { throw std::runtime_error("Tipos incompatíveis para >"); }
+                    [](auto, auto) -> Value { throw std::runtime_error("Incompatible types for >"); }
                 }, left, right);
 
             case BinaryOp::GreaterEqual:
@@ -755,7 +777,7 @@ Value Interpreter::evalExpr(const Expression* expr) {
                     [](float l, float r) { return Value(l >= r); },
                     [](int l, float r) { return Value(l >= r); },
                     [](float l, int r) { return Value(l >= r); },
-                    [](auto, auto) -> Value { throw std::runtime_error("Tipos incompatíveis para >="); }
+                    [](auto, auto) -> Value { throw std::runtime_error("Incompatible types for >="); }
                 }, left, right);
 
             case BinaryOp::LessEqual:
@@ -764,19 +786,19 @@ Value Interpreter::evalExpr(const Expression* expr) {
                     [](float l, float r) { return Value(l <= r); },
                     [](int l, float r) { return Value(l <= r); },
                     [](float l, int r) { return Value(l <= r); },
-                    [](auto, auto) -> Value { throw std::runtime_error("Tipos incompatíveis para <="); }
+                    [](auto, auto) -> Value { throw std::runtime_error("Incompatible types for  <="); }
                 }, left, right);
 
             case BinaryOp::And:
                 return std::visit(overloaded {
                     [](bool l, bool r) { return Value(l && r); },
-                    [](auto, auto) -> Value { throw std::runtime_error("Tipos inválidos para operador '&&'"); }
+                    [](auto, auto) -> Value { throw std::runtime_error("Invalid types for operator '&&'"); }
                 }, left, right);
 
             case BinaryOp::Or:
                 return std::visit(overloaded {
                     [](bool l, bool r) { return Value(l || r); },
-                    [](auto, auto) -> Value { throw std::runtime_error("Tipos inválidos para operador '||'"); }
+                    [](auto, auto) -> Value { throw std::runtime_error("Invalid types for operator '||'"); }
                 }, left, right);
         }
     }
@@ -788,12 +810,12 @@ Value Interpreter::evalExpr(const Expression* expr) {
             case UnaryOp::Not:
                 return std::visit(overloaded {
                     [](bool b) { return Value(!b); },
-                    [](auto) -> Value { throw std::runtime_error("Operador '!' requer booleano."); }
+                    [](auto) -> Value { throw std::runtime_error("Operator '!' requires boolean."); }
                 }, right);
         }
     }
 
-    throw std::runtime_error("Expressão inválida.");
+    throw std::runtime_error("Invalid expression.");
 }
 
 void Interpreter::execute(const Statement* stmt) {
@@ -869,7 +891,7 @@ void Interpreter::execute(const Statement* stmt) {
     else if (auto assign = dynamic_cast<const AssignStmt*>(stmt)) {
         Value val = evalExpr(assign->expression.get());
         if (variables.find(assign->name) == variables.end()) {
-            throw std::runtime_error("Variável não declarada: " + assign->name);
+            throw std::runtime_error("Undeclared variable: " + assign->name);
         }
         variables[assign->name] = val;
     }
@@ -879,12 +901,12 @@ void Interpreter::execute(const Statement* stmt) {
         auto value = evalExpr(set->value.get());
     
         if (!std::holds_alternative<std::shared_ptr<ObjectInstance>>(object)) {
-            throw std::runtime_error("Tentando definir propriedade em algo que não é objeto.");
+            throw std::runtime_error("Trying to define ownership on something that is not an object.");
         }
         auto instance = std::get<std::shared_ptr<ObjectInstance>>(object);
     
         if (!std::holds_alternative<std::string>(index)) {
-            throw std::runtime_error("Chave de propriedade deve ser string.");
+            throw std::runtime_error("Property key must be string.");
         }
     
         std::string key = std::get<std::string>(index);
@@ -899,7 +921,7 @@ void Interpreter::execute(const Statement* stmt) {
         } else if (std::holds_alternative<int>(cond)) {
             condResult = std::get<int>(cond) != 0;
         } else {
-            throw std::runtime_error("Condição inválida no if.");
+            throw std::runtime_error("Invalid condition in if.");
         }
 
         if (condResult) {
@@ -932,7 +954,7 @@ void Interpreter::execute(const Statement* stmt) {
     else if (auto indexAssign = dynamic_cast<const IndexAssignStmt*>(stmt)) {
         auto varExpr = dynamic_cast<VariableExpr*>(indexAssign->listExpr.get());
         if (!varExpr) {
-            throw std::runtime_error("A expressão de índice deve ser uma variável.");
+            throw std::runtime_error("The index expression must be a variable.");
         }
     
         Value& var = variables[varExpr->name];
@@ -943,12 +965,12 @@ void Interpreter::execute(const Statement* stmt) {
             auto& vec = std::get<std::vector<Value>>(var);
     
             if (!std::holds_alternative<int>(idxVal))
-                throw std::runtime_error("Índice de lista deve ser inteiro.");
+                throw std::runtime_error("List index must be an integer.");
     
             int idx = std::get<int>(idxVal);
     
             if (idx < 0 || idx >= (int)vec.size())
-                throw std::runtime_error("Índice inválido para atribuição em lista.");
+                throw std::runtime_error("Invalid index for list assignment.");
     
             vec[idx] = value;
         }
@@ -956,17 +978,17 @@ void Interpreter::execute(const Statement* stmt) {
             auto& map = std::get<std::unordered_map<std::string, Value>>(var);
     
             if (!std::holds_alternative<std::string>(idxVal))
-                throw std::runtime_error("Campo de struct deve ser string.");
+                throw std::runtime_error("Struct field must be a string.");
     
             const std::string& key = std::get<std::string>(idxVal);
     
             if (map.find(key) == map.end())
-                throw std::runtime_error("Campo '" + key + "' não existe na struct.");
+                throw std::runtime_error("Field '" + key + "' does not exist in struct.");
     
             map[key] = value;
         }
         else {
-            throw std::runtime_error("Tentativa de indexar algo que não é lista nem struct.");
+            throw std::runtime_error("Attempt to index something that is neither a list nor a struct.");
         }
     }    
     else if (auto whileStmt = dynamic_cast<const WhileStmt*>(stmt)) {
@@ -979,7 +1001,7 @@ void Interpreter::execute(const Statement* stmt) {
             else if (std::holds_alternative<int>(cond))
                 condResult = std::get<int>(cond) != 0;
             else
-                throw std::runtime_error("Condição inválida no while.");
+                throw std::runtime_error("Invalid condition in while.");
 
             if (!condResult) break;
 
@@ -996,7 +1018,7 @@ void Interpreter::execute(const Statement* stmt) {
         Value listVal = evalExpr(forStmt->iterable.get());
 
         if (!std::holds_alternative<std::vector<Value>>(listVal))
-            throw std::runtime_error("Iterável inválido no for.");
+            throw std::runtime_error("Invalid iterable in for.");
 
         auto& vec = std::get<std::vector<Value>>(listVal);
 
@@ -1031,7 +1053,7 @@ void Interpreter::execute(const Statement* stmt) {
         for (const auto& [pattern, armStmt] : m->arms) {
             auto it = variables.find(pattern);
             if (it == variables.end())
-                throw std::runtime_error("Valor de enum não encontrado: " + pattern);
+                throw std::runtime_error("Enum value not found: " + pattern);
 
             if (val == it->second) {
                 execute(armStmt.get());
@@ -1041,7 +1063,7 @@ void Interpreter::execute(const Statement* stmt) {
         }
 
         if (!matched) {
-            throw std::runtime_error("Nenhum valor corresponde no match.");
+            throw std::runtime_error("No values ​​match.");
         }
     }
     else if (auto sw = dynamic_cast<const SwitchStmt*>(stmt)) {
@@ -1064,15 +1086,13 @@ void Interpreter::execute(const Statement* stmt) {
     else if (auto classStmt = dynamic_cast<const ClassStmt*>(stmt)) {
         std::unordered_map<std::string, Value> classFields;
         for (const auto& field : classStmt->fields) {
-            classFields[field] = Value();  // inicia os campos como null
+            classFields[field] = Value(); 
         }
     
-        // Adiciona métodos da classe no próprio objeto
         for (const auto& method : classStmt->methods) {
             functions[classStmt->name + "." + method->name] = method.get();
         }
     
-        // Salva a definição da classe em `structs`, igual fizemos com struct
         structs[classStmt->name] = new StructStmt(classStmt->name, classStmt->fields);
     }    
 }
