@@ -8,7 +8,7 @@ Currently, Yen Language runs only on **Linux**, but support for **Windows** and 
 
 ## Full Description
 
-**Yen Language** is a programming language designed to be simple, modern, and powerful. Written in C++, it implements a custom lexer, parser, abstract syntax tree (AST), and an interpreter to execute source files (`.yl`).
+**Yen Language** is a programming language designed to be simple, modern, and powerful. Written in C++, it implements a custom lexer, parser, abstract syntax tree (AST), and an interpreter to execute source files (`.yl`) or (`.yen`).
 
 The syntax of Yen is heavily inspired by Python and Rust, aiming for intuitive code while supporting advanced structures:
 
