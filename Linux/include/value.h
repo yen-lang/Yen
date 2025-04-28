@@ -5,7 +5,6 @@
 #include <string>
 #include <memory>
 
-// Primeiro, define a struct que tava faltando
 struct ObjectInstance {
     std::unordered_map<std::string, struct Value> fields;
 };
@@ -15,7 +14,6 @@ struct ClassInstance {
 };
 
 
-// Agora define o ValueVariant
 using ValueVariant = std::variant<
     std::monostate,
     int,
@@ -29,7 +27,6 @@ using ValueVariant = std::variant<
     std::shared_ptr<ObjectInstance>
 >;
 
-// Agora finalmente o struct Value
 struct Value : ValueVariant {
     using ValueVariant::ValueVariant;
 
