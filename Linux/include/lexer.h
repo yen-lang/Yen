@@ -27,7 +27,7 @@ private:
     void identifier();
     bool match(char expected);
     void skipComment();
-    void skipBlockComment();  // suporte a /* ... */
+    void skipBlockComment();  // suport to /* ... */
 
 };
 
