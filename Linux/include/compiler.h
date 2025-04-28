@@ -24,7 +24,7 @@ public:
         if (values.count(name)) {
             return values[name];
         }
-        throw std::runtime_error("Variável '" + name + "' não definida.");
+        throw std::runtime_error("Variable '" + name + "' not defined.");
     }
 
     void assign(const std::string& name, const Value& value) {
@@ -32,7 +32,7 @@ public:
             values[name] = value;
             return;
         }
-        throw std::runtime_error("Tentativa de atribuir a variável não declarada '" + name + "'.");
+        throw std::runtime_error("Attempt to assign to undeclared variable '" + name + "'.");
     }
 };
 
