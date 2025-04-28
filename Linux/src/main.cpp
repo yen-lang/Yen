@@ -7,13 +7,13 @@
 
 int main(int argc, char* argv[]) {
     if (argc < 2) {
-        std::cerr << "Uso: yenlang <arquivo.yl>\n";
+        std::cerr << "Usage: yenlang <file.yl>\n";
         return 1;
     }
 
     std::ifstream file(argv[1]);
     if (!file) {
-        std::cerr << "Erro ao abrir o arquivo.\n";
+        std::cerr << "Error opening the file.\n";
         return 1;
     }
 
