@@ -111,13 +111,13 @@ g++ -std=c++17 -o yen main.cpp lexer.cpp parser.cpp compiler.cpp
 ## Running
 
 ```bash
-./yen file.yl
+./yen file.yen
 ```
 
 Example:
 
 ```bash
-./yen examples/hello_world.yl
+./yen examples/hello_world.yen
 ```
 
 ---
