@@ -1,0 +1,15 @@
+// tests/test_floats.yen
+
+print 10.5;
+print 0.5 + 0.5;
+
+let a = 5.0;
+let b = 2.5;
+
+print a * b; // 12.5
+print a / b; // 2.0
+
+let c = 10;
+print c + 0.5; // 10.5
+
+print 10 / 4.0; // 2.5
