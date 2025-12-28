@@ -1,44 +1,50 @@
-# Process & Shell Library - YEN
+# Process & Shell Library – YEN
 
-Biblioteca para execução de comandos shell e gerenciamento de processos.
+Library for executing shell commands and managing processes.
 
-## Funções Disponíveis
+---
+
+## Available Functions
 
 ### process_shell(command)
 
-Executa um comando shell e retorna a saída como string.
+Executes a shell command and returns its output as a string.
 
-**Sintaxe:**
+**Syntax:**
+
 ```yen
 var output = process_shell(command: string) -> string
 ```
 
-**Parâmetros:**
-- `command` - Comando shell a ser executado
+**Parameters:**
 
-**Retorna:**
-- String contendo a saída do comando
-- String vazia se houver erro
+* `command` – Shell command to be executed
 
-**Exemplos:**
+**Returns:**
+
+* String containing the command output
+* Empty string if an error occurs
+
+**Examples:**
+
 ```yen
-// Listar arquivos
+// List files
 var files = process_shell("ls -la");
 print files;
 
-// Ver diretório atual
+// Show current directory
 var pwd = process_shell("pwd");
-print "Diretório: " + pwd;
+print "Directory: " + pwd;
 
-// Informações do sistema
+// System information
 var info = process_shell("uname -a");
 print info;
 
-// Usar pipes
+// Using pipes
 var count = process_shell("ls | wc -l");
-print "Total de arquivos: " + count;
+print "Total files: " + count;
 
-// Buscar em arquivos
+// Search in files
 var grep = process_shell("grep 'func' *.yen");
 print grep;
 ```
@@ -47,38 +53,42 @@ print grep;
 
 ### process_exec(command)
 
-Executa um comando shell e retorna o código de saída.
+Executes a shell command and returns the exit code.
 
-**Sintaxe:**
+**Syntax:**
+
 ```yen
 var exit_code = process_exec(command: string) -> int
 ```
 
-**Parâmetros:**
-- `command` - Comando shell a ser executado
+**Parameters:**
 
-**Retorna:**
-- `0` se o comando executou com sucesso
-- Código de erro diferente de zero se falhou
+* `command` – Shell command to be executed
 
-**Exemplos:**
+**Returns:**
+
+* `0` if the command executed successfully
+* Non-zero error code if it failed
+
+**Examples:**
+
 ```yen
-// Criar diretório
+// Create directory
 var result = process_exec("mkdir -p /tmp/mydir");
 if (result == 0) {
-    print "Diretório criado!";
+    print "Directory created!";
 } else {
-    print "Erro ao criar diretório";
+    print "Error creating directory";
 }
 
-// Copiar arquivos
+// Copy files
 var copy = process_exec("cp file.txt /tmp/");
-print "Código de saída: " + copy;
+print "Exit code: " + copy;
 
-// Deletar arquivos
+// Delete files
 process_exec("rm -rf /tmp/old_files");
 
-// Executar script
+// Execute script
 process_exec("chmod +x script.sh");
 process_exec("./script.sh");
 ```
@@ -87,30 +97,34 @@ process_exec("./script.sh");
 
 ### process_spawn(command, arg1, arg2, ...)
 
-Executa um comando com argumentos (variadic function).
+Executes a command with arguments (variadic function).
 
-**Sintaxe:**
+**Syntax:**
+
 ```yen
 var exit_code = process_spawn(command: string, ...args) -> int
 ```
 
-**Parâmetros:**
-- `command` - Comando base
-- `args` - Argumentos variáveis para o comando
+**Parameters:**
 
-**Retorna:**
-- Código de saída do comando
+* `command` – Base command
+* `args` – Variable arguments for the command
 
-**Exemplos:**
+**Returns:**
+
+* Exit code of the command
+
+**Examples:**
+
 ```yen
-// Executar com argumentos
+// Execute with arguments
 process_spawn("ls", "-la", "/tmp");
 
 // Git commands
 process_spawn("git", "add", ".");
 process_spawn("git", "commit", "-m", "Update");
 
-// Compilar código
+// Compile code
 process_spawn("gcc", "-o", "program", "main.c");
 ```
 
@@ -118,31 +132,35 @@ process_spawn("gcc", "-o", "program", "main.c");
 
 ### process_cwd()
 
-Retorna o diretório de trabalho atual.
+Returns the current working directory.
 
-**Sintaxe:**
+**Syntax:**
+
 ```yen
 var current_dir = process_cwd() -> string
 ```
 
-**Parâmetros:**
-- Nenhum
+**Parameters:**
 
-**Retorna:**
-- String com o caminho absoluto do diretório atual
+* None
 
-**Exemplos:**
+**Returns:**
+
+* String with the absolute path of the current directory
+
+**Examples:**
+
 ```yen
-// Ver diretório atual
+// Show current directory
 var dir = process_cwd();
-print "Trabalhando em: " + dir;
+print "Working in: " + dir;
 
-// Salvar diretório original
+// Save original directory
 var original_dir = process_cwd();
 
-// Fazer alguma operação...
+// Perform operations...
 
-// Voltar ao diretório original
+// Return to original directory
 process_chdir(original_dir);
 ```
 
@@ -150,80 +168,86 @@ process_chdir(original_dir);
 
 ### process_chdir(path)
 
-Muda o diretório de trabalho atual.
+Changes the current working directory.
 
-**Sintaxe:**
+**Syntax:**
+
 ```yen
 var result = process_chdir(path: string) -> int
 ```
 
-**Parâmetros:**
-- `path` - Caminho do novo diretório
+**Parameters:**
 
-**Retorna:**
-- `0` se mudou com sucesso
-- `-1` se falhou
+* `path` – New directory path
 
-**Exemplos:**
+**Returns:**
+
+* `0` if changed successfully
+* `-1` if it failed
+
+**Examples:**
+
 ```yen
-// Mudar para /tmp
+// Change to /tmp
 var result = process_chdir("/tmp");
 if (result == 0) {
-    print "Mudou para /tmp";
+    print "Changed to /tmp";
 }
 
-// Mudar para home
+// Change to home
 process_chdir("/home/user");
 
-// Usar caminho relativo
+// Use relative path
 process_chdir("../parent");
 
-// Navegar e voltar
+// Navigate and return
 var original = process_cwd();
 process_chdir("/tmp");
-// ... fazer algo ...
+// ... do something ...
 process_chdir(original);
 ```
 
 ---
 
-## Casos de Uso Comuns
+## Common Use Cases
 
-### 1. Backup de Arquivos
+### 1. File Backup
 
 ```yen
 func backup(source, dest) {
-    // Criar diretório de backup
+    // Create backup directory
     process_exec("mkdir -p " + dest);
 
-    // Copiar arquivos
+    // Copy files
     var result = process_exec("cp -r " + source + " " + dest);
 
     if (result == 0) {
-        print "Backup concluído!";
+        print "Backup completed!";
     } else {
-        print "Erro no backup";
+        print "Backup error";
     }
 }
 
 backup("/home/user/docs", "/backup/docs");
 ```
 
-### 2. Monitor de Sistema
+---
+
+### 2. System Monitor
 
 ```yen
 func system_monitor() {
-    print "=== MONITOR DO SISTEMA ===";
+    print "=== SYSTEM MONITOR ===";
 
-    // CPU e memória
+    // CPU and memory
     var top = process_shell("top -l 1 | head -10");
     print top;
 
-    // Espaço em disco
+    // Disk space
     var disk = process_shell("df -h");
     print disk;
 
-    // Processos ativos
+    // Active processes
     var ps = process_shell("ps aux | head -20");
     print ps;
 }
@@ -231,54 +255,60 @@ func system_monitor() {
 system_monitor();
 ```
 
-### 3. Automação de Deploy
+---
+
+### 3. Deployment Automation
 
 ```yen
 func deploy() {
-    print "Iniciando deploy...";
+    print "Starting deployment...";
 
     // Build
     var build = process_exec("make build");
     if (build != 0) {
-        print "Erro no build!";
+        print "Build failed!";
         return;
     }
 
-    // Testes
+    // Tests
     var test = process_exec("make test");
     if (test != 0) {
-        print "Testes falharam!";
+        print "Tests failed!";
         return;
     }
 
     // Deploy
     process_exec("rsync -avz build/ user@server:/app/");
-    print "Deploy concluído!";
+    print "Deployment completed!";
 }
 
 deploy();
 ```
 
-### 4. Processamento de Logs
+---
+
+### 4. Log Processing
 
 ```yen
 func analyze_logs(log_file) {
-    // Contar erros
+    // Count errors
     var errors = process_shell("grep ERROR " + log_file + " | wc -l");
-    print "Erros: " + errors;
+    print "Errors: " + errors;
 
-    // Contar warnings
+    // Count warnings
     var warnings = process_shell("grep WARN " + log_file + " | wc -l");
     print "Warnings: " + warnings;
 
-    // Últimos erros
+    // Last errors
     var last_errors = process_shell("grep ERROR " + log_file + " | tail -5");
-    print "Últimos erros:";
+    print "Last errors:";
     print last_errors;
 }
 
 analyze_logs("/var/log/app.log");
 ```
+
+---
 
 ### 5. Git Automation
 
@@ -288,7 +318,7 @@ func git_status() {
     print status;
 
     var branch = process_shell("git branch --show-current");
-    print "Branch atual: " + branch;
+    print "Current branch: " + branch;
 }
 
 func git_commit(message) {
@@ -296,9 +326,9 @@ func git_commit(message) {
     var result = process_exec("git commit -m '" + message + "'");
 
     if (result == 0) {
-        print "Commit realizado!";
+        print "Commit successful!";
     } else {
-        print "Nada para commitar";
+        print "Nothing to commit";
     }
 }
 
@@ -306,7 +336,9 @@ git_status();
 git_commit("Update files");
 ```
 
-### 6. Download e Extract
+---
+
+### 6. Download and Extract
 
 ```yen
 func download_and_extract(url, dest) {
@@ -315,7 +347,7 @@ func download_and_extract(url, dest) {
     // Download
     var dl = process_exec("curl -L -o /tmp/file.tar.gz " + url);
     if (dl != 0) {
-        print "Erro no download";
+        print "Download error";
         return;
     }
 
@@ -326,11 +358,13 @@ func download_and_extract(url, dest) {
     // Cleanup
     process_exec("rm /tmp/file.tar.gz");
 
-    print "Extraído para: " + dest;
+    print "Extracted to: " + dest;
 }
 
 download_and_extract("https://example.com/file.tar.gz", "/opt/app");
 ```
+
+---
 
 ### 7. Database Backup
 
@@ -339,27 +373,29 @@ func backup_database(db_name, backup_dir) {
     var timestamp = process_shell("date +%Y%m%d_%H%M%S");
     var filename = backup_dir + "/" + db_name + "_" + timestamp + ".sql";
 
-    print "Fazendo backup de " + db_name;
+    print "Backing up " + db_name;
 
     var dump = process_exec("mysqldump " + db_name + " > " + filename);
 
     if (dump == 0) {
-        // Comprimir
+        // Compress
         process_exec("gzip " + filename);
-        print "Backup salvo: " + filename + ".gz";
+        print "Backup saved: " + filename + ".gz";
     } else {
-        print "Erro no backup!";
+        print "Backup error!";
     }
 }
 
 backup_database("myapp", "/backups");
 ```
 
+---
+
 ### 8. Network Diagnostics
 
 ```yen
 func network_check(host) {
-    print "Verificando conexão com " + host;
+    print "Checking connection to " + host;
 
     // Ping
     var ping = process_shell("ping -c 4 " + host);
@@ -379,21 +415,21 @@ network_check("google.com");
 
 ---
 
-## Notas de Segurança
+## Security Notes
 
 ### ⚠️ Command Injection
 
-Sempre sanitize user input antes de passar para comandos shell:
+Always sanitize user input before passing it to shell commands:
 
 ```yen
-// INSEGURO!
+// UNSAFE!
 var user_input = get_user_input();
-process_shell("rm -rf " + user_input);  // Perigoso!
+process_shell("rm -rf " + user_input);  // Dangerous!
 
-// SEGURO
+// SAFE
 func sanitize(input) {
-    // Remover caracteres perigosos
-    // Validar input
+    // Remove dangerous characters
+    // Validate input
     return input;
 }
 
@@ -401,27 +437,29 @@ var safe_input = sanitize(user_input);
 process_shell("rm -rf " + safe_input);
 ```
 
+---
+
 ### Best Practices
 
-1. **Validar inputs** antes de usar em comandos
-2. **Usar process_spawn** quando possível (mais seguro que process_shell)
-3. **Verificar códigos de saída** de process_exec
-4. **Tratar erros** adequadamente
-5. **Limpar arquivos temporários** após uso
-6. **Usar caminhos absolutos** quando possível
+1. **Validate inputs** before using them in commands
+2. **Prefer process_spawn** when possible (safer than process_shell)
+3. **Check exit codes** from process_exec
+4. **Handle errors** properly
+5. **Clean up temporary files** after use
+6. **Use absolute paths** when possible
 
 ---
 
-## Plataformas Suportadas
+## Supported Platforms
 
-- ✅ **Linux** - Todos os comandos POSIX
-- ✅ **macOS** - Comandos BSD/POSIX
-- ⚠️ **Windows** - Requer adaptação de comandos (use PowerShell ou WSL)
+* Linux – Full POSIX support
+* macOS – BSD/POSIX commands
+* Windows – Requires command adaptation (use PowerShell or WSL)
 
-### Compatibilidade Windows
+### Windows Compatibility
 
 ```yen
-// Detectar plataforma
+// Detect platform
 var os = process_shell("uname");
 
 if (str_contains(os, "MINGW") || str_contains(os, "MSYS")) {
@@ -435,14 +473,11 @@ if (str_contains(os, "MINGW") || str_contains(os, "MSYS")) {
 
 ---
 
-## Performance
+## Performance Notes
 
-- `process_shell` usa `popen()` - overhead de pipe
-- `process_exec` usa `system()` - mais rápido
-- Para operações intensivas, considere usar bibliotecas nativas
+* `process_shell` uses `popen()` – pipe overhead
+* `process_exec` uses `system()` – faster execution
+* For intensive operations, consider native libraries
 
-## Veja Também
-
-- [IO Library](STDLIB.md#io-library) - File I/O
-- [FS Library](STDLIB.md#fs-library) - Filesystem operations
-- [ENV Library](STDLIB.md#env-library) - Environment variables
+* Generate **API reference pages**
+* Normalize terminology to match Rust/Python-style docs
