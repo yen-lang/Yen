@@ -1,1 +1,0 @@
-# YEN Quick Start Guide
