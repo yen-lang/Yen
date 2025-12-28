@@ -1,0 +1,68 @@
+// POSIX Process Management Example
+// Demonstrates fork(), exec(), wait(), and process APIs
+// Works on: Linux, macOS, BSD, and all POSIX-compliant systems
+
+extern "C" {
+    // Process management
+    func fork() -> int32;
+    func getpid() -> int32;
+    func getppid() -> int32;
+    func getuid() -> int32;
+    func getgid() -> int32;
+    func sleep(seconds: int32) -> int32;
+    func _exit(status: int32);
+    func wait(wstatus: *mut int32) -> int32;
+
+    // Standard I/O
+    func printf(format: *const char, ...) -> int32;
+}
+
+func main() -> int32 {
+    printf("=================================\n");
+    printf("  POSIX Process Management Demo\n");
+    printf("=================================\n\n");
+
+    // Get current process info
+    let pid: int32 = getpid();
+    let ppid: int32 = getppid();
+    let uid: int32 = getuid();
+    let gid: int32 = getgid();
+
+    printf("Current Process Info:\n");
+    printf("  PID:  %d\n", pid);
+    printf("  PPID: %d\n", ppid);
+    printf("  UID:  %d\n", uid);
+    printf("  GID:  %d\n\n", gid);
+
+    // Demonstrate fork (commented out to avoid actual forking during demo)
+    printf("Fork Demo (disabled for safety):\n");
+    printf("  In a real scenario, fork() would:\n");
+    printf("  1. Create a child process\n");
+    printf("  2. Return 0 in child, child PID in parent\n");
+    printf("  3. Both processes continue execution\n\n");
+
+    // Example fork usage (commented):
+    // let forkPid: int32 = fork();
+    // if forkPid == 0 {
+    //     // Child process
+    //     printf("  [Child] PID=%d, PPID=%d\n", getpid(), getppid());
+    //     sleep(1);
+    //     printf("  [Child] Exiting\n");
+    //     _exit(0);
+    // } else {
+    //     // Parent process
+    //     printf("  [Parent] Created child with PID=%d\n", forkPid);
+    //     let status: int32 = 0;
+    //     wait(&status);
+    //     printf("  [Parent] Child exited with status=%d\n", status);
+    // }
+
+    printf("Process sleep demo (sleeping 1 second)...\n");
+    sleep(1);
+    printf("Awake!\n\n");
+
+    printf("POSIX Process APIs ready!\n");
+    printf("To enable fork demo, uncomment the fork code.\n");
+
+    return 0;
+}

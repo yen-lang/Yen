@@ -1,0 +1,315 @@
+// Linux Syscalls and Linux-Specific APIs
+// Platform: Linux only
+// Direct syscall interface and Linux-specific features
+
+// ============================================================================
+// DIRECT SYSCALLS (x86_64 Linux)
+// ============================================================================
+
+// Linux syscall numbers (x86_64):
+// SYS_read = 0
+// SYS_write = 1
+// SYS_open = 2
+// SYS_close = 3
+// SYS_stat = 4
+// SYS_fstat = 5
+// SYS_poll = 7
+// SYS_lseek = 8
+// SYS_mmap = 9
+// SYS_mprotect = 10
+// SYS_munmap = 11
+// SYS_brk = 12
+// SYS_pipe = 22
+// SYS_dup = 32
+// SYS_dup2 = 33
+// SYS_fork = 57
+// SYS_execve = 59
+// SYS_exit = 60
+// SYS_wait4 = 61
+// SYS_kill = 62
+// SYS_clone = 56
+// SYS_getpid = 39
+// SYS_socket = 41
+// SYS_connect = 42
+// SYS_accept = 43
+// SYS_sendto = 44
+// SYS_recvfrom = 45
+// SYS_bind = 49
+// SYS_listen = 50
+// SYS_getuid = 102
+// SYS_getgid = 104
+// SYS_gettid = 186
+
+extern "C" {
+    // ------------------------------------------------------------------------
+    // DIRECT SYSCALL INTERFACE
+    // ------------------------------------------------------------------------
+
+    // syscall - Direct syscall invocation
+    // long syscall(long number, ...);
+    func syscall(number: int64, ...) -> int64;
+}
+
+// ============================================================================
+// LINUX-SPECIFIC FILE OPERATIONS
+// ============================================================================
+
+extern "C" {
+    // epoll_create - Create epoll file descriptor
+    // int epoll_create(int size);
+    func epoll_create(size: int32) -> int32;
+
+    // epoll_create1 - Create epoll fd with flags
+    // int epoll_create1(int flags);
+    func epoll_create1(flags: int32) -> int32;
+
+    // epoll_ctl - Control epoll interface
+    // int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event);
+    func epoll_ctl(epfd: int32, op: int32, fd: int32, event: *mut void) -> int32;
+
+    // epoll_wait - Wait for events on epoll
+    // int epoll_wait(int epfd, struct epoll_event *events, int maxevents, int timeout);
+    func epoll_wait(epfd: int32, events: *mut void, maxevents: int32, timeout: int32) -> int32;
+
+    // inotify_init - Initialize inotify instance
+    // int inotify_init(void);
+    func inotify_init() -> int32;
+
+    // inotify_add_watch - Add watch to inotify
+    // int inotify_add_watch(int fd, const char *pathname, uint32_t mask);
+    func inotify_add_watch(fd: int32, pathname: *const char, mask: int32) -> int32;
+
+    // inotify_rm_watch - Remove watch from inotify
+    // int inotify_rm_watch(int fd, int wd);
+    func inotify_rm_watch(fd: int32, wd: int32) -> int32;
+
+    // eventfd - Create file descriptor for event notification
+    // int eventfd(unsigned int initval, int flags);
+    func eventfd(initval: int32, flags: int32) -> int32;
+
+    // signalfd - Create file descriptor for signals
+    // int signalfd(int fd, const sigset_t *mask, int flags);
+    func signalfd(fd: int32, mask: *const void, flags: int32) -> int32;
+
+    // timerfd_create - Create timer file descriptor
+    // int timerfd_create(int clockid, int flags);
+    func timerfd_create(clockid: int32, flags: int32) -> int32;
+
+    // timerfd_settime - Arm/disarm timer
+    // int timerfd_settime(int fd, int flags, const struct itimerspec *new_value,
+    //                     struct itimerspec *old_value);
+    func timerfd_settime(fd: int32, flags: int32, new_value: *const void, old_value: *mut void) -> int32;
+}
+
+// ============================================================================
+// LINUX PROCESS AND THREAD MANAGEMENT
+// ============================================================================
+
+extern "C" {
+    // clone - Create child process/thread (Linux-specific)
+    // long clone(unsigned long flags, void *stack, int *parent_tid,
+    //            int *child_tid, unsigned long tls);
+    func clone(flags: int64, stack: *mut void, parent_tid: *mut int32,
+               child_tid: *mut int32, tls: int64) -> int64;
+
+    // gettid - Get thread ID (Linux-specific)
+    // pid_t gettid(void);
+    func gettid() -> int32;
+
+    // set_tid_address - Set clear_child_tid
+    // long set_tid_address(int *tidptr);
+    func set_tid_address(tidptr: *mut int32) -> int64;
+
+    // prctl - Process control (Linux-specific)
+    // int prctl(int option, unsigned long arg2, unsigned long arg3,
+    //           unsigned long arg4, unsigned long arg5);
+    func prctl(option: int32, arg2: int64, arg3: int64, arg4: int64, arg5: int64) -> int32;
+
+    // capget - Get process capabilities
+    // int capget(cap_user_header_t hdrp, cap_user_data_t datap);
+    func capget(hdrp: *mut void, datap: *mut void) -> int32;
+
+    // capset - Set process capabilities
+    // int capset(cap_user_header_t hdrp, const cap_user_data_t datap);
+    func capset(hdrp: *mut void, datap: *const void) -> int32;
+}
+
+// ============================================================================
+// LINUX MEMORY MANAGEMENT
+// ============================================================================
+
+extern "C" {
+    // mmap - Map files or devices into memory
+    // void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset);
+    func mmap(addr: *mut void, length: int64, prot: int32, flags: int32,
+              fd: int32, offset: int64) -> *mut void;
+
+    // munmap - Unmap files or devices
+    // int munmap(void *addr, size_t length);
+    func munmap(addr: *mut void, length: int64) -> int32;
+
+    // mprotect - Set protection on memory region
+    // int mprotect(void *addr, size_t len, int prot);
+    func mprotect(addr: *mut void, len: int64, prot: int32) -> int32;
+
+    // madvise - Give advice about memory usage
+    // int madvise(void *addr, size_t length, int advice);
+    func madvise(addr: *mut void, length: int64, advice: int32) -> int32;
+
+    // mremap - Remap virtual memory address
+    // void *mremap(void *old_address, size_t old_size, size_t new_size, int flags, ...);
+    func mremap(old_address: *mut void, old_size: int64, new_size: int64,
+                flags: int32, ...) -> *mut void;
+
+    // memfd_create - Create anonymous file (Linux 3.17+)
+    // int memfd_create(const char *name, unsigned int flags);
+    func memfd_create(name: *const char, flags: int32) -> int32;
+}
+
+// ============================================================================
+// LINUX NETWORKING EXTENSIONS
+// ============================================================================
+
+extern "C" {
+    // sendfile - Transfer data between file descriptors
+    // ssize_t sendfile(int out_fd, int in_fd, off_t *offset, size_t count);
+    func sendfile(out_fd: int32, in_fd: int32, offset: *mut int64, count: int64) -> int64;
+
+    // splice - Splice data to/from pipe
+    // ssize_t splice(int fd_in, loff_t *off_in, int fd_out, loff_t *off_out,
+    //                size_t len, unsigned int flags);
+    func splice(fd_in: int32, off_in: *mut int64, fd_out: int32, off_out: *mut int64,
+                len: int64, flags: int32) -> int64;
+}
+
+// ============================================================================
+// LINUX /PROC FILESYSTEM
+// ============================================================================
+
+// The /proc filesystem is accessed via regular POSIX file operations
+// Common /proc files:
+// /proc/self/cmdline - Command line of current process
+// /proc/self/exe - Symlink to executable
+// /proc/self/environ - Environment variables
+// /proc/self/maps - Memory mappings
+// /proc/self/status - Process status
+// /proc/cpuinfo - CPU information
+// /proc/meminfo - Memory information
+// /proc/version - Kernel version
+// /proc/uptime - System uptime
+// /proc/loadavg - System load average
+
+// ============================================================================
+// LINUX /SYS FILESYSTEM
+// ============================================================================
+
+// The /sys filesystem provides kernel/device info
+// Common /sys paths:
+// /sys/class/net/ - Network interfaces
+// /sys/class/block/ - Block devices
+// /sys/devices/system/cpu/ - CPU information
+// /sys/kernel/mm/transparent_hugepage/ - THP settings
+
+// ============================================================================
+// LINUX CAPABILITIES
+// ============================================================================
+
+// Linux capability constants:
+// CAP_CHOWN = 0
+// CAP_DAC_OVERRIDE = 1
+// CAP_DAC_READ_SEARCH = 2
+// CAP_FOWNER = 3
+// CAP_FSETID = 4
+// CAP_KILL = 5
+// CAP_SETGID = 6
+// CAP_SETUID = 7
+// CAP_NET_BIND_SERVICE = 10
+// CAP_NET_RAW = 13
+// CAP_SYS_ADMIN = 21
+// CAP_SYS_BOOT = 22
+// CAP_SYS_MODULE = 16
+
+// ============================================================================
+// LINUX NAMESPACE OPERATIONS
+// ============================================================================
+
+extern "C" {
+    // unshare - Disassociate parts of process execution context
+    // int unshare(int flags);
+    func unshare(flags: int32) -> int32;
+
+    // setns - Reassociate thread with a namespace
+    // int setns(int fd, int nstype);
+    func setns(fd: int32, nstype: int32) -> int32;
+
+    // pivot_root - Change root filesystem
+    // int pivot_root(const char *new_root, const char *put_old);
+    func pivot_root(new_root: *const char, put_old: *const char) -> int32;
+}
+
+// Namespace flags:
+// CLONE_NEWNS = 0x00020000 (mount namespace)
+// CLONE_NEWUTS = 0x04000000 (UTS namespace)
+// CLONE_NEWIPC = 0x08000000 (IPC namespace)
+// CLONE_NEWPID = 0x20000000 (PID namespace)
+// CLONE_NEWNET = 0x40000000 (network namespace)
+// CLONE_NEWUSER = 0x10000000 (user namespace)
+// CLONE_NEWCGROUP = 0x02000000 (cgroup namespace)
+
+// ============================================================================
+// LINUX SECCOMP (Secure Computing)
+// ============================================================================
+
+extern "C" {
+    // seccomp - Operate on Secure Computing state
+    // int seccomp(unsigned int operation, unsigned int flags, void *args);
+    func seccomp(operation: int32, flags: int32, args: *mut void) -> int32;
+}
+
+// ============================================================================
+// LINUX PERFORMANCE MONITORING
+// ============================================================================
+
+extern "C" {
+    // perf_event_open - Set up performance monitoring
+    // long perf_event_open(struct perf_event_attr *attr, pid_t pid, int cpu,
+    //                      int group_fd, unsigned long flags);
+    func perf_event_open(attr: *mut void, pid: int32, cpu: int32,
+                         group_fd: int32, flags: int64) -> int64;
+}
+
+// ============================================================================
+// LINUX BPF (Berkeley Packet Filter / eBPF)
+// ============================================================================
+
+extern "C" {
+    // bpf - Perform command on BPF map/program/...
+    // int bpf(int cmd, union bpf_attr *attr, unsigned int size);
+    func bpf(cmd: int32, attr: *mut void, size: int32) -> int32;
+}
+
+// ============================================================================
+// HELPER NOTES
+// ============================================================================
+
+// To use Linux-specific features:
+//
+// 1. Import this module (Linux only):
+//    import linux from "stdlib/platform/linux.yen"
+//
+// 2. For portable code, use posix.yen instead
+//
+// 3. Direct syscall example:
+//    let pid = syscall(39);  // SYS_getpid
+//
+// 4. These bindings only work on Linux
+//    macOS/BSD will have different syscall numbers and interfaces
+//
+// 5. Modern features require recent kernels:
+//    - epoll: Linux 2.6+
+//    - inotify: Linux 2.6.13+
+//    - eventfd: Linux 2.6.22+
+//    - timerfd: Linux 2.6.25+
+//    - memfd_create: Linux 3.17+
+//    - namespaces: varies by type, mostly Linux 3.8+
+//    - eBPF: Linux 4.4+ (full features)

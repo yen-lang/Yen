@@ -1,0 +1,4 @@
+import "my_module.yen";
+
+print my_module.my_variable;
+print my_module.my_function();

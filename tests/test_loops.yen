@@ -1,0 +1,28 @@
+// tests/test_loops.yen
+let i = 0;
+while (i < 3) {
+    print "While loop iteration: " + str(i); // Expected: While loop iteration: 0, 1, 2
+    i = i + 1;
+}
+
+print "---";
+
+let list = [1, 2, 3];
+for item in list {
+    print "For loop item: " + str(item); // Expected: For loop item: 1, 2, 3
+}
+
+print "---";
+
+// Test break and continue
+let j = 0;
+while (j < 5) {
+    j = j + 1;
+    if (j == 2) {
+        continue;
+    }
+    if (j == 4) {
+        break;
+    }
+    print "Break/Continue test: " + str(j); // Expected: Break/Continue test: 1, 3
+}

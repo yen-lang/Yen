@@ -1,0 +1,10 @@
+import "math";
+import "system";
+
+let x = math.sqrt(16);
+print x; // Expected: 4
+
+let start_time = system.time();
+print start_time; // Expected: current time in ms
+
+// system.exit(0); // This would exit the program, so keep it commented

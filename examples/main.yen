@@ -1,0 +1,43 @@
+# Teste completo da linguagem YenLang com funções, condicionais, input, operações e blocos
+/* Comentário de bloco
+   ainda aqui
+   e termina abaixo */
+func teste() {
+    print "Funcionando!";
+}
+teste();
+
+func saudacao(nome) {
+    print "Olá, " + nome + "!";
+}
+
+func somar(a, b) {
+    return a + b;
+}
+
+func verificar_maioridade(idade) {
+    if (idade >= 18) {
+        print "Você é maior de idade.";
+    } else {
+        print "Você é menor de idade.";
+    }
+}
+
+func interagir() {
+    let nome = input("Qual seu nome?");
+    let idade = input<int>("Qual sua idade?");
+    saudacao(nome);
+    verificar_maioridade(idade);
+    let resultado = somar(10, 5);
+    print "10 + 5 = " + resultado;
+}
+
+interagir();
+
+func teste() {
+    let pi = 3.14;
+    let raio = 5;
+    let area = pi * raio * raio;
+    print "Área do círculo: " + area;
+}
+teste();

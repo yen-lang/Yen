@@ -1,0 +1,79 @@
+// Windows File I/O Example
+// This demonstrates using Windows API to create and write to a file
+// NOTE: This code only works on Windows systems
+
+// Windows API declarations
+extern "C" {
+    // File operations
+    func CreateFileW(
+        lpFileName: *const int16,
+        dwDesiredAccess: int32,
+        dwShareMode: int32,
+        lpSecurityAttributes: *mut void,
+        dwCreationDisposition: int32,
+        dwFlagsAndAttributes: int32,
+        hTemplateFile: *mut void
+    ) -> *mut void;
+
+    func WriteFile(
+        hFile: *mut void,
+        lpBuffer: *const void,
+        nNumberOfBytesToWrite: int32,
+        lpNumberOfBytesWritten: *mut int32,
+        lpOverlapped: *mut void
+    ) -> int32;
+
+    func CloseHandle(hObject: *mut void) -> int32;
+
+    func GetLastError() -> int32;
+
+    // Standard printf for output
+    func printf(format: *const char, ...) -> int32;
+}
+
+// Windows constants (normally would come from header)
+// GENERIC_WRITE = 0x40000000
+// CREATE_ALWAYS = 2
+// FILE_ATTRIBUTE_NORMAL = 0x80
+// INVALID_HANDLE_VALUE = -1 (as pointer)
+
+func main() -> int32 {
+    printf("Windows File I/O Example\n");
+    printf("========================\n\n");
+
+    // Note: CreateFileW expects UTF-16 string (LPCWSTR)
+    // For this demo, we would need UTF-16 conversion
+    // In a real implementation, we'd have a helper function
+
+    // For now, demonstrate the API usage pattern:
+    printf("On Windows, this would:\n");
+    printf("1. Create a file using CreateFileW\n");
+    printf("2. Write data using WriteFile\n");
+    printf("3. Close the handle using CloseHandle\n");
+    printf("4. Check errors with GetLastError\n\n");
+
+    // Example flow (commented - needs UTF-16 strings):
+    // let hFile = CreateFileW(
+    //     filename_utf16,           // UTF-16 filename
+    //     0x40000000,               // GENERIC_WRITE
+    //     0,                        // No sharing
+    //     null,                     // Default security
+    //     2,                        // CREATE_ALWAYS
+    //     0x80,                     // FILE_ATTRIBUTE_NORMAL
+    //     null                      // No template
+    // );
+    //
+    // if (hFile != INVALID_HANDLE_VALUE) {
+    //     let bytesWritten: int32 = 0;
+    //     WriteFile(hFile, data, dataSize, &bytesWritten, null);
+    //     CloseHandle(hFile);
+    //     printf("Wrote %d bytes\n", bytesWritten);
+    // } else {
+    //     printf("Error: %d\n", GetLastError());
+    // }
+
+    printf("Windows API bindings are ready!\n");
+    printf("Full implementation requires UTF-16 string support.\n");
+
+    return 0;
+}
