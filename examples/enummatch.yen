@@ -1,8 +1,0 @@
-func main() {
-    let nome = "Joas";
-    let idade = 25;
-
-    print "Olá, ${nome}! Você tem ${idade} anos.";
-}
-
-main();

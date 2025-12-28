@@ -1,8 +1,0 @@
-/opt/Yen/build/CMakeFiles/intrinsics_gen.dir
-/opt/Yen/build/CMakeFiles/omp_gen.dir
-/opt/Yen/build/CMakeFiles/acc_gen.dir
-/opt/Yen/build/CMakeFiles/RISCVTargetParserTableGen.dir
-/opt/Yen/build/CMakeFiles/yen.dir
-/opt/Yen/build/CMakeFiles/yenc.dir
-/opt/Yen/build/CMakeFiles/edit_cache.dir
-/opt/Yen/build/CMakeFiles/rebuild_cache.dir

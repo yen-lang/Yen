@@ -1,1 +1,0 @@
-/usr/bin/c++  -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/yen.dir/src/main.cpp.o CMakeFiles/yen.dir/src/lexer.cpp.o CMakeFiles/yen.dir/src/parser.cpp.o CMakeFiles/yen.dir/src/compiler.cpp.o CMakeFiles/yen.dir/src/stdlib.cpp.o CMakeFiles/yen.dir/src/type_checker.cpp.o CMakeFiles/yen.dir/src/native_libs.cpp.o -o yen

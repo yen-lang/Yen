@@ -1,0 +1,20 @@
+func testar_lista_avancada() {
+    let coisas = ["chave", "moeda", "livro", "chave"];
+
+    print "Lista original:";
+    print coisas;
+
+    if (contains(coisas, "livro")) {
+        print "A lista contém 'livro'.";
+    }
+
+    if (contains(coisas, "espada") == false) {
+        print "A lista NÃO contém 'espada'.";
+    }
+
+    clear(coisas);
+    print "Lista após clear():";
+    print coisas;
+}
+
+testar_lista_avancada();

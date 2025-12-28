@@ -1,0 +1,16 @@
+func testar_modificacoes_lista() {
+    let numeros = [1, 2, 3, 5];
+    print "Original:";
+    print numeros;
+
+    insert(numeros, 3, 4);
+    print "Após insert na posição 3 (valor 4):";
+    print numeros;
+
+    let removido = remove_at(numeros, 1);
+    print "Após remover na posição 1:";
+    print numeros;
+    print "Removido: " + removido;
+}
+
+testar_modificacoes_lista();
