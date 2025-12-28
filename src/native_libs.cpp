@@ -11,6 +11,7 @@
 #include <fstream>
 #include <filesystem>
 #include <cstdlib>
+#include <unistd.h>
 
 namespace YenNative {
 
@@ -893,6 +894,7 @@ namespace Env {
 
 // ============ PROCESS LIBRARY ============
 namespace Process {
+    // Execute command and return exit code
     Value exec(std::vector<Value> args) {
         if (args.empty() || !args[0].holds_alternative<std::string>()) {
             return -1;
@@ -902,8 +904,72 @@ namespace Process {
         return system(command.c_str());
     }
 
+    // Execute command and return output as string
+    Value shell(std::vector<Value> args) {
+        if (args.empty() || !args[0].holds_alternative<std::string>()) {
+            return std::string("");
+        }
+
+        std::string command = args[0].get<std::string>();
+        std::string result;
+
+        FILE* pipe = popen(command.c_str(), "r");
+        if (!pipe) {
+            return std::string("");
+        }
+
+        char buffer[128];
+        while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+            result += buffer;
+        }
+
+        pclose(pipe);
+        return result;
+    }
+
+    // Execute command with arguments (safe)
+    Value spawn(std::vector<Value> args) {
+        if (args.empty() || !args[0].holds_alternative<std::string>()) {
+            return -1;
+        }
+
+        std::string command = args[0].get<std::string>();
+
+        // Build command with arguments if provided
+        for (size_t i = 1; i < args.size(); ++i) {
+            if (args[i].holds_alternative<std::string>()) {
+                command += " " + args[i].get<std::string>();
+            }
+        }
+
+        return system(command.c_str());
+    }
+
+    // Get current working directory
+    Value cwd(std::vector<Value> args) {
+        char buffer[1024];
+        if (getcwd(buffer, sizeof(buffer)) != nullptr) {
+            return std::string(buffer);
+        }
+        return std::string("");
+    }
+
+    // Change directory
+    Value chdir_fn(std::vector<Value> args) {
+        if (args.empty() || !args[0].holds_alternative<std::string>()) {
+            return -1;
+        }
+
+        std::string path = args[0].get<std::string>();
+        return chdir(path.c_str());
+    }
+
     void registerFunctions(std::unordered_map<std::string, Value>& globals) {
         globals["process_exec"] = NativeFunction{exec, 1};
+        globals["process_shell"] = NativeFunction{shell, 1};
+        globals["process_spawn"] = NativeFunction{spawn, -1};  // Variable args
+        globals["process_cwd"] = NativeFunction{cwd, 0};
+        globals["process_chdir"] = NativeFunction{chdir_fn, 1};
     }
 }
 

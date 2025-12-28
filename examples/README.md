@@ -214,21 +214,48 @@ env_set("MY_VAR", "value")
 var val = env_get("MY_VAR")
 ```
 
-### Process Execution
+### Process & Shell Execution
 ```yen
-var exit_code = process_exec("ls -la")
+// Execute command and get exit code
+var exit_code = process_exec("mkdir /tmp/test")
+
+// Execute command and capture output
+var files = process_shell("ls -la")
+print files
+
+// Get current directory
+var dir = process_cwd()
+
+// Change directory
+process_chdir("/tmp")
+
+// Execute with arguments
+process_spawn("git", "status")
 ```
 
 ## Examples
 
 See the `examples/` directory for more examples:
 
+### Basic Examples
 - `hello.yen` - Hello World
 - `fibonacci.yen` - Fibonacci sequence
 - `features_demo.yen` - Language features showcase
 - `modern_features_demo.yen` - Modern features demo
+
+### Library Examples
 - `collections_demo.yen` - Collections usage
-- Platform-specific examples (Windows, macOS, POSIX)
+- `string_demo.yen` - String manipulation
+
+### Shell & System Examples
+- `os_shell_simple.yen` - **Simple shell command examples**
+- `shell_commands.yen` - **Comprehensive shell operations**
+- `system_automation.yen` - **System automation utilities**
+
+### Platform-Specific Examples
+- Windows examples (console, file I/O, message boxes)
+- macOS examples (system info, POSIX operations)
+- POSIX examples (file I/O, processes)
 
 ## Building with LLVM (Optional)
 

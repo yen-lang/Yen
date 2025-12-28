@@ -167,10 +167,33 @@ env_set(name, value)      // Sets environment variable
 
 ## Process Library
 
-Process execution.
+Process execution and shell commands. See [detailed documentation](PROCESS_SHELL.md).
 
 ```yen
-process_exec(command)     // Executes shell command, returns exit code
+process_exec(command)           // Executes command, returns exit code
+process_shell(command)          // Executes command, returns output as string
+process_spawn(cmd, ...args)     // Executes command with arguments
+process_cwd()                   // Returns current working directory
+process_chdir(path)             // Changes current directory
+```
+
+**Examples:**
+```yen
+// Execute and get output
+var files = process_shell("ls -la");
+print files;
+
+// Execute and check result
+var result = process_exec("mkdir /tmp/test");
+if (result == 0) {
+    print "Success!";
+}
+
+// Navigation
+var original = process_cwd();
+process_chdir("/tmp");
+// ... do work ...
+process_chdir(original);
 ```
 
 ## Examples
