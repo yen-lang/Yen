@@ -1,0 +1,7 @@
+func loop_eterno() {
+    while (true) {
+        print "Executando... pressione Ctrl+C para sair.";
+    }
+}
+
+loop_eterno();

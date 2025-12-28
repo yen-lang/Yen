@@ -1,0 +1,44 @@
+func saudacao(nome) {
+    print "Olá, " + nome + "!";
+}
+
+func somar(a, b) {
+    return a + b;
+}
+
+func mostrar_lista(lista) {
+    let i = 0;
+    let tamanho = int(len(lista));
+    
+    print "Elementos da lista:";
+    
+    // Simulando loop com chamada recursiva
+    func imprimir_elementos(index) {
+        if (index < tamanho) {
+            print "- " + lista[index];
+            imprimir_elementos(index + 1);
+        }
+    }
+
+    imprimir_elementos(0);
+}
+
+func interagir() {
+    let nome = input("Qual seu nome?");
+    saudacao(nome);
+
+    let idade = input<int>("Qual sua idade?");
+    if (idade >= 18) {
+        print "Você é maior de idade.";
+    } else {
+        print "Você é menor de idade.";
+    }
+
+    let frutas = ["Maçã", "Banana", "Morango", "Uva"];
+    mostrar_lista(frutas);
+
+    let soma = somar(5, 3);
+    print "Resultado da soma: " + soma;
+}
+
+interagir();

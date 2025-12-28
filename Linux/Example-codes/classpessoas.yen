@@ -1,0 +1,27 @@
+// Definindo uma classe Pessoa
+class Pessoa {
+    let nome;
+    let idade;
+
+    func init(nome, idade) {
+        this.nome = nome;
+        this.idade = idade;
+    }
+
+    func aniversario() {
+        this.idade = this.idade + 1;
+    }
+
+    func mostrar() {
+        print("Nome: " + this.nome);
+        print("Idade: " + this.idade);
+    }
+}
+
+// Criando uma instância de Pessoa
+let p = Pessoa("Alice", 25);
+
+// Chamando métodos
+p.mostrar();
+p.aniversario();
+p.mostrar();
