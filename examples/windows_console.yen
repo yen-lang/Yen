@@ -1,0 +1,59 @@
+// Windows Console API Example
+// Demonstrates Windows console functions
+// NOTE: This code only works on Windows systems
+
+extern "C" {
+    // Console APIs
+    func GetStdHandle(nStdHandle: int32) -> *mut void;
+    func GetTickCount() -> int32;
+    func GetCurrentProcessId() -> int32;
+    func Sleep(dwMilliseconds: int32);
+    func ExitProcess(uExitCode: int32);
+
+    // Standard C printf for convenience
+    func printf(format: *const char, ...) -> int32;
+}
+
+// Standard handle constants
+// STD_OUTPUT_HANDLE = -11
+// STD_ERROR_HANDLE = -12
+
+func main() -> int32 {
+    printf("=================================\n");
+    printf("  Windows Console API Demo\n");
+    printf("=================================\n\n");
+
+    // Get standard output handle
+    printf("Getting STD_OUTPUT_HANDLE...\n");
+    // STD_OUTPUT_HANDLE = -11 (can't use negative literals in calls yet)
+    let stdOutConst: int32 = 0 - 11;
+    let hStdOut = GetStdHandle(stdOutConst);
+    printf("Handle obtained: %p\n\n", hStdOut);
+
+    // Get current process ID
+    let pid: int32 = GetCurrentProcessId();
+    printf("Current Process ID: %d\n\n", pid);
+
+    // Get system uptime
+    let tickCount: int32 = GetTickCount();
+    printf("System uptime: %d milliseconds\n", tickCount);
+    printf("That's approximately %d seconds\n\n", tickCount / 1000);
+
+    // Demonstrate Sleep API
+    printf("Sleeping for 100 milliseconds...\n");
+    Sleep(100);
+    printf("Awake! Sleep completed.\n\n");
+
+    // Show tick count again
+    let tickCount2: int32 = GetTickCount();
+    printf("New tick count: %d\n", tickCount2);
+    printf("Elapsed: ~%d ms\n\n", tickCount2 - tickCount);
+
+    printf("Windows Console APIs working!\n");
+    printf("Program will exit with code 0\n");
+
+    // Note: Could use ExitProcess(0) instead of return
+    // ExitProcess(0);
+
+    return 0;
+}

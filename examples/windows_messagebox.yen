@@ -1,0 +1,78 @@
+// Windows MessageBox Example
+// Demonstrates Windows GUI API (USER32.DLL)
+// NOTE: This code only works on Windows systems
+
+extern "C" {
+    // USER32.DLL - MessageBox
+    // int MessageBoxW(
+    //   HWND    hWnd,
+    //   LPCWSTR lpText,
+    //   LPCWSTR lpCaption,
+    //   UINT    uType
+    // );
+    func MessageBoxW(
+        hWnd: *mut void,
+        lpText: *const int16,
+        lpCaption: *const int16,
+        uType: int32
+    ) -> int32;
+
+    // Standard printf
+    func printf(format: *const char, ...) -> int32;
+}
+
+// MessageBox uType constants:
+// MB_OK = 0x00000000
+// MB_OKCANCEL = 0x00000001
+// MB_YESNO = 0x00000004
+// MB_ICONINFORMATION = 0x00000040
+// MB_ICONWARNING = 0x00000030
+// MB_ICONERROR = 0x00000010
+
+// Return values:
+// IDOK = 1
+// IDCANCEL = 2
+// IDYES = 6
+// IDNO = 7
+
+func main() -> int32 {
+    printf("Windows MessageBox Demo\n");
+    printf("=======================\n\n");
+
+    // Note: MessageBoxW expects UTF-16 strings (LPCWSTR)
+    // For a complete implementation, we need:
+    // 1. UTF-16 string literal support OR
+    // 2. UTF-8 to UTF-16 conversion function
+
+    printf("This program demonstrates Windows GUI API usage.\n");
+    printf("On Windows, this would display a MessageBox.\n\n");
+
+    printf("Example MessageBox calls:\n\n");
+
+    printf("1. Simple OK box:\n");
+    printf("   MessageBoxW(null, L\"Hello!\", L\"Title\", 0)\n\n");
+
+    printf("2. Yes/No question with icon:\n");
+    printf("   MessageBoxW(null, L\"Continue?\", L\"Question\", 0x00000004 | 0x00000040)\n\n");
+
+    printf("3. Error message:\n");
+    printf("   MessageBoxW(null, L\"Error occurred!\", L\"Error\", 0x00000010)\n\n");
+
+    // Actual call would look like (with UTF-16 support):
+    // let result = MessageBoxW(
+    //     null,                    // No parent window
+    //     u16"Hello from YEN!",    // Message text (UTF-16)
+    //     u16"YEN Language",        // Title (UTF-16)
+    //     0                        // MB_OK
+    // );
+    // printf("User clicked: %d\n", result);
+
+    printf("To fully implement this, YEN needs:\n");
+    printf("  - UTF-16 string literals (L\"...\" or u16\"...\")\n");
+    printf("  - String conversion functions (UTF-8 to UTF-16)\n");
+    printf("  - Wide char support in type system\n\n");
+
+    printf("Windows GUI API bindings are ready!\n");
+
+    return 0;
+}

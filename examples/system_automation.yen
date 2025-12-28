@@ -1,0 +1,254 @@
+// ================================================
+// YEN System Automation Utility
+// Automação de tarefas do sistema
+// ================================================
+
+print "=== YEN System Automation Tool ===";
+print "";
+
+// ============================================
+// 1. BACKUP AUTOMÁTICO DE ARQUIVOS
+// ============================================
+
+func backup_files(source, dest) {
+    print "[BACKUP] Criando backup de " + source;
+
+    // Criar diretório de backup
+    var create_dir = process_exec("mkdir -p " + dest);
+
+    // Copiar arquivos
+    var copy = process_exec("cp -r " + source + " " + dest);
+
+    if (copy == 0) {
+        print "[OK] Backup concluído com sucesso!";
+        return true;
+    } else {
+        print "[ERRO] Falha no backup!";
+        return false;
+    }
+}
+
+// Fazer backup
+print "1. Backup Automático";
+print "-------------------";
+backup_files("/opt/Yen/examples/*.yen", "/tmp/backup_yen");
+print "";
+
+// ============================================
+// 2. MONITOR DE ESPAÇO EM DISCO
+// ============================================
+
+func check_disk_space() {
+    print "[MONITOR] Verificando espaço em disco...";
+
+    var disk_info = process_shell("df -h / | tail -1");
+    print disk_info;
+
+    // Extrair percentual de uso (simplified)
+    print "[INFO] Verificação concluída";
+    print "";
+}
+
+print "2. Monitor de Espaço em Disco";
+print "-----------------------------";
+check_disk_space();
+
+// ============================================
+// 3. LOG SYSTEM - REGISTRAR EVENTOS
+// ============================================
+
+func write_log(message) {
+    var timestamp = process_shell("date '+%Y-%m-%d %H:%M:%S'");
+    var log_entry = "[" + timestamp + "] " + message;
+
+    process_exec("echo '" + log_entry + "' >> /tmp/yen_system.log");
+    print "[LOG] " + log_entry;
+}
+
+print "3. Sistema de Logs";
+print "------------------";
+write_log("Sistema iniciado");
+write_log("Backup executado");
+write_log("Verificação de disco concluída");
+print "";
+
+// Ver logs
+print "Logs registrados:";
+var logs = process_shell("cat /tmp/yen_system.log");
+print logs;
+print "";
+
+// ============================================
+// 4. LIMPEZA AUTOMÁTICA DE TEMPORÁRIOS
+// ============================================
+
+func clean_temp_files() {
+    print "[CLEANUP] Limpando arquivos temporários...";
+
+    // Contar arquivos antes
+    var before = process_shell("find /tmp -name '*.tmp' 2>/dev/null | wc -l");
+    print "[INFO] Arquivos .tmp encontrados: " + before;
+
+    // Remover arquivos .tmp
+    process_exec("find /tmp -name '*.tmp' -delete 2>/dev/null");
+
+    print "[OK] Limpeza concluída!";
+}
+
+print "4. Limpeza de Temporários";
+print "-------------------------";
+clean_temp_files();
+print "";
+
+// ============================================
+// 5. INFORMAÇÕES DO SISTEMA
+// ============================================
+
+func system_report() {
+    print "=== RELATÓRIO DO SISTEMA ===";
+    print "";
+
+    // OS
+    var os = process_shell("uname -s");
+    print "Sistema Operacional: " + os;
+
+    // Hostname
+    var host = process_shell("hostname");
+    print "Hostname: " + host;
+
+    // Uptime
+    var uptime = process_shell("uptime");
+    print "Uptime: " + uptime;
+
+    // Memória (macOS)
+    var mem = process_shell("vm_stat | head -5");
+    print "Memória:";
+    print mem;
+
+    // Processos
+    var proc_count = process_shell("ps aux | wc -l");
+    print "Processos ativos: " + proc_count;
+
+    print "===========================";
+}
+
+print "5. Relatório do Sistema";
+print "-----------------------";
+system_report();
+print "";
+
+// ============================================
+// 6. MONITORAMENTO DE PROCESSOS
+// ============================================
+
+func monitor_process(process_name) {
+    print "[MONITOR] Verificando processo: " + process_name;
+
+    var check = process_shell("ps aux | grep " + process_name + " | grep -v grep");
+
+    if (str_contains(check, process_name)) {
+        print "[OK] Processo está rodando";
+        return true;
+    } else {
+        print "[WARN] Processo não encontrado";
+        return false;
+    }
+}
+
+print "6. Monitoramento de Processos";
+print "-----------------------------";
+monitor_process("yen");
+print "";
+
+// ============================================
+// 7. DETECÇÃO DE ARQUIVOS GRANDES
+// ============================================
+
+func find_large_files(path, size_mb) {
+    print "[SEARCH] Buscando arquivos maiores que " + size_mb + "MB em " + path;
+
+    // Converter MB para bytes (aproximado usando find)
+    var find_cmd = "find " + path + " -type f -size +" + size_mb + "M 2>/dev/null | head -10";
+    var results = process_shell(find_cmd);
+
+    if (str_length(results) > 0) {
+        print "[FOUND] Arquivos grandes:";
+        print results;
+    } else {
+        print "[INFO] Nenhum arquivo grande encontrado";
+    }
+}
+
+print "7. Busca de Arquivos Grandes";
+print "----------------------------";
+find_large_files("/opt/Yen", 1);
+print "";
+
+// ============================================
+// 8. CRIAÇÃO DE DIRETÓRIOS DE PROJETO
+// ============================================
+
+func create_project_structure(project_name) {
+    print "[PROJECT] Criando estrutura para: " + project_name;
+
+    var base = "/tmp/" + project_name;
+
+    process_exec("mkdir -p " + base + "/src");
+    process_exec("mkdir -p " + base + "/tests");
+    process_exec("mkdir -p " + base + "/docs");
+    process_exec("mkdir -p " + base + "/build");
+
+    // Criar arquivo README
+    process_exec("echo '# " + project_name + "' > " + base + "/README.md");
+
+    // Criar main.yen
+    process_exec("echo 'print \"Hello from " + project_name + "\";' > " + base + "/src/main.yen");
+
+    print "[OK] Estrutura criada em: " + base;
+
+    // Listar estrutura
+    var tree = process_shell("ls -R " + base);
+    print tree;
+}
+
+print "8. Criação de Estrutura de Projeto";
+print "-----------------------------------";
+create_project_structure("meu_projeto");
+print "";
+
+// ============================================
+// 9. CRON-LIKE SCHEDULER (simulação)
+// ============================================
+
+func schedule_task(task_name, command) {
+    print "[SCHEDULE] Agendando tarefa: " + task_name;
+    print "[COMMAND] " + command;
+
+    // Executar comando
+    var result = process_shell(command);
+    print "[OUTPUT] " + result;
+
+    write_log("Tarefa agendada executada: " + task_name);
+}
+
+print "9. Scheduler de Tarefas";
+print "-----------------------";
+schedule_task("backup_diario", "date");
+schedule_task("verificar_disco", "df -h / | tail -1");
+print "";
+
+// ============================================
+// 10. LIMPEZA FINAL
+// ============================================
+
+print "10. Limpeza Final";
+print "-----------------";
+print "Removendo arquivos de teste...";
+
+process_exec("rm -rf /tmp/backup_yen");
+process_exec("rm -rf /tmp/meu_projeto");
+process_exec("rm -f /tmp/yen_system.log");
+
+print "[OK] Limpeza concluída!";
+print "";
+print "=== Automação Finalizada ===";

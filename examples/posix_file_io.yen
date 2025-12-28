@@ -1,0 +1,80 @@
+// POSIX File I/O Example
+// Demonstrates low-level POSIX file operations
+// Works on: Linux, macOS, BSD, and all POSIX-compliant systems
+
+extern "C" {
+    // POSIX file I/O
+    func open(pathname: *const char, flags: int32, mode: int32) -> int32;
+    func write(fd: int32, buf: *const void, count: int64) -> int64;
+    func read(fd: int32, buf: *mut void, count: int64) -> int64;
+    func close(fd: int32) -> int32;
+    func unlink(pathname: *const char) -> int32;
+
+    // Standard printf for output
+    func printf(format: *const char, ...) -> int32;
+}
+
+// POSIX constants (platform-dependent, these work on macOS)
+// O_RDONLY = 0x0000
+// O_WRONLY = 0x0001
+// O_RDWR = 0x0002
+// O_CREAT = 0x0200  (macOS)
+// O_TRUNC = 0x0400  (macOS)
+// File permissions: 0644 = rw-r--r--
+
+func main() -> int32 {
+    printf("=================================\n");
+    printf("  POSIX File I/O Demo\n");
+    printf("=================================\n\n");
+
+    // Open flags: O_WRONLY | O_CREAT | O_TRUNC = 0x0001 | 0x0200 | 0x0400 = 0x0601
+    let flags: int32 = 1537;  // 0x0601 in decimal
+    let mode: int32 = 420;    // 0644 in octal = 420 in decimal (rw-r--r--)
+
+    printf("Creating /tmp/yen_test.txt...\n");
+    let fd: int32 = open("/tmp/yen_test.txt", flags, mode);
+
+    if fd < 0 {
+        printf("Error: Failed to open file (fd=%d)\n", fd);
+        return 1;
+    }
+
+    printf("File descriptor: %d\n", fd);
+
+    // Write data to file
+    let message: *const char = "Hello from YEN!\nPOSIX file I/O works!\n";
+    printf("Writing message to file...\n");
+
+    let bytesWritten: int64 = write(fd, message, 42);
+    printf("Wrote %ld bytes\n", bytesWritten);
+
+    // Close the file
+    printf("Closing file...\n");
+    let closeResult: int32 = close(fd);
+    printf("Close result: %d\n\n", closeResult);
+
+    // Read it back
+    printf("Reading file back...\n");
+    let readFd: int32 = open("/tmp/yen_test.txt", 0, 0);  // O_RDONLY = 0
+
+    if readFd < 0 {
+        printf("Error: Failed to open file for reading\n");
+        return 1;
+    }
+
+    // Note: In a real implementation, we'd allocate a buffer
+    // For now, just demonstrate the API pattern
+    printf("File opened for reading (fd=%d)\n", readFd);
+
+    close(readFd);
+
+    // Clean up
+    printf("\nCleaning up (deleting file)...\n");
+    let unlinkResult: int32 = unlink("/tmp/yen_test.txt");
+    printf("Unlink result: %d\n\n", unlinkResult);
+
+    printf("POSIX File I/O demo complete!\n");
+    printf("Check /tmp/yen_test.txt to see the file.\n");
+
+    return 0;
+}

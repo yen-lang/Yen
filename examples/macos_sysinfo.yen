@@ -1,0 +1,134 @@
+// macOS System Information Example
+// Demonstrates sysctl and system info APIs
+// Works on: macOS only
+
+extern "C" {
+    // sysctl - Get system information
+    func sysctlbyname(
+        name: *const char,
+        oldp: *mut void,
+        oldlenp: *mut int64,
+        newp: *mut void,
+        newlen: int64
+    ) -> int32;
+
+    // Mach APIs
+    func mach_absolute_time() -> int64;
+    func mach_task_self() -> int32;
+
+    // Memory
+    func malloc(size: int64) -> *mut void;
+    func free(ptr: *mut void);
+
+    // String
+    func strlen(s: *const char) -> int64;
+
+    // Standard I/O
+    func printf(format: *const char, ...) -> int32;
+}
+
+func main() -> int32 {
+    printf("========================================\n");
+    printf("  macOS System Information\n");
+    printf("========================================\n\n");
+
+    // Get machine type
+    printf("1. Machine Information:\n");
+    printf("   -------------------\n");
+
+    let bufSize: int64 = 256;
+    let buffer = malloc(bufSize);
+    let mut size: int64 = bufSize;
+
+    // Get machine type (hw.machine)
+    sysctlbyname("hw.machine", buffer, &size, 0, 0);
+    printf("   Machine type: %s\n", buffer);
+
+    // Get model name (hw.model)
+    size = bufSize;
+    sysctlbyname("hw.model", buffer, &size, 0, 0);
+    printf("   Model: %s\n", buffer);
+
+    // Get OS type (kern.ostype)
+    size = bufSize;
+    sysctlbyname("kern.ostype", buffer, &size, 0, 0);
+    printf("   OS type: %s\n", buffer);
+
+    // Get OS release (kern.osrelease)
+    size = bufSize;
+    sysctlbyname("kern.osrelease", buffer, &size, 0, 0);
+    printf("   OS release: %s\n", buffer);
+
+    // Get kernel version (kern.version)
+    let bigBuf = malloc(1024);
+    let mut bigSize: int64 = 1024;
+    sysctlbyname("kern.version", bigBuf, &bigSize, 0, 0);
+    printf("   Kernel version: %s\n", bigBuf);
+    free(bigBuf);
+
+    printf("\n");
+
+    // Get CPU info
+    printf("2. CPU Information:\n");
+    printf("   ---------------\n");
+
+    let mut ncpu: int32 = 0;
+    size = 4;  // sizeof(int32)
+    sysctlbyname("hw.ncpu", &ncpu, &size, 0, 0);
+    printf("   CPU count: %d\n", ncpu);
+
+    let mut cpufreq: int64 = 0;
+    size = 8;  // sizeof(int64)
+    sysctlbyname("hw.cpufrequency", &cpufreq, &size, 0, 0);
+    printf("   CPU frequency: %ld Hz\n", cpufreq);
+
+    size = bufSize;
+    sysctlbyname("machdep.cpu.brand_string", buffer, &size, 0, 0);
+    printf("   CPU brand: %s\n", buffer);
+
+    printf("\n");
+
+    // Get memory info
+    printf("3. Memory Information:\n");
+    printf("   ------------------\n");
+
+    let mut memsize: int64 = 0;
+    size = 8;
+    sysctlbyname("hw.memsize", &memsize, &size, 0, 0);
+    let memGB: int64 = memsize / 1073741824;  // Convert to GB
+    printf("   Total memory: %ld GB (%ld bytes)\n", memGB, memsize);
+
+    printf("\n");
+
+    // Get page size
+    printf("4. Virtual Memory:\n");
+    printf("   ---------------\n");
+
+    let mut pagesize: int32 = 0;
+    size = 4;
+    sysctlbyname("hw.pagesize", &pagesize, &size, 0, 0);
+    printf("   Page size: %d bytes\n", pagesize);
+
+    printf("\n");
+
+    // Get Mach info
+    printf("5. Mach Kernel:\n");
+    printf("   ------------\n");
+
+    let task: int32 = mach_task_self();
+    printf("   Current task port: %d\n", task);
+
+    let time: int64 = mach_absolute_time();
+    printf("   Absolute time: %ld\n", time);
+
+    printf("\n");
+
+    // Cleanup
+    free(buffer);
+
+    printf("========================================\n");
+    printf("  System information complete!\n");
+    printf("========================================\n");
+
+    return 0;
+}

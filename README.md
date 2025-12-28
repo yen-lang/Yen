@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![YEN Logo](https://avatars.githubusercontent.com/u/209428205?s=200&v=4)
+![YEN Logo](https://via.placeholder.com/150x150/4A90E2/FFFFFF?text=YEN)
 
 **A modern, expressive systems programming language**
 
