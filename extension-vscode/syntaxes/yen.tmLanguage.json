@@ -1,0 +1,241 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "YEN",
+  "scopeName": "source.yen",
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#keywords" },
+    { "include": "#strings" },
+    { "include": "#numbers" },
+    { "include": "#constants" },
+    { "include": "#functions" },
+    { "include": "#types" },
+    { "include": "#operators" },
+    { "include": "#variables" },
+    { "include": "#stdlib" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.yen",
+          "match": "//.*$"
+        },
+        {
+          "name": "comment.block.yen",
+          "begin": "/\\*",
+          "end": "\\*/"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.yen",
+          "match": "\\b(if|else|while|for|in|match|return|break|continue|defer|assert)\\b"
+        },
+        {
+          "name": "keyword.declaration.yen",
+          "match": "\\b(var|let|func|class|struct|enum|extern)\\b"
+        },
+        {
+          "name": "keyword.other.yen",
+          "match": "\\b(this|when|as)\\b"
+        },
+        {
+          "name": "keyword.operator.logical.yen",
+          "match": "\\b(and|or|not)\\b"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.yen",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.yen",
+              "match": "\\\\(n|t|r|\\\\|\"|')"
+            },
+            {
+              "name": "constant.character.escape.unicode.yen",
+              "match": "\\\\u\\{[0-9a-fA-F]+\\}"
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.single.yen",
+          "begin": "'",
+          "end": "'",
+          "patterns": [
+            {
+              "name": "constant.character.escape.yen",
+              "match": "\\\\(n|t|r|\\\\|\"|')"
+            }
+          ]
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.float.yen",
+          "match": "\\b[0-9]+\\.[0-9]+([eE][+-]?[0-9]+)?\\b"
+        },
+        {
+          "name": "constant.numeric.hex.yen",
+          "match": "\\b0[xX][0-9a-fA-F]+\\b"
+        },
+        {
+          "name": "constant.numeric.binary.yen",
+          "match": "\\b0[bB][01]+\\b"
+        },
+        {
+          "name": "constant.numeric.octal.yen",
+          "match": "\\b0[oO][0-7]+\\b"
+        },
+        {
+          "name": "constant.numeric.integer.yen",
+          "match": "\\b[0-9]+\\b"
+        }
+      ]
+    },
+    "constants": {
+      "patterns": [
+        {
+          "name": "constant.language.boolean.yen",
+          "match": "\\b(true|false)\\b"
+        },
+        {
+          "name": "constant.language.null.yen",
+          "match": "\\b(null|nil)\\b"
+        },
+        {
+          "name": "constant.language.math.yen",
+          "match": "\\b(math_PI|math_E)\\b"
+        }
+      ]
+    },
+    "functions": {
+      "patterns": [
+        {
+          "name": "entity.name.function.yen",
+          "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)\\s*(?=\\()",
+          "captures": {
+            "1": { "name": "entity.name.function.yen" }
+          }
+        },
+        {
+          "name": "support.function.builtin.yen",
+          "match": "\\b(print|input|len|type|range|assert)\\b"
+        }
+      ]
+    },
+    "types": {
+      "patterns": [
+        {
+          "name": "storage.type.yen",
+          "match": "\\b(int|float|bool|string|void|int8|int16|int32|int64|uint8|uint16|uint32|uint64|float32|float64)\\b"
+        },
+        {
+          "name": "entity.name.type.yen",
+          "match": "\\b([A-Z][a-zA-Z0-9_]*)\\b"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.arithmetic.yen",
+          "match": "\\+|\\-|\\*|\\/|%"
+        },
+        {
+          "name": "keyword.operator.comparison.yen",
+          "match": "==|!=|<|>|<=|>="
+        },
+        {
+          "name": "keyword.operator.logical.yen",
+          "match": "&&|\\|\\||!"
+        },
+        {
+          "name": "keyword.operator.assignment.yen",
+          "match": "="
+        },
+        {
+          "name": "keyword.operator.range.yen",
+          "match": "\\.\\.|\\.\\.="
+        },
+        {
+          "name": "keyword.operator.lambda.yen",
+          "match": "\\|"
+        },
+        {
+          "name": "keyword.operator.arrow.yen",
+          "match": "=>|->"
+        }
+      ]
+    },
+    "variables": {
+      "patterns": [
+        {
+          "name": "variable.other.yen",
+          "match": "\\b[a-z_][a-zA-Z0-9_]*\\b"
+        }
+      ]
+    },
+    "stdlib": {
+      "patterns": [
+        {
+          "name": "support.function.core.yen",
+          "match": "\\b(core_is_int|core_is_float|core_is_bool|core_is_string|core_is_list|core_to_int|core_to_float|core_to_string)\\b"
+        },
+        {
+          "name": "support.function.math.yen",
+          "match": "\\b(math_abs|math_sqrt|math_pow|math_sin|math_cos|math_tan|math_floor|math_ceil|math_round|math_random)\\b"
+        },
+        {
+          "name": "support.function.string.yen",
+          "match": "\\b(str_length|str_upper|str_lower|str_trim|str_split|str_join|str_substring|str_contains|str_replace)\\b"
+        },
+        {
+          "name": "support.function.list.yen",
+          "match": "\\b(list_push|list_pop|list_length|list_reverse|list_sort)\\b"
+        },
+        {
+          "name": "support.function.io.yen",
+          "match": "\\b(io_read_file|io_write_file|io_append_file)\\b"
+        },
+        {
+          "name": "support.function.fs.yen",
+          "match": "\\b(fs_exists|fs_is_directory|fs_is_file|fs_create_dir|fs_remove|fs_file_size)\\b"
+        },
+        {
+          "name": "support.function.time.yen",
+          "match": "\\b(time_now|time_sleep)\\b"
+        },
+        {
+          "name": "support.function.crypto.yen",
+          "match": "\\b(crypto_xor|crypto_hash|crypto_random_bytes)\\b"
+        },
+        {
+          "name": "support.function.encoding.yen",
+          "match": "\\b(encoding_base64_encode|encoding_hex_encode)\\b"
+        },
+        {
+          "name": "support.function.log.yen",
+          "match": "\\b(log_info|log_warn|log_error)\\b"
+        },
+        {
+          "name": "support.function.env.yen",
+          "match": "\\b(env_get|env_set)\\b"
+        },
+        {
+          "name": "support.function.process.yen",
+          "match": "\\b(process_exec|process_shell|process_spawn|process_cwd|process_chdir)\\b"
+        }
+      ]
+    }
+  }
+}
