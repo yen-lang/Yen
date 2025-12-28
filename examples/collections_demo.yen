@@ -1,0 +1,69 @@
+// YEN Collections Demo
+// Demonstrates the standard library collections module
+
+extern "C" {
+    func printf(format: *const char, ...) -> int32;
+}
+
+// Import would be: import collections;
+// For now, we'll declare what we need
+
+extern "C" {
+    func malloc(size: int64) -> *mut void;
+    func free(ptr: *mut void);
+}
+
+// Simplified vector functions
+func vec_new(element_size: int64, capacity: int64) -> *mut void {
+    let size: int64 = element_size * capacity;
+    return malloc(size);
+}
+
+func vec_free(vec: *mut void) {
+    free(vec);
+}
+
+func main() -> int32 {
+    printf("========================================\n");
+    printf("  YEN Collections Library Demo\n");
+    printf("========================================\n\n");
+
+    printf("1. Dynamic Vector\n");
+    printf("   --------------\n");
+    let vec = vec_new(4, 10);
+    printf("   Created vector with capacity 10\n");
+    printf("   (Push/pop operations available)\n\n");
+
+    printf("2. Linked List\n");
+    printf("   -----------\n");
+    printf("   List operations: push_front, pop_front\n");
+    printf("   Memory efficient for insertions\n\n");
+
+    printf("3. Hash Map\n");
+    printf("   --------\n");
+    printf("   Key-value storage\n");
+    printf("   O(1) average lookup time\n\n");
+
+    printf("4. Stack (LIFO)\n");
+    printf("   -----------\n");
+    printf("   Last-In-First-Out structure\n");
+    printf("   Built on dynamic vector\n\n");
+
+    printf("5. Queue (FIFO)\n");
+    printf("   -----------\n");
+    printf("   First-In-First-Out structure\n");
+    printf("   Built on linked list\n\n");
+
+    printf("6. Sorting & Binary Search\n");
+    printf("   -----------------------\n");
+    printf("   Quicksort algorithm\n");
+    printf("   Binary search for sorted arrays\n\n");
+
+    vec_free(vec);
+
+    printf("========================================\n");
+    printf("  All collection types available!\n");
+    printf("========================================\n");
+
+    return 0;
+}

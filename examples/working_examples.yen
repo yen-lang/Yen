@@ -1,0 +1,82 @@
+// ========================================
+// WORKING EXAMPLES - These compile to LLVM IR successfully
+// ========================================
+
+// Example 1: Simple arithmetic function
+func add_numbers() -> int32 {
+    let a: int32 = 100;
+    let b: int32 = 200;
+    let sum: int32 = a + b;
+    return sum;
+}
+
+// Example 2: Multiple operations
+func calculate() -> int32 {
+    let x: int32 = 10;
+    let y: int32 = 5;
+    let product: int32 = x * y;
+    let difference: int32 = product - y;
+    return difference;  // Returns 45
+}
+
+// Example 3: Conditional logic (if/else)
+func absolute(n: int32) -> int32 {
+    if (n < 0) {
+        return 0 - n;
+    } else {
+        return n;
+    }
+}
+
+// Example 4: While loop
+func count_up() -> int32 {
+    let i: int32 = 0;
+    while (i < 10) {
+        let temp: int32 = i + 1;
+        // i = temp;  // Assignment not yet working
+    }
+    return i;
+}
+
+// Example 5: Nested conditions
+func classify(x: int32) -> int32 {
+    if (x > 0) {
+        if (x > 100) {
+            return 2;  // Large positive
+        } else {
+            return 1;  // Small positive
+        }
+    } else {
+        return 0;  // Zero or negative
+    }
+}
+
+// Example 6: Multiple variables
+func fibonacci_partial() -> int32 {
+    let a: int32 = 0;
+    let b: int32 = 1;
+    let c: int32 = a + b;
+    let d: int32 = b + c;
+    let e: int32 = c + d;
+    return e;  // Returns 3
+}
+
+// Example 7: Boolean operations
+func logic_test() -> bool {
+    let x: bool = true;
+    let y: bool = false;
+    // Boolean ops would go here
+    return x;
+}
+
+// Example 8: Float operations
+func distance() -> float64 {
+    let x1: float64 = 10.5;
+    let y1: float64 = 20.3;
+    let dx: float64 = x1 * y1;
+    return dx;
+}
+
+// To compile these examples:
+// ./build/yenc examples/working_examples.yen --emit-llvm -v
+// Output will be in build/output.ll

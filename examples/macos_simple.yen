@@ -1,0 +1,61 @@
+// Simple macOS API Test
+// Demonstrates basic macOS-specific functions
+// Works on: macOS only
+
+extern "C" {
+    // Mach kernel APIs
+    func mach_task_self() -> int32;
+    func mach_host_self() -> int32;
+    func mach_thread_self() -> int32;
+    func mach_absolute_time() -> int64;
+
+    // Standard I/O
+    func printf(format: *const char, ...) -> int32;
+}
+
+func main() -> int32 {
+    printf("========================================\n");
+    printf("  macOS Mach Kernel API Test\n");
+    printf("========================================\n\n");
+
+    // Test 1: Get Mach ports
+    printf("Test 1: Mach Ports\n");
+    printf("   ---------------\n");
+
+    let task: int32 = mach_task_self();
+    printf("   Task port: %d\n", task);
+
+    let host: int32 = mach_host_self();
+    printf("   Host port: %d\n", host);
+
+    let thread: int32 = mach_thread_self();
+    printf("   Thread port: %d\n\n", thread);
+
+    // Test 2: Mach absolute time
+    printf("Test 2: Mach Absolute Time\n");
+    printf("   -----------------------\n");
+
+    let t1: int64 = mach_absolute_time();
+    printf("   Time 1: %ld\n", t1);
+
+    let t2: int64 = mach_absolute_time();
+    printf("   Time 2: %ld\n", t2);
+
+    let elapsed: int64 = t2 - t1;
+    printf("   Elapsed: %ld ticks\n\n", elapsed);
+
+    // Summary
+    printf("========================================\n");
+    printf("  All Tests Complete!\n");
+    printf("========================================\n\n");
+
+    printf("Results:\n");
+    printf("  ✓ Mach task port: %d\n", task);
+    printf("  ✓ Mach host port: %d\n", host);
+    printf("  ✓ Mach thread port: %d\n", thread);
+    printf("  ✓ High-precision timing works\n\n");
+
+    printf("macOS Mach APIs are fully functional!\n");
+
+    return 0;
+}

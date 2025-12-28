@@ -1,0 +1,17 @@
+// Recursive Fibonacci - demonstrates recursion
+func fib(n: int32) -> int32 {
+    if (n < 2) {
+        return n;
+    } else {
+        let a: int32 = fib(n - 1);
+        let b: int32 = fib(n - 2);
+        return a + b;
+    }
+}
+
+func main() -> int32 {
+    // Calculate fib(10)
+    let result: int32 = fib(10);
+    print result;
+    return 0;
+}

@@ -1,0 +1,197 @@
+// YEN Language Features Demo
+// Tests: strings, arrays, for loops, assignment, break/continue
+
+print "=== YEN LANGUAGE FEATURES ===";
+print "";
+
+// ============================================================================
+// 1. STRING OPERATIONS
+// ============================================================================
+
+print "1. STRING OPERATIONS";
+print "-------------------";
+
+let greeting = "Hello, World!";
+print greeting;
+
+let first = "Hello";
+let second = "YEN";
+print first;
+print second;
+
+print "";
+
+// ============================================================================
+// 2. ARRAYS AND INDEXING
+// ============================================================================
+
+print "2. ARRAYS AND INDEXING";
+print "----------------------";
+
+let numbers = [1, 2, 3, 4, 5];
+print "First element (numbers[0]):";
+print numbers[0];
+
+print "Third element (numbers[2]):";
+print numbers[2];
+
+print "Last element (numbers[4]):";
+print numbers[4];
+
+print "";
+
+// ============================================================================
+// 3. ASSIGNMENT AFTER DECLARATION
+// ============================================================================
+
+print "3. MUTABLE VARIABLES";
+print "--------------------";
+
+let counter = 0;
+print "Initial counter: 0";
+print counter;
+
+counter = 5;
+print "After assignment to 5:";
+print counter;
+
+counter = 10;
+print "After assignment to 10:";
+print counter;
+
+print "";
+
+// ============================================================================
+// 4. ARRAY ASSIGNMENT
+// ============================================================================
+
+print "4. ARRAY MODIFICATION";
+print "---------------------";
+
+let data = [100, 200, 300];
+print "Initial array: [100, 200, 300]";
+print data[0];
+print data[1];
+print data[2];
+
+data[0] = 999;
+print "After data[0] = 999:";
+print data[0];
+
+data[1] = 888;
+print "After data[1] = 888:";
+print data[1];
+
+print "";
+
+// ============================================================================
+// 5. FOR LOOPS - ARRAY ITERATION
+// ============================================================================
+
+print "5. FOR LOOP - ARRAY ITERATION";
+print "------------------------------";
+
+print "Iterating over [10, 20, 30, 40, 50]:";
+let values = [10, 20, 30, 40, 50];
+for val in values {
+    print val;
+}
+
+print "";
+
+// ============================================================================
+// 6. FOR LOOPS - NUMERIC ITERATION
+// ============================================================================
+
+print "6. FOR LOOP - NUMERIC RANGE";
+print "----------------------------";
+
+print "Counting 1 to 5:";
+for i in [1, 2, 3, 4, 5] {
+    print i;
+}
+
+print "";
+
+// ============================================================================
+// 7. FOR LOOPS WITH COMPUTATION
+// ============================================================================
+
+print "7. FOR LOOP WITH COMPUTATION";
+print "----------------------------";
+
+print "Squares of 1 to 5:";
+for n in [1, 2, 3, 4, 5] {
+    let square = n * n;
+    print square;
+}
+
+print "";
+
+// ============================================================================
+// 8. BREAK STATEMENT
+// ============================================================================
+
+print "8. BREAK STATEMENT";
+print "------------------";
+
+print "Loop 0-9, break at 3:";
+for i in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] {
+    if (i == 3) {
+        break;
+    }
+    print i;
+}
+print "Loop exited with break";
+
+print "";
+
+// ============================================================================
+// 9. CONTINUE STATEMENT
+// ============================================================================
+
+print "9. CONTINUE STATEMENT";
+print "---------------------";
+
+print "Print only even numbers (0, 2, 4, 6, 8):";
+for i in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] {
+    if (i == 1) { continue; }
+    if (i == 3) { continue; }
+    if (i == 5) { continue; }
+    if (i == 7) { continue; }
+    if (i == 9) { continue; }
+    print i;
+}
+
+print "";
+
+// ============================================================================
+// 10. COMBINED EXAMPLE
+// ============================================================================
+
+print "10. COMBINED EXAMPLE";
+print "--------------------";
+
+let scores = [45, 67, 89, 23, 91, 55, 78];
+let count = 0;
+
+print "Finding passing scores (>= 60):";
+for score in scores {
+    if (score < 60) {
+        continue;
+    }
+
+    print score;
+    count = count + 1;
+
+    if (count == 3) {
+        print "Found 3 scores, stopping";
+        break;
+    }
+}
+
+print "Total found:";
+print count;
+
+print "";
+print "=== ALL TESTS COMPLETE ===";
