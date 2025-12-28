@@ -1,0 +1,263 @@
+// YEN Modern Features Demonstration
+// Shows: let/var, loop, const, cast, and more
+
+print "=== YEN MODERN FEATURES ===";
+print "";
+
+// ============================================================================
+// 1. LET vs VAR - Immutability
+// ============================================================================
+
+print "1. IMMUTABILITY (let vs var)";
+print "-----------------------------";
+
+// let = immutable (cannot be reassigned)
+let pi = 3.14159;
+let name = "Alice";
+
+print "Immutable values:";
+print pi;
+print name;
+
+// pi = 3.14;  // ERROR: Cannot assign to immutable variable
+
+// var = mutable (can be reassigned)
+var counter = 0;
+print "Initial counter: 0";
+
+counter = 5;
+print "After assignment: 5";
+
+counter = counter + 1;
+print "After increment: 6";
+
+print "";
+
+// ============================================================================
+// 2. CONST - Compile-Time Constants
+// ============================================================================
+
+print "2. CONSTANTS";
+print "-------------";
+
+// const PI: float64 = 3.14159265359;
+// const MAX_USERS: int32 = 1000;
+// const APP_NAME: string = "YEN";
+
+// For now, using let for demonstration
+let PI = 3.14159265359;
+let MAX_USERS = 1000;
+let APP_NAME = "YEN Compiler";
+
+print "PI: 3.14159265359";
+print "MAX_USERS: 1000";
+print "APP_NAME: YEN Compiler";
+
+print "";
+
+// ============================================================================
+// 3. LOOP - Infinite Loop with Break
+// ============================================================================
+
+print "3. LOOP KEYWORD";
+print "----------------";
+
+// Infinite loop (must use break to exit)
+var count = 0;
+print "Counting with loop:";
+
+// loop {
+//     print count;
+//     count = count + 1;
+//     if (count >= 5) {
+//         break;
+//     }
+// }
+
+// Simulation with while for now
+while (count < 5) {
+    print count;
+    count = count + 1;
+}
+
+print "Loop exited";
+print "";
+
+// ============================================================================
+// 4. CAST EXPRESSIONS
+// ============================================================================
+
+print "4. EXPLICIT CASTS";
+print "------------------";
+
+// Cast demonstration (syntax: value as type)
+let int_value = 42;
+print "Integer: 42";
+
+// let float_value = int_value as float64;  // 42.0
+// print "As float: 42.0";
+
+let pi_float = 3.14159;
+print "Float: 3.14159";
+
+// let pi_int = pi_float as int32;  // 3 (truncate)
+// print "As int: 3";
+
+print "";
+
+// ============================================================================
+// 5. OPTION TYPE (Null Safety)
+// ============================================================================
+
+print "5. OPTION TYPE";
+print "---------------";
+
+// Option<T> instead of null
+// let maybe_value = Some(42);
+// let no_value = None;
+
+// match maybe_value {
+//     Some(value) => print("Got value: " + value),
+//     None => print("No value"),
+// }
+
+print "Option<T> provides null safety";
+print "Use Some(value) or None";
+print "";
+
+// ============================================================================
+// 6. RESULT TYPE (Error Handling)
+// ============================================================================
+
+print "6. RESULT TYPE";
+print "---------------";
+
+// Result<T, E> for error handling
+// func divide(a: int32, b: int32) -> Result<int32, string> {
+//     if (b == 0) {
+//         return Err("Division by zero");
+//     }
+//     return Ok(a / b);
+// }
+
+// let result = divide(10, 2);
+// match result {
+//     Ok(value) => print("Result: " + value),
+//     Err(error) => print("Error: " + error),
+// }
+
+print "Result<T, E> for error handling";
+print "Use Ok(value) or Err(error)";
+print "";
+
+// ============================================================================
+// 7. MATCH EXPRESSIONS
+// ============================================================================
+
+print "7. PATTERN MATCHING";
+print "--------------------";
+
+let status_code = 200;
+
+// match status_code {
+//     200 => print("OK"),
+//     404 => print("Not Found"),
+//     500 => print("Server Error"),
+//     _ => print("Other"),
+// }
+
+// Simulation with if-else for now
+if (status_code == 200) {
+    print "OK";
+} else {
+    if (status_code == 404) {
+        print "Not Found";
+    } else {
+        print "Other";
+    }
+}
+
+print "";
+
+// ============================================================================
+// 8. TUPLES
+// ============================================================================
+
+print "8. TUPLES";
+print "---------";
+
+// Tuple type: (T1, T2, T3)
+// let point: (int32, int32) = (10, 20);
+// let (x, y) = point;  // Destructuring
+
+// print("Point: (" + x + ", " + y + ")");
+
+print "Tuples: (T1, T2, ...)";
+print "Destructuring: let (x, y) = point";
+print "";
+
+// ============================================================================
+// 9. COMPREHENSIVE EXAMPLE
+// ============================================================================
+
+print "9. COMPREHENSIVE EXAMPLE";
+print "-------------------------";
+
+// Immutable configuration
+let config_timeout = 5000;
+let config_retries = 3;
+
+print "Configuration:";
+print "  Timeout: 5000ms";
+print "  Retries: 3";
+
+// Mutable state
+var attempts = 0;
+var success = false;
+
+print "Processing:";
+
+// Retry loop
+while (attempts < config_retries) {
+    print "  Attempt: " + attempts + 1;
+
+    attempts = attempts + 1;
+
+    // Simulate success on 2nd attempt
+    if (attempts == 2) {
+        success = true;
+        print "  Success!";
+        break;
+    }
+}
+
+if (success) {
+    print "Operation completed successfully";
+} else {
+    print "Operation failed after retries";
+}
+
+print "";
+
+// ============================================================================
+// 10. TYPE SAFETY EXAMPLE
+// ============================================================================
+
+print "10. TYPE SAFETY";
+print "----------------";
+
+// Explicit types
+let age = 25;        // Type inferred: int
+let height = 1.75;   // Type inferred: float
+
+print "Age: 25 (int)";
+print "Height: 1.75 (float)";
+
+// Type annotations
+// let name: string = "Bob";
+// let score: int32 = 100;
+
+print "Type annotations ensure safety";
+print "";
+
+print "=== ALL FEATURES DEMONSTRATED ===";

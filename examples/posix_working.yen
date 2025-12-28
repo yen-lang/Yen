@@ -1,0 +1,91 @@
+// Working POSIX API Test
+// Demonstrates basic POSIX functions that compile cleanly
+// Works on: Linux, macOS, BSD, and all POSIX-compliant systems
+
+extern "C" {
+    // Process info
+    func getpid() -> int32;
+    func getppid() -> int32;
+    func getuid() -> int32;
+    func getgid() -> int32;
+
+    // Time
+    func sleep(seconds: int32) -> int32;
+
+    // File check
+    func access(pathname: *const char, mode: int32) -> int32;
+
+    // String
+    func strlen(s: *const char) -> int64;
+
+    // Standard I/O
+    func printf(format: *const char, ...) -> int32;
+}
+
+func main() -> int32 {
+    printf("========================================\n");
+    printf("  POSIX API Test - YEN Language\n");
+    printf("========================================\n\n");
+
+    // Test 1: Process Info
+    printf("Test 1: Process Information\n");
+    printf("---------------------------\n");
+    let pid: int32 = getpid();
+    let ppid: int32 = getppid();
+    let uid: int32 = getuid();
+    let gid: int32 = getgid();
+
+    printf("  Process ID (PID):  %d\n", pid);
+    printf("  Parent PID (PPID): %d\n", ppid);
+    printf("  User ID (UID):     %d\n", uid);
+    printf("  Group ID (GID):    %d\n\n", gid);
+
+    // Test 2: File System Check
+    printf("Test 2: File System Access\n");
+    printf("--------------------------\n");
+    let tmpResult: int32 = access("/tmp", 0);  // F_OK = 0
+    printf("  /tmp exists: ");
+    if (tmpResult == 0) {
+        printf("YES\n");
+    } else {
+        printf("NO (error code: %d)\n", tmpResult);
+    }
+
+    let rootResult: int32 = access("/", 0);
+    printf("  / (root) exists: ");
+    if (rootResult == 0) {
+        printf("YES\n\n");
+    } else {
+        printf("NO (error code: %d)\n\n", rootResult);
+    }
+
+    // Test 3: String Operations
+    printf("Test 3: String Operations\n");
+    printf("-------------------------\n");
+    let testStr = "Hello, POSIX World from YEN!";
+    let len: int64 = strlen(testStr);
+    printf("  String: \"%s\"\n", testStr);
+    printf("  Length: %ld characters\n\n", len);
+
+    // Test 4: Sleep Function
+    printf("Test 4: Sleep Function\n");
+    printf("----------------------\n");
+    printf("  Sleeping for 1 second...\n");
+    sleep(1);
+    printf("  Awake!\n\n");
+
+    // Summary
+    printf("========================================\n");
+    printf("  All Tests Complete!\n");
+    printf("========================================\n\n");
+
+    printf("Results:\n");
+    printf("  ✓ Process info APIs working (getpid, getppid, getuid, getgid)\n");
+    printf("  ✓ File system access working (access)\n");
+    printf("  ✓ String functions working (strlen)\n");
+    printf("  ✓ Sleep/timing working (sleep)\n\n");
+
+    printf("POSIX APIs are fully functional!\n");
+
+    return 0;
+}

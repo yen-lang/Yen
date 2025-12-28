@@ -1,0 +1,12 @@
+struct Conta {
+    saldo;
+}
+
+let c = Conta;
+c["saldo"] = 500;
+
+if (c["saldo"] > 0) {
+    print("Conta ativa!");
+} else {
+    print("Conta zerada!");
+}

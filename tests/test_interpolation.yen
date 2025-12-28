@@ -1,0 +1,33 @@
+// tests/test_interpolation.yen
+
+let name = "Mundo";
+let age = 30;
+let height = 1.75;
+let isStudent = true;
+let nothing = null;
+let myList = [1, 2, 3];
+
+struct MyStruct {
+    field;
+}
+let myStruct = MyStruct;
+myStruct["field"] = "value";
+
+class MyClass { func init() { } }
+let myInstance = MyClass();
+
+print "Olá, ${name}!"; // Expected: Olá, Mundo!
+print "Idade: ${age}"; // Expected: Idade: 30
+print "Altura: ${height}"; // Expected: Altura: 1.75
+print "Estudante: ${isStudent}"; // Expected: Estudante: true
+print "Nada: ${nothing}"; // Expected: Nada: null
+print "Minha Lista: ${myList}"; // Expected: Minha Lista: [list]
+print "Meu Struct: ${myStruct}"; // Expected: Meu Struct: {struct}
+print "Minha Instância: ${myInstance}"; // Expected: Minha Instância: {class instance}
+
+let result = "${age} + ${height}";
+print result; // Expected: 30 + 1.75
+
+print "10 + 5.5 = ${10 + 5.5}"; // This won't work with current variable-only interpolation
+let ten_plus_five_point_five = 15.5;
+print "10 + 5.5 = ${ten_plus_five_point_five}"; // Expected: 10 + 5.5 = 15.5

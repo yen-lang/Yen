@@ -1,0 +1,6 @@
+// Simple hello world
+func main() -> int32 {
+    let answer: int32 = 42;
+    print answer;
+    return 0;
+}

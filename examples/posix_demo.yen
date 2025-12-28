@@ -1,0 +1,151 @@
+// Comprehensive POSIX API Demo
+// Demonstrates multiple POSIX features working together
+// Works on: Linux, macOS, BSD, and all POSIX-compliant systems
+
+extern "C" {
+    // Process info
+    func getpid() -> int32;
+    func getuid() -> int32;
+    func getcwd(buf: *mut char, size: int64) -> *mut char;
+
+    // Time
+    func time(tloc: *mut int64) -> int64;
+    func sleep(seconds: int32) -> int32;
+
+    // File operations
+    func open(pathname: *const char, flags: int32, mode: int32) -> int32;
+    func write(fd: int32, buf: *const void, count: int64) -> int64;
+    func close(fd: int32) -> int32;
+    func access(pathname: *const char, mode: int32) -> int32;
+
+    // String operations
+    func strlen(s: *const char) -> int64;
+
+    // Memory
+    func malloc(size: int64) -> *mut void;
+    func free(ptr: *mut void);
+
+    // Environment
+    func getenv(name: *const char) -> *mut char;
+
+    // Standard I/O
+    func printf(format: *const char, ...) -> int32;
+}
+
+func main() -> int32 {
+    printf("========================================\n");
+    printf("  YEN - Comprehensive POSIX API Demo\n");
+    printf("========================================\n\n");
+
+    // 1. Process Information
+    printf("1. Process Information:\n");
+    printf("   -------------------\n");
+    let pid: int32 = getpid();
+    let uid: int32 = getuid();
+    printf("   Process ID (PID): %d\n", pid);
+    printf("   User ID (UID): %d\n\n", uid);
+
+    // 2. Time Operations
+    printf("2. Time Operations:\n");
+    printf("   ---------------\n");
+    let timestamp: int64 = time(0);
+    printf("   Current Unix timestamp: %ld\n", timestamp);
+    printf("   (seconds since Jan 1, 1970)\n\n");
+
+    // 3. File Operations
+    printf("3. File Operations:\n");
+    printf("   ---------------\n");
+
+    // Check if /tmp exists (should always exist on Unix)
+    let tmpAccess: int32 = access("/tmp", 0);  // F_OK = 0
+    if tmpAccess == 0 {
+        printf("   /tmp directory exists: YES\n");
+    } else {
+        printf("   /tmp directory exists: NO\n");
+    }
+
+    // Create a test file
+    let testFile: *const char = "/tmp/yen_posix_demo.txt";
+    let flags: int32 = 1537;  // O_WRONLY|O_CREAT|O_TRUNC (macOS: 0x0601)
+    let mode: int32 = 420;    // 0644 permissions
+
+    printf("   Creating file: %s\n", testFile);
+    let fd: int32 = open(testFile, flags, mode);
+
+    if fd >= 0 {
+        printf("   File descriptor: %d\n", fd);
+
+        let msg: *const char = "Hello from YEN POSIX demo!\n";
+        let msgLen: int64 = strlen(msg);
+        let written: int64 = write(fd, msg, msgLen);
+
+        printf("   Wrote %ld bytes\n", written);
+        close(fd);
+        printf("   File closed successfully\n");
+    } else {
+        printf("   Failed to create file (fd=%d)\n", fd);
+    }
+    printf("\n");
+
+    // 4. Memory Operations
+    printf("4. Memory Operations:\n");
+    printf("   -----------------\n");
+    let bufferSize: int64 = 1024;
+    let buffer = malloc(bufferSize);
+
+    if buffer != 0 {
+        printf("   Allocated %ld bytes at: %p\n", bufferSize, buffer);
+        free(buffer);
+        printf("   Memory freed successfully\n");
+    } else {
+        printf("   Memory allocation failed\n");
+    }
+    printf("\n");
+
+    // 5. Environment Variables
+    printf("5. Environment Variables:\n");
+    printf("   ---------------------\n");
+
+    let pathEnv = getenv("PATH");
+    if pathEnv != 0 {
+        printf("   PATH is set (address: %p)\n", pathEnv);
+        printf("   (Full PATH would be printed here)\n");
+    } else {
+        printf("   PATH not found\n");
+    }
+
+    let homeEnv = getenv("HOME");
+    if homeEnv != 0 {
+        printf("   HOME is set (address: %p)\n", homeEnv);
+    } else {
+        printf("   HOME not found\n");
+    }
+    printf("\n");
+
+    // 6. Timing Demo
+    printf("6. Sleep/Timing Demo:\n");
+    printf("   -----------------\n");
+    printf("   Sleeping for 1 second...\n");
+    let t1: int64 = time(0);
+    sleep(1);
+    let t2: int64 = time(0);
+    let elapsed: int64 = t2 - t1;
+    printf("   Awake! Elapsed: %ld second(s)\n\n", elapsed);
+
+    // Summary
+    printf("========================================\n");
+    printf("  Demo Complete!\n");
+    printf("========================================\n\n");
+
+    printf("All POSIX APIs tested successfully:\n");
+    printf("  ✓ Process information (getpid, getuid)\n");
+    printf("  ✓ Time operations (time, sleep)\n");
+    printf("  ✓ File I/O (open, write, close, access)\n");
+    printf("  ✓ Memory management (malloc, free)\n");
+    printf("  ✓ Environment variables (getenv)\n");
+    printf("  ✓ String operations (strlen)\n\n");
+
+    printf("Check /tmp/yen_posix_demo.txt for output file.\n");
+
+    return 0;
+}

@@ -1,0 +1,121 @@
+# YEN Type Annotations Example
+# This demonstrates the new type annotation syntax
+
+# =============================================================================
+# VARIABLE TYPE ANNOTATIONS
+# =============================================================================
+
+# Basic types
+let age: int32 = 25;
+let height: float64 = 1.75;
+let name: string = "Alice";
+let isStudent: bool = true;
+
+print str(age) + " years old";
+print str(height) + "m tall";
+print name;
+
+# =============================================================================
+# FUNCTION TYPE ANNOTATIONS
+# =============================================================================
+
+# Function with typed parameters and return type
+func add(x: int32, y: int32) -> int32 {
+    return x + y;
+}
+
+func multiply(a: float64, b: float64) -> float64 {
+    return a * b;
+}
+
+func greet(name: string) -> string {
+    return "Hello, " + name + "!";
+}
+
+# Test functions
+print add(10, 20);
+print multiply(3.14, 2.0);
+print greet("World");
+
+# =============================================================================
+# MIXED TYPED AND UNTYPED CODE
+# =============================================================================
+
+# Type annotations are optional - you can mix typed and untyped code
+let untypedVar = 100;  # No type annotation
+
+func untypedFunc(x, y) {  # No parameter or return types
+    return x + y;
+}
+
+print untypedFunc(5, 10);
+
+# =============================================================================
+# FUNCTION WITH MULTIPLE PARAMETER TYPES
+# =============================================================================
+
+func formatMessage(prefix: string, value: int32, suffix: string) -> string {
+    return prefix + " " + str(value) + " " + suffix;
+}
+
+print formatMessage("Count:", 42, "items");
+
+# =============================================================================
+# NESTED FUNCTION CALLS
+# =============================================================================
+
+func double(x: int32) -> int32 {
+    return x * 2;
+}
+
+func square(x: int32) -> int32 {
+    return x * x;
+}
+
+# Compose functions
+let result = double(square(5));  # 5^2 * 2 = 50
+print result;
+
+# =============================================================================
+# TYPE ANNOTATIONS WITH STRING OPERATIONS
+# =============================================================================
+
+func concat(a: string, b: string) -> string {
+    return a + b;
+}
+
+func repeat(text: string, times: int32) -> string {
+    let result = "";
+    let i = 0;
+    while (i < times) {
+        result = result + text;
+        i = i + 1;
+    }
+    return result;
+}
+
+print concat("Hello", "World");
+print repeat("*", 5);
+
+# =============================================================================
+# PRACTICAL EXAMPLE: CALCULATOR
+# =============================================================================
+
+func calculate(op: string, a: int32, b: int32) -> int32 {
+    if (op == "add") {
+        return a + b;
+    }
+    if (op == "sub") {
+        return a - b;
+    }
+    if (op == "mul") {
+        return a * b;
+    }
+    if (op == "div") {
+        return a / b;
+    }
+    return 0;
+}
+
+print calculate("add", 10, 5);
+print calculate("mul", 7, 6);

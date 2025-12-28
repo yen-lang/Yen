@@ -1,0 +1,15 @@
+// String Demo - Sprint 6
+func main() -> int32 {
+    let greeting: string = "Hello, World!";
+    let name: string = "YEN Language";
+    let version: string = "Sprint 6 - Strings Working!";
+
+    print greeting;
+    print name;
+    print version;
+
+    let escaped: string = "Escape sequences:\n\tTab here\n\tAnd another";
+    print escaped;
+
+    return 0;
+}
