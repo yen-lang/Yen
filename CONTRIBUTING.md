@@ -1,121 +1,80 @@
-# Contributing to YEN
+# Contributing to Yen Language
 
-Thank you for your interest in contributing to YEN!
+First of all, thank you for considering contributing to **Yen**! 🎉  
+Your help is very welcome and highly appreciated.
 
-## Getting Started
+This guide will help you understand how to contribute efficiently.
 
-1. Fork the repository
-2. Clone your fork: `git clone https://github.com/yourusername/yen.git`
-3. Create a branch: `git checkout -b feature/your-feature`
-4. Make your changes
-5. Test your changes
-6. Commit: `git commit -am "Add feature"`
-7. Push: `git push origin feature/your-feature`
-8. Create a Pull Request
+---
 
-## Development Setup
+## How to Contribute
 
-### Requirements
+1. **Fork** the repository.
+2. **Create a new branch** for your contribution:
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+3. **Write clear and concise code.**
+4. **Commit** your changes with a meaningful commit message:
+   ```bash
+   git commit -m "Add feature X"
+   ```
+5. **Push** to your fork:
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+6. **Open a Pull Request (PR)** against the `main` branch:
+   - Provide a clear description of what you changed and why.
+   - Link any related issues if applicable.
 
-- C++17 compatible compiler (GCC 7+, Clang 5+, MSVC 2017+)
-- CMake 3.10+
-- LLVM 17+ (optional, for compiler development)
-
-### Building
-
-```bash
-mkdir build && cd build
-cmake ..
-make
-```
-
-### Running Tests
-
-```bash
-# Run interpreter tests
-./yen tests/test_arithmetic.yen
-./yen tests/test_functions.yen
-./yen tests/test_loops.yen
-
-# Run all tests
-cd tests
-./run_type_tests.sh
-```
+---
 
 ## Code Style
 
-- Use 4 spaces for indentation
-- Follow existing code style
-- Add comments for complex logic
-- Use meaningful variable and function names
+- Keep the code **clean and readable**.
+- Follow the **existing structure and formatting**.
+- Use **clear, descriptive variable and function names**.
+- Keep **comments concise and helpful**.
+- Respect the **C++17 standard** used by the project.
 
-## Areas to Contribute
+---
 
-### Language Features
+## What Can You Work On?
 
-- Improve error messages
-- Add new standard library functions
-- Optimize interpreter performance
-- Enhance type system
+- Bug fixes
+- Adding new language features (like `class inheritance`, `pattern matching`, etc.)
+- Improving performance
+- Cross-platform support (Windows, macOS)
+- Documentation and tutorials
+- Examples and demos
+- Build system improvements
 
-### Documentation
-
-- Improve README
-- Add examples
-- Write tutorials
-- Document APIs
-
-### Testing
-
-- Add unit tests
-- Add integration tests
-- Test edge cases
-- Improve test coverage
-
-### Bug Fixes
-
-- Check issues for reported bugs
-- Reproduce and fix bugs
-- Add regression tests
-
-## Pull Request Guidelines
-
-1. **One feature per PR** - Keep PRs focused
-2. **Test your changes** - Ensure all tests pass
-3. **Update documentation** - Document new features
-4. **Follow code style** - Match existing patterns
-5. **Write clear commits** - Describe what and why
+---
 
 ## Reporting Bugs
 
-When reporting bugs, please include:
+If you find a bug, please:
 
-- YEN version
-- Operating system
-- Steps to reproduce
-- Expected vs actual behavior
-- Sample code if applicable
+- Open an issue describing the problem clearly.
+- Provide steps to reproduce it, if possible.
+- Mention your operating system and compiler version.
 
-## Feature Requests
+---
 
-Feature requests are welcome! Please provide:
+## Discussions
 
-- Clear description of the feature
-- Use cases and examples
-- Why it would benefit YEN users
+If you want to discuss ideas, propose changes, or ask for help, you can open a **Discussion** or **Issue** on the GitHub page:
 
-## Questions?
+👉 [https://github.com/yen-lang/Yen](https://github.com/yen-lang/Yen)
 
-Feel free to:
-- Open an issue for discussion
-- Ask in pull request comments
-- Contact maintainers
+---
 
 ## Code of Conduct
 
-- Be respectful and inclusive
-- Focus on constructive feedback
-- Help others learn and grow
-- Celebrate contributions
+Please be respectful and considerate to others.  
+We expect all contributors to abide by a friendly, inclusive, and respectful community spirit.
 
-Thank you for contributing to YEN!
+---
+
+# Let's build the future of Yen Language together! 🚀✨
+
