@@ -26,6 +26,14 @@ LLVMCodeGen::LLVMCodeGen(const std::string& moduleName, TypeChecker* tc)
     llvm::InitializeNativeTarget();
     llvm::InitializeNativeTargetAsmPrinter();
     llvm::InitializeNativeTargetAsmParser();
+
+    // Note: The LLVM compiler is currently under development and not functional.
+    // The type checker and function declarations are implemented, but the code
+    // generation has critical bugs that need to be resolved.
+    // For now, please use the interpreter (yen) which is fully functional.
+
+    // Declare all native library functions
+    declareNativeLibraryFunctions();
 }
 
 LLVMCodeGen::~LLVMCodeGen() = default;
@@ -439,18 +447,32 @@ llvm::Value* LLVMCodeGen::codegenLiteralExpr(const LiteralExpr* expr) {
 llvm::Value* LLVMCodeGen::codegenVariableExpr(const VariableExpr* expr) {
     llvm::Value* value = namedValues[expr->name];
     if (!value) {
+        // Try to find it as a global variable or function
+        if (llvm::GlobalVariable* global = module->getGlobalVariable(expr->name)) {
+            // Load global variable
+            return builder->CreateLoad(global->getValueType(), global, expr->name);
+        }
+
+        if (llvm::Function* func = module->getFunction(expr->name)) {
+            // Return function pointer directly
+            return func;
+        }
+
         reportError("Undefined variable: " + expr->name);
         return nullptr;
     }
 
-    // Load value from memory
-    // In LLVM 17 with opaque pointers, get type from AllocaInst
-    llvm::AllocaInst* alloca = llvm::cast<llvm::AllocaInst>(value);
-    return builder->CreateLoad(
-        alloca->getAllocatedType(),
-        value,
-        expr->name
-    );
+    // Check if it's an AllocaInst (local variable)
+    if (llvm::AllocaInst* alloca = llvm::dyn_cast<llvm::AllocaInst>(value)) {
+        return builder->CreateLoad(
+            alloca->getAllocatedType(),
+            value,
+            expr->name
+        );
+    }
+
+    // If it's already a value (like a function), return it directly
+    return value;
 }
 
 llvm::Value* LLVMCodeGen::codegenBinaryExpr(const BinaryExpr* expr) {
@@ -880,6 +902,129 @@ llvm::Function* LLVMCodeGen::createMallocFunction() {
 llvm::Function* LLVMCodeGen::createFreeFunction() {
     // TODO: Implement free function creation
     return nullptr;
+}
+
+// ============================================================================
+// NATIVE LIBRARY FUNCTION DECLARATIONS
+// ============================================================================
+
+void LLVMCodeGen::declareNativeLibraryFunctions() {
+    // Helper lambda to declare a function
+    auto declareFunc = [this](const std::string& name, llvm::Type* retType, const std::vector<llvm::Type*>& params, bool vararg = false) {
+        llvm::FunctionType* funcType = llvm::FunctionType::get(retType, params, vararg);
+        llvm::Function::Create(funcType, llvm::Function::ExternalLinkage, name, module.get());
+    };
+
+    // Common types
+    llvm::Type* voidTy = builder->getVoidTy();
+    llvm::Type* i32Ty = builder->getInt32Ty();
+    llvm::Type* i64Ty = builder->getInt64Ty();
+    llvm::Type* doubleTy = builder->getDoubleTy();
+    llvm::Type* i8PtrTy = builder->getInt8PtrTy();
+    llvm::Type* boolTy = builder->getInt1Ty();
+
+    // ========== CORE LIBRARY ==========
+    declareFunc("core_is_int", boolTy, {i8PtrTy});
+    declareFunc("core_is_float", boolTy, {i8PtrTy});
+    declareFunc("core_is_bool", boolTy, {i8PtrTy});
+    declareFunc("core_is_string", boolTy, {i8PtrTy});
+    declareFunc("core_is_list", boolTy, {i8PtrTy});
+    declareFunc("core_to_int", i32Ty, {i8PtrTy});
+    declareFunc("core_to_float", doubleTy, {i8PtrTy});
+    declareFunc("core_to_string", i8PtrTy, {i8PtrTy});
+
+    // ========== MATH LIBRARY ==========
+    declareFunc("math_abs", doubleTy, {doubleTy});
+    declareFunc("math_sqrt", doubleTy, {doubleTy});
+    declareFunc("math_pow", doubleTy, {doubleTy, doubleTy});
+    declareFunc("math_sin", doubleTy, {doubleTy});
+    declareFunc("math_cos", doubleTy, {doubleTy});
+    declareFunc("math_tan", doubleTy, {doubleTy});
+    declareFunc("math_floor", doubleTy, {doubleTy});
+    declareFunc("math_ceil", doubleTy, {doubleTy});
+    declareFunc("math_round", doubleTy, {doubleTy});
+    declareFunc("math_random", doubleTy, {});
+
+    // Math constants (as external variables)
+    new llvm::GlobalVariable(
+        *module,
+        doubleTy,
+        true,  // isConstant
+        llvm::GlobalValue::ExternalLinkage,
+        nullptr,  // No initializer (external)
+        "math_PI"
+    );
+    new llvm::GlobalVariable(
+        *module,
+        doubleTy,
+        true,  // isConstant
+        llvm::GlobalValue::ExternalLinkage,
+        nullptr,  // No initializer (external)
+        "math_E"
+    );
+
+    // ========== STRING LIBRARY ==========
+    declareFunc("str_length", i32Ty, {i8PtrTy});
+    declareFunc("str_upper", i8PtrTy, {i8PtrTy});
+    declareFunc("str_lower", i8PtrTy, {i8PtrTy});
+    declareFunc("str_trim", i8PtrTy, {i8PtrTy});
+    declareFunc("str_split", i8PtrTy, {i8PtrTy, i8PtrTy});  // Returns array as pointer
+    declareFunc("str_join", i8PtrTy, {i8PtrTy, i8PtrTy});
+    declareFunc("str_substring", i8PtrTy, {i8PtrTy, i32Ty, i32Ty});
+    declareFunc("str_contains", boolTy, {i8PtrTy, i8PtrTy});
+    declareFunc("str_replace", i8PtrTy, {i8PtrTy, i8PtrTy, i8PtrTy});
+
+    // ========== COLLECTIONS LIBRARY ==========
+    declareFunc("list_push", i8PtrTy, {i8PtrTy, i8PtrTy});
+    declareFunc("list_pop", i8PtrTy, {i8PtrTy});
+    declareFunc("list_length", i32Ty, {i8PtrTy});
+    declareFunc("list_reverse", i8PtrTy, {i8PtrTy});
+    declareFunc("list_sort", i8PtrTy, {i8PtrTy});
+
+    // ========== IO LIBRARY ==========
+    declareFunc("io_read_file", i8PtrTy, {i8PtrTy});
+    declareFunc("io_write_file", boolTy, {i8PtrTy, i8PtrTy});
+    declareFunc("io_append_file", boolTy, {i8PtrTy, i8PtrTy});
+
+    // ========== FS LIBRARY ==========
+    declareFunc("fs_exists", boolTy, {i8PtrTy});
+    declareFunc("fs_is_directory", boolTy, {i8PtrTy});
+    declareFunc("fs_is_file", boolTy, {i8PtrTy});
+    declareFunc("fs_create_dir", boolTy, {i8PtrTy});
+    declareFunc("fs_remove", boolTy, {i8PtrTy});
+    declareFunc("fs_file_size", i32Ty, {i8PtrTy});
+
+    // ========== TIME LIBRARY ==========
+    declareFunc("time_now", i64Ty, {});
+    declareFunc("time_sleep", voidTy, {i32Ty});
+
+    // ========== CRYPTO LIBRARY ==========
+    declareFunc("crypto_xor", i8PtrTy, {i8PtrTy, i8PtrTy});
+    declareFunc("crypto_hash", i8PtrTy, {i8PtrTy});
+    declareFunc("crypto_random_bytes", i8PtrTy, {i32Ty});
+
+    // ========== ENCODING LIBRARY ==========
+    declareFunc("encoding_base64_encode", i8PtrTy, {i8PtrTy});
+    declareFunc("encoding_hex_encode", i8PtrTy, {i8PtrTy});
+
+    // ========== LOG LIBRARY ==========
+    declareFunc("log_info", voidTy, {i8PtrTy});
+    declareFunc("log_warn", voidTy, {i8PtrTy});
+    declareFunc("log_error", voidTy, {i8PtrTy});
+
+    // ========== ENV LIBRARY ==========
+    declareFunc("env_get", i8PtrTy, {i8PtrTy});
+    declareFunc("env_set", voidTy, {i8PtrTy, i8PtrTy});
+
+    // ========== PROCESS LIBRARY ==========
+    declareFunc("process_exec", i32Ty, {i8PtrTy});
+    declareFunc("process_shell", i8PtrTy, {i8PtrTy});
+    declareFunc("process_spawn", i32Ty, {i8PtrTy}, true);  // varargs
+    declareFunc("process_cwd", i8PtrTy, {});
+    declareFunc("process_chdir", i32Ty, {i8PtrTy});
+
+    // ========== PRINT FUNCTION ==========
+    declareFunc("print", voidTy, {i8PtrTy});
 }
 
 void LLVMCodeGen::reportError(const std::string& message) {

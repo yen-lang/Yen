@@ -1,0 +1,11 @@
+// Teste simples
+print "Hello YEN!";
+
+var x = 10;
+print "x = " + x;
+
+func test() {
+    print "Function works!";
+}
+
+test();

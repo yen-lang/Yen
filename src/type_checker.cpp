@@ -83,6 +83,94 @@ TypeChecker::TypeChecker()
         {makePrimitive(PrimitiveType::Unknown)},
         makePrimitive(PrimitiveType::Void)
     ));
+
+    // ============================================================================
+    // NATIVE LIBRARY FUNCTIONS
+    // ============================================================================
+
+    // Core Library
+    environment->define("core_is_int", makeFunction({makePrimitive(PrimitiveType::Unknown)}, makePrimitive(PrimitiveType::Bool)));
+    environment->define("core_is_float", makeFunction({makePrimitive(PrimitiveType::Unknown)}, makePrimitive(PrimitiveType::Bool)));
+    environment->define("core_is_bool", makeFunction({makePrimitive(PrimitiveType::Unknown)}, makePrimitive(PrimitiveType::Bool)));
+    environment->define("core_is_string", makeFunction({makePrimitive(PrimitiveType::Unknown)}, makePrimitive(PrimitiveType::Bool)));
+    environment->define("core_is_list", makeFunction({makePrimitive(PrimitiveType::Unknown)}, makePrimitive(PrimitiveType::Bool)));
+    environment->define("core_to_int", makeFunction({makePrimitive(PrimitiveType::Unknown)}, makePrimitive(PrimitiveType::Int32)));
+    environment->define("core_to_float", makeFunction({makePrimitive(PrimitiveType::Unknown)}, makePrimitive(PrimitiveType::Float64)));
+    environment->define("core_to_string", makeFunction({makePrimitive(PrimitiveType::Unknown)}, makePrimitive(PrimitiveType::String)));
+
+    // Math Library
+    environment->define("math_abs", makeFunction({makePrimitive(PrimitiveType::Float64)}, makePrimitive(PrimitiveType::Float64)));
+    environment->define("math_sqrt", makeFunction({makePrimitive(PrimitiveType::Float64)}, makePrimitive(PrimitiveType::Float64)));
+    environment->define("math_pow", makeFunction({makePrimitive(PrimitiveType::Float64), makePrimitive(PrimitiveType::Float64)}, makePrimitive(PrimitiveType::Float64)));
+    environment->define("math_sin", makeFunction({makePrimitive(PrimitiveType::Float64)}, makePrimitive(PrimitiveType::Float64)));
+    environment->define("math_cos", makeFunction({makePrimitive(PrimitiveType::Float64)}, makePrimitive(PrimitiveType::Float64)));
+    environment->define("math_tan", makeFunction({makePrimitive(PrimitiveType::Float64)}, makePrimitive(PrimitiveType::Float64)));
+    environment->define("math_floor", makeFunction({makePrimitive(PrimitiveType::Float64)}, makePrimitive(PrimitiveType::Float64)));
+    environment->define("math_ceil", makeFunction({makePrimitive(PrimitiveType::Float64)}, makePrimitive(PrimitiveType::Float64)));
+    environment->define("math_round", makeFunction({makePrimitive(PrimitiveType::Float64)}, makePrimitive(PrimitiveType::Float64)));
+    environment->define("math_random", makeFunction({}, makePrimitive(PrimitiveType::Float64)));
+    environment->define("math_PI", makePrimitive(PrimitiveType::Float64));
+    environment->define("math_E", makePrimitive(PrimitiveType::Float64));
+
+    // String Library
+    environment->define("str_length", makeFunction({makePrimitive(PrimitiveType::String)}, makePrimitive(PrimitiveType::Int32)));
+    environment->define("str_upper", makeFunction({makePrimitive(PrimitiveType::String)}, makePrimitive(PrimitiveType::String)));
+    environment->define("str_lower", makeFunction({makePrimitive(PrimitiveType::String)}, makePrimitive(PrimitiveType::String)));
+    environment->define("str_trim", makeFunction({makePrimitive(PrimitiveType::String)}, makePrimitive(PrimitiveType::String)));
+    environment->define("str_split", makeFunction({makePrimitive(PrimitiveType::String), makePrimitive(PrimitiveType::String)}, makeArray(makePrimitive(PrimitiveType::String))));
+    environment->define("str_join", makeFunction({makeArray(makePrimitive(PrimitiveType::String)), makePrimitive(PrimitiveType::String)}, makePrimitive(PrimitiveType::String)));
+    environment->define("str_substring", makeFunction({makePrimitive(PrimitiveType::String), makePrimitive(PrimitiveType::Int32), makePrimitive(PrimitiveType::Int32)}, makePrimitive(PrimitiveType::String)));
+    environment->define("str_contains", makeFunction({makePrimitive(PrimitiveType::String), makePrimitive(PrimitiveType::String)}, makePrimitive(PrimitiveType::Bool)));
+    environment->define("str_replace", makeFunction({makePrimitive(PrimitiveType::String), makePrimitive(PrimitiveType::String), makePrimitive(PrimitiveType::String)}, makePrimitive(PrimitiveType::String)));
+
+    // Collections Library
+    environment->define("list_push", makeFunction({makeArray(makePrimitive(PrimitiveType::Unknown)), makePrimitive(PrimitiveType::Unknown)}, makeArray(makePrimitive(PrimitiveType::Unknown))));
+    environment->define("list_pop", makeFunction({makeArray(makePrimitive(PrimitiveType::Unknown))}, makePrimitive(PrimitiveType::Unknown)));
+    environment->define("list_length", makeFunction({makeArray(makePrimitive(PrimitiveType::Unknown))}, makePrimitive(PrimitiveType::Int32)));
+    environment->define("list_reverse", makeFunction({makeArray(makePrimitive(PrimitiveType::Unknown))}, makeArray(makePrimitive(PrimitiveType::Unknown))));
+    environment->define("list_sort", makeFunction({makeArray(makePrimitive(PrimitiveType::Unknown))}, makeArray(makePrimitive(PrimitiveType::Unknown))));
+
+    // IO Library
+    environment->define("io_read_file", makeFunction({makePrimitive(PrimitiveType::String)}, makePrimitive(PrimitiveType::String)));
+    environment->define("io_write_file", makeFunction({makePrimitive(PrimitiveType::String), makePrimitive(PrimitiveType::String)}, makePrimitive(PrimitiveType::Bool)));
+    environment->define("io_append_file", makeFunction({makePrimitive(PrimitiveType::String), makePrimitive(PrimitiveType::String)}, makePrimitive(PrimitiveType::Bool)));
+
+    // FS Library
+    environment->define("fs_exists", makeFunction({makePrimitive(PrimitiveType::String)}, makePrimitive(PrimitiveType::Bool)));
+    environment->define("fs_is_directory", makeFunction({makePrimitive(PrimitiveType::String)}, makePrimitive(PrimitiveType::Bool)));
+    environment->define("fs_is_file", makeFunction({makePrimitive(PrimitiveType::String)}, makePrimitive(PrimitiveType::Bool)));
+    environment->define("fs_create_dir", makeFunction({makePrimitive(PrimitiveType::String)}, makePrimitive(PrimitiveType::Bool)));
+    environment->define("fs_remove", makeFunction({makePrimitive(PrimitiveType::String)}, makePrimitive(PrimitiveType::Bool)));
+    environment->define("fs_file_size", makeFunction({makePrimitive(PrimitiveType::String)}, makePrimitive(PrimitiveType::Int32)));
+
+    // Time Library
+    environment->define("time_now", makeFunction({}, makePrimitive(PrimitiveType::Int32)));
+    environment->define("time_sleep", makeFunction({makePrimitive(PrimitiveType::Int32)}, makePrimitive(PrimitiveType::Void)));
+
+    // Crypto Library
+    environment->define("crypto_xor", makeFunction({makePrimitive(PrimitiveType::String), makePrimitive(PrimitiveType::String)}, makePrimitive(PrimitiveType::String)));
+    environment->define("crypto_hash", makeFunction({makePrimitive(PrimitiveType::String)}, makePrimitive(PrimitiveType::String)));
+    environment->define("crypto_random_bytes", makeFunction({makePrimitive(PrimitiveType::Int32)}, makePrimitive(PrimitiveType::String)));
+
+    // Encoding Library
+    environment->define("encoding_base64_encode", makeFunction({makePrimitive(PrimitiveType::String)}, makePrimitive(PrimitiveType::String)));
+    environment->define("encoding_hex_encode", makeFunction({makePrimitive(PrimitiveType::String)}, makePrimitive(PrimitiveType::String)));
+
+    // Log Library
+    environment->define("log_info", makeFunction({makePrimitive(PrimitiveType::String)}, makePrimitive(PrimitiveType::Void)));
+    environment->define("log_warn", makeFunction({makePrimitive(PrimitiveType::String)}, makePrimitive(PrimitiveType::Void)));
+    environment->define("log_error", makeFunction({makePrimitive(PrimitiveType::String)}, makePrimitive(PrimitiveType::Void)));
+
+    // Env Library
+    environment->define("env_get", makeFunction({makePrimitive(PrimitiveType::String)}, makePrimitive(PrimitiveType::String)));
+    environment->define("env_set", makeFunction({makePrimitive(PrimitiveType::String), makePrimitive(PrimitiveType::String)}, makePrimitive(PrimitiveType::Void)));
+
+    // Process Library
+    environment->define("process_exec", makeFunction({makePrimitive(PrimitiveType::String)}, makePrimitive(PrimitiveType::Int32)));
+    environment->define("process_shell", makeFunction({makePrimitive(PrimitiveType::String)}, makePrimitive(PrimitiveType::String)));
+    environment->define("process_spawn", makeFunction({makePrimitive(PrimitiveType::String)}, makePrimitive(PrimitiveType::Int32)));
+    environment->define("process_cwd", makeFunction({}, makePrimitive(PrimitiveType::String)));
+    environment->define("process_chdir", makeFunction({makePrimitive(PrimitiveType::String)}, makePrimitive(PrimitiveType::Int32)));
 }
 
 bool TypeChecker::check(const std::vector<std::unique_ptr<Statement>>& statements) {

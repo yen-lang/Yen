@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![YEN Logo](https://avatars.githubusercontent.com/u/209428205?s=200&v=4)
+![YEN Logo](https://via.placeholder.com/150x150/4A90E2/FFFFFF?text=YEN)
 
 **A modern, expressive systems programming language**
 
@@ -397,16 +397,27 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 YEN offers two execution modes:
 
-| Mode | Use Case | Performance | Startup Time |
-|------|----------|-------------|--------------|
-| **Interpreter** (`yen`) | Development, scripting | Fast iteration | Instant |
-| **Compiler** (`yenc`) | Production, deployment | Native speed | AOT compilation |
+| Mode | Use Case | Performance | Startup Time | Status |
+|------|----------|-------------|--------------|--------|
+| **Interpreter** (`yen`) | Development, scripting | Fast iteration | Instant | ✅ **READY** |
+| **Compiler** (`yenc`) | Production, deployment | Native speed | AOT compilation | ⚠️ **IN DEV** |
 
-**Compiler optimizations:**
-- LLVM optimization passes
-- Native code generation
-- Dead code elimination
-- Inline expansion
+### Current Status
+
+**✅ Interpreter (`yen`)** - **Fully Functional**
+- All 12 standard library modules working
+- Complete language feature support
+- Shell command execution (process_shell, process_exec, etc.)
+- Ready for development and scripting
+- **Recommended for current use**
+
+**⚠️ Compiler (`yenc`)** - **Under Development**
+- Type checker implemented
+- LLVM infrastructure in place
+- Code generation incomplete
+- See [COMPILER_STATUS.md](docs/COMPILER_STATUS.md) for details
+
+**Use the interpreter (`yen`) for all current development!**
 
 ---
 
@@ -439,7 +450,7 @@ in the Software without restriction...
 YEN is inspired by modern language design and built with:
 - **LLVM** - Compiler infrastructure
 - **C++17** - Implementation language
-- Influences from **Rust**, **Python**, and **NIM**
+- Influences from **Rust**, **Swift**, and **Zig**
 
 ---
 
