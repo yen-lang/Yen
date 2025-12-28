@@ -439,7 +439,7 @@ in the Software without restriction...
 YEN is inspired by modern language design and built with:
 - **LLVM** - Compiler infrastructure
 - **C++17** - Implementation language
-- Influences from **Rust**, **Swift**, and **Zig**
+- Influences from **Rust**, **Python**, and **NIM**
 
 ---
 
