@@ -1,0 +1,461 @@
+// Windows API Bindings for YEN
+// Platform: Windows (Win32/Win64)
+// Note: This module only works on Windows systems
+
+// ============================================================================
+// WINDOWS TYPE ALIASES AND CONSTANTS
+// ============================================================================
+
+// Basic Windows types are defined in C as:
+// typedef unsigned long DWORD;        -> uint32
+// typedef void* HANDLE;               -> *mut void
+// typedef void* HWND;                 -> *mut void
+// typedef int BOOL;                   -> int32
+// typedef unsigned short WORD;        -> uint16
+// typedef unsigned char BYTE;         -> uint8
+// typedef long LONG;                  -> int32
+// typedef unsigned long ULONG;        -> uint32
+// typedef void* LPVOID;               -> *mut void
+// typedef const char* LPCSTR;         -> *const char
+// typedef const wchar_t* LPCWSTR;     -> *const int16 (UTF-16)
+// typedef unsigned long long DWORD64; -> uint64
+
+// Constants
+// INVALID_HANDLE_VALUE = (HANDLE)-1
+// NULL = 0
+// TRUE = 1
+// FALSE = 0
+
+// File Access Modes
+// GENERIC_READ = 0x80000000
+// GENERIC_WRITE = 0x40000000
+// GENERIC_EXECUTE = 0x20000000
+// GENERIC_ALL = 0x10000000
+
+// File Share Modes
+// FILE_SHARE_READ = 0x00000001
+// FILE_SHARE_WRITE = 0x00000002
+// FILE_SHARE_DELETE = 0x00000004
+
+// File Creation Disposition
+// CREATE_NEW = 1
+// CREATE_ALWAYS = 2
+// OPEN_EXISTING = 3
+// OPEN_ALWAYS = 4
+// TRUNCATE_EXISTING = 5
+
+// File Attributes
+// FILE_ATTRIBUTE_NORMAL = 0x80
+
+// Standard Handles
+// STD_INPUT_HANDLE = -10
+// STD_OUTPUT_HANDLE = -11
+// STD_ERROR_HANDLE = -12
+
+// ============================================================================
+// KERNEL32.DLL - CORE WINDOWS APIs
+// ============================================================================
+
+extern "C" {
+    // ------------------------------------------------------------------------
+    // FILE I/O APIS
+    // ------------------------------------------------------------------------
+
+    // CreateFileW - Create or open a file (Unicode version)
+    // HANDLE CreateFileW(
+    //   LPCWSTR               lpFileName,
+    //   DWORD                 dwDesiredAccess,
+    //   DWORD                 dwShareMode,
+    //   LPSECURITY_ATTRIBUTES lpSecurityAttributes,
+    //   DWORD                 dwCreationDisposition,
+    //   DWORD                 dwFlagsAndAttributes,
+    //   HANDLE                hTemplateFile
+    // );
+    func CreateFileW(
+        lpFileName: *const int16,
+        dwDesiredAccess: int32,
+        dwShareMode: int32,
+        lpSecurityAttributes: *mut void,
+        dwCreationDisposition: int32,
+        dwFlagsAndAttributes: int32,
+        hTemplateFile: *mut void
+    ) -> *mut void;
+
+    // ReadFile - Read data from a file
+    // BOOL ReadFile(
+    //   HANDLE       hFile,
+    //   LPVOID       lpBuffer,
+    //   DWORD        nNumberOfBytesToRead,
+    //   LPDWORD      lpNumberOfBytesRead,
+    //   LPOVERLAPPED lpOverlapped
+    // );
+    func ReadFile(
+        hFile: *mut void,
+        lpBuffer: *mut void,
+        nNumberOfBytesToRead: int32,
+        lpNumberOfBytesRead: *mut int32,
+        lpOverlapped: *mut void
+    ) -> int32;
+
+    // WriteFile - Write data to a file
+    // BOOL WriteFile(
+    //   HANDLE       hFile,
+    //   LPCVOID      lpBuffer,
+    //   DWORD        nNumberOfBytesToWrite,
+    //   LPDWORD      lpNumberOfBytesWritten,
+    //   LPOVERLAPPED lpOverlapped
+    // );
+    func WriteFile(
+        hFile: *mut void,
+        lpBuffer: *const void,
+        nNumberOfBytesToWrite: int32,
+        lpNumberOfBytesWritten: *mut int32,
+        lpOverlapped: *mut void
+    ) -> int32;
+
+    // CloseHandle - Close an object handle
+    // BOOL CloseHandle(HANDLE hObject);
+    func CloseHandle(hObject: *mut void) -> int32;
+
+    // GetFileSize - Get the size of a file
+    // DWORD GetFileSize(
+    //   HANDLE  hFile,
+    //   LPDWORD lpFileSizeHigh
+    // );
+    func GetFileSize(
+        hFile: *mut void,
+        lpFileSizeHigh: *mut int32
+    ) -> int32;
+
+    // DeleteFileW - Delete a file (Unicode)
+    // BOOL DeleteFileW(LPCWSTR lpFileName);
+    func DeleteFileW(lpFileName: *const int16) -> int32;
+
+    // ------------------------------------------------------------------------
+    // CONSOLE APIs
+    // ------------------------------------------------------------------------
+
+    // GetStdHandle - Get a handle to standard input, output, or error
+    // HANDLE GetStdHandle(DWORD nStdHandle);
+    func GetStdHandle(nStdHandle: int32) -> *mut void;
+
+    // WriteConsoleW - Write to console (Unicode)
+    // BOOL WriteConsoleW(
+    //   HANDLE  hConsoleOutput,
+    //   const VOID    *lpBuffer,
+    //   DWORD   nNumberOfCharsToWrite,
+    //   LPDWORD lpNumberOfCharsWritten,
+    //   LPVOID  lpReserved
+    // );
+    func WriteConsoleW(
+        hConsoleOutput: *mut void,
+        lpBuffer: *const void,
+        nNumberOfCharsToWrite: int32,
+        lpNumberOfCharsWritten: *mut int32,
+        lpReserved: *mut void
+    ) -> int32;
+
+    // SetConsoleTitleW - Set console window title
+    // BOOL SetConsoleTitleW(LPCWSTR lpConsoleTitle);
+    func SetConsoleTitleW(lpConsoleTitle: *const int16) -> int32;
+
+    // AllocConsole - Allocate a new console
+    // BOOL AllocConsole(void);
+    func AllocConsole() -> int32;
+
+    // FreeConsole - Detach from the console
+    // BOOL FreeConsole(void);
+    func FreeConsole() -> int32;
+
+    // ------------------------------------------------------------------------
+    // MEMORY MANAGEMENT APIs
+    // ------------------------------------------------------------------------
+
+    // VirtualAlloc - Reserve, commit, or change memory
+    // LPVOID VirtualAlloc(
+    //   LPVOID lpAddress,
+    //   SIZE_T dwSize,
+    //   DWORD  flAllocationType,
+    //   DWORD  flProtect
+    // );
+    func VirtualAlloc(
+        lpAddress: *mut void,
+        dwSize: int64,
+        flAllocationType: int32,
+        flProtect: int32
+    ) -> *mut void;
+
+    // VirtualFree - Release or decommit memory
+    // BOOL VirtualFree(
+    //   LPVOID lpAddress,
+    //   SIZE_T dwSize,
+    //   DWORD  dwFreeType
+    // );
+    func VirtualFree(
+        lpAddress: *mut void,
+        dwSize: int64,
+        dwFreeType: int32
+    ) -> int32;
+
+    // HeapAlloc - Allocate memory from a heap
+    // LPVOID HeapAlloc(
+    //   HANDLE hHeap,
+    //   DWORD  dwFlags,
+    //   SIZE_T dwBytes
+    // );
+    func HeapAlloc(
+        hHeap: *mut void,
+        dwFlags: int32,
+        dwBytes: int64
+    ) -> *mut void;
+
+    // HeapFree - Free memory from a heap
+    // BOOL HeapFree(
+    //   HANDLE hHeap,
+    //   DWORD  dwFlags,
+    //   LPVOID lpMem
+    // );
+    func HeapFree(
+        hHeap: *mut void,
+        dwFlags: int32,
+        lpMem: *mut void
+    ) -> int32;
+
+    // GetProcessHeap - Get handle to process heap
+    // HANDLE GetProcessHeap(void);
+    func GetProcessHeap() -> *mut void;
+
+    // ------------------------------------------------------------------------
+    // PROCESS AND THREAD APIs
+    // ------------------------------------------------------------------------
+
+    // CreateProcess - Create a new process
+    // (Simplified signature - full version is complex)
+    func CreateProcessW(
+        lpApplicationName: *const int16,
+        lpCommandLine: *mut int16,
+        lpProcessAttributes: *mut void,
+        lpThreadAttributes: *mut void,
+        bInheritHandles: int32,
+        dwCreationFlags: int32,
+        lpEnvironment: *mut void,
+        lpCurrentDirectory: *const int16,
+        lpStartupInfo: *mut void,
+        lpProcessInformation: *mut void
+    ) -> int32;
+
+    // ExitProcess - Terminate the current process
+    // void ExitProcess(UINT uExitCode);
+    func ExitProcess(uExitCode: int32);
+
+    // GetCurrentProcessId - Get current process ID
+    // DWORD GetCurrentProcessId(void);
+    func GetCurrentProcessId() -> int32;
+
+    // GetCurrentThreadId - Get current thread ID
+    // DWORD GetCurrentThreadId(void);
+    func GetCurrentThreadId() -> int32;
+
+    // Sleep - Suspend execution for interval (milliseconds)
+    // void Sleep(DWORD dwMilliseconds);
+    func Sleep(dwMilliseconds: int32);
+
+    // CreateThread - Create a thread
+    func CreateThread(
+        lpThreadAttributes: *mut void,
+        dwStackSize: int64,
+        lpStartAddress: *mut void,
+        lpParameter: *mut void,
+        dwCreationFlags: int32,
+        lpThreadId: *mut int32
+    ) -> *mut void;
+
+    // WaitForSingleObject - Wait for object to be signaled
+    // DWORD WaitForSingleObject(
+    //   HANDLE hHandle,
+    //   DWORD  dwMilliseconds
+    // );
+    func WaitForSingleObject(
+        hHandle: *mut void,
+        dwMilliseconds: int32
+    ) -> int32;
+
+    // ------------------------------------------------------------------------
+    // TIME AND DATE APIs
+    // ------------------------------------------------------------------------
+
+    // GetSystemTime - Get current system time (UTC)
+    // void GetSystemTime(LPSYSTEMTIME lpSystemTime);
+    func GetSystemTime(lpSystemTime: *mut void);
+
+    // GetLocalTime - Get current local time
+    // void GetLocalTime(LPSYSTEMTIME lpSystemTime);
+    func GetLocalTime(lpSystemTime: *mut void);
+
+    // GetTickCount - Get milliseconds since system start
+    // DWORD GetTickCount(void);
+    func GetTickCount() -> int32;
+
+    // GetTickCount64 - Get milliseconds since system start (64-bit)
+    // ULONGLONG GetTickCount64(void);
+    func GetTickCount64() -> int64;
+
+    // ------------------------------------------------------------------------
+    // SYSTEM INFORMATION APIs
+    // ------------------------------------------------------------------------
+
+    // GetComputerNameW - Get computer name
+    // BOOL GetComputerNameW(
+    //   LPWSTR  lpBuffer,
+    //   LPDWORD nSize
+    // );
+    func GetComputerNameW(
+        lpBuffer: *mut int16,
+        nSize: *mut int32
+    ) -> int32;
+
+    // GetVersionExW - Get Windows version
+    func GetVersionExW(lpVersionInformation: *mut void) -> int32;
+
+    // GetSystemInfo - Get system information
+    // void GetSystemInfo(LPSYSTEM_INFO lpSystemInfo);
+    func GetSystemInfo(lpSystemInfo: *mut void);
+
+    // ------------------------------------------------------------------------
+    // ERROR HANDLING APIs
+    // ------------------------------------------------------------------------
+
+    // GetLastError - Get last error code
+    // DWORD GetLastError(void);
+    func GetLastError() -> int32;
+
+    // SetLastError - Set last error code
+    // void SetLastError(DWORD dwErrCode);
+    func SetLastError(dwErrCode: int32);
+
+    // FormatMessageW - Format an error message
+    func FormatMessageW(
+        dwFlags: int32,
+        lpSource: *const void,
+        dwMessageId: int32,
+        dwLanguageId: int32,
+        lpBuffer: *mut int16,
+        nSize: int32,
+        Arguments: *mut void
+    ) -> int32;
+
+    // ------------------------------------------------------------------------
+    // ENVIRONMENT VARIABLES
+    // ------------------------------------------------------------------------
+
+    // GetEnvironmentVariableW - Get environment variable
+    // DWORD GetEnvironmentVariableW(
+    //   LPCWSTR lpName,
+    //   LPWSTR  lpBuffer,
+    //   DWORD   nSize
+    // );
+    func GetEnvironmentVariableW(
+        lpName: *const int16,
+        lpBuffer: *mut int16,
+        nSize: int32
+    ) -> int32;
+
+    // SetEnvironmentVariableW - Set environment variable
+    // BOOL SetEnvironmentVariableW(
+    //   LPCWSTR lpName,
+    //   LPCWSTR lpValue
+    // );
+    func SetEnvironmentVariableW(
+        lpName: *const int16,
+        lpValue: *const int16
+    ) -> int32;
+
+    // ------------------------------------------------------------------------
+    // LIBRARY LOADING (LoadLibrary/GetProcAddress)
+    // ------------------------------------------------------------------------
+
+    // LoadLibraryW - Load a DLL
+    // HMODULE LoadLibraryW(LPCWSTR lpLibFileName);
+    func LoadLibraryW(lpLibFileName: *const int16) -> *mut void;
+
+    // FreeLibrary - Free a DLL
+    // BOOL FreeLibrary(HMODULE hLibModule);
+    func FreeLibrary(hLibModule: *mut void) -> int32;
+
+    // GetProcAddress - Get function address from DLL
+    // FARPROC GetProcAddress(
+    //   HMODULE hModule,
+    //   LPCSTR  lpProcName
+    // );
+    func GetProcAddress(
+        hModule: *mut void,
+        lpProcName: *const char
+    ) -> *mut void;
+}
+
+// ============================================================================
+// USER32.DLL - USER INTERFACE APIs
+// ============================================================================
+
+extern "C" {
+    // MessageBoxW - Display a message box
+    // int MessageBoxW(
+    //   HWND    hWnd,
+    //   LPCWSTR lpText,
+    //   LPCWSTR lpCaption,
+    //   UINT    uType
+    // );
+    func MessageBoxW(
+        hWnd: *mut void,
+        lpText: *const int16,
+        lpCaption: *const int16,
+        uType: int32
+    ) -> int32;
+
+    // CreateWindowExW - Create a window
+    func CreateWindowExW(
+        dwExStyle: int32,
+        lpClassName: *const int16,
+        lpWindowName: *const int16,
+        dwStyle: int32,
+        x: int32,
+        y: int32,
+        nWidth: int32,
+        nHeight: int32,
+        hWndParent: *mut void,
+        hMenu: *mut void,
+        hInstance: *mut void,
+        lpParam: *mut void
+    ) -> *mut void;
+
+    // DestroyWindow - Destroy a window
+    // BOOL DestroyWindow(HWND hWnd);
+    func DestroyWindow(hWnd: *mut void) -> int32;
+
+    // ShowWindow - Show or hide a window
+    // BOOL ShowWindow(HWND hWnd, int nCmdShow);
+    func ShowWindow(hWnd: *mut void, nCmdShow: int32) -> int32;
+
+    // UpdateWindow - Update a window
+    // BOOL UpdateWindow(HWND hWnd);
+    func UpdateWindow(hWnd: *mut void) -> int32;
+}
+
+// ============================================================================
+// HELPER NOTES
+// ============================================================================
+
+// To use these APIs in YEN:
+//
+// 1. Import this module:
+//    import windows from "stdlib/platform/windows.yen"
+//
+// 2. Use the functions with proper constants:
+//    let handle = GetStdHandle(-11);  // STD_OUTPUT_HANDLE
+//
+// 3. Remember: Most Windows APIs use UTF-16 (WCHAR) strings
+//    You'll need to convert UTF-8 strings to UTF-16
+//
+// 4. Error handling: Check GetLastError() after API calls
+//
+// 5. These bindings are Windows-only and won't work on Linux/macOS

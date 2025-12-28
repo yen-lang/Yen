@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/opt/Yen/build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

@@ -1,0 +1,188 @@
+// YEN Standard Library - String Module
+// String manipulation utilities
+// Written in YEN, uses C string functions
+
+// Import C string functions
+extern "C" {
+    func strlen(s: *const char) -> int64;
+    func strcmp(s1: *const char, s2: *const char) -> int32;
+    func strcpy(dest: *mut char, src: *const char) -> *mut char;
+    func strcat(dest: *mut char, src: *const char) -> *mut char;
+    func malloc(size: int64) -> *mut void;
+    func free(ptr: *mut void);
+    func memcpy(dest: *mut void, src: *const void, n: int64) -> *mut void;
+    func memset(s: *mut void, c: int32, n: int64) -> *mut void;
+    func printf(format: *const char, ...) -> int32;
+}
+
+// ============================================================================
+// STRING LENGTH AND COMPARISON
+// ============================================================================
+
+// Get length of string
+func str_len(s: *const char) -> int64 {
+    return strlen(s);
+}
+
+// Compare two strings
+// Returns: 0 if equal, <0 if s1 < s2, >0 if s1 > s2
+func str_cmp(s1: *const char, s2: *const char) -> int32 {
+    return strcmp(s1, s2);
+}
+
+// Check if two strings are equal
+func str_eq(s1: *const char, s2: *const char) -> int32 {
+    let result: int32 = strcmp(s1, s2);
+    if (result == 0) {
+        return 1;  // true
+    } else {
+        return 0;  // false
+    }
+}
+
+// ============================================================================
+// STRING COPYING AND CONCATENATION
+// ============================================================================
+
+// Copy string (dest must have enough space)
+func str_copy(dest: *mut char, src: *const char) -> *mut char {
+    return strcpy(dest, src);
+}
+
+// Concatenate strings (dest must have enough space)
+func str_concat(dest: *mut char, src: *const char) -> *mut char {
+    return strcat(dest, src);
+}
+
+// Duplicate string (allocates new memory)
+func str_dup(s: *const char) -> *mut char {
+    let len: int64 = strlen(s);
+    let copy = malloc(len + 1);  // +1 for null terminator
+    memcpy(copy, s, len + 1);
+    return copy;
+}
+
+// ============================================================================
+// STRING SEARCHING
+// ============================================================================
+
+// Find character in string (returns position or -1)
+func str_find_char(s: *const char, ch: int32) -> int64 {
+    let i: int64 = 0;
+    let len: int64 = strlen(s);
+
+    while (i < len) {
+        // Note: In real implementation, would access s[i]
+        // For now, simplified
+        i = i + 1;
+    }
+
+    return -1;  // Not found (simplified)
+}
+
+// Check if string starts with prefix
+func str_starts_with(s: *const char, prefix: *const char) -> int32 {
+    let slen: int64 = strlen(s);
+    let plen: int64 = strlen(prefix);
+
+    if (plen > slen) {
+        return 0;  // false
+    }
+
+    // Note: In real implementation, would compare first plen characters
+    // Simplified for now
+    return 1;  // true (simplified)
+}
+
+// Check if string ends with suffix
+func str_ends_with(s: *const char, suffix: *const char) -> int32 {
+    let slen: int64 = strlen(s);
+    let suflen: int64 = strlen(suffix);
+
+    if (suflen > slen) {
+        return 0;  // false
+    }
+
+    // Note: In real implementation, would compare last suflen characters
+    // Simplified for now
+    return 1;  // true (simplified)
+}
+
+// ============================================================================
+// STRING MANIPULATION
+// ============================================================================
+
+// Create new empty string buffer
+func str_new(capacity: int64) -> *mut char {
+    let buffer = malloc(capacity);
+    memset(buffer, 0, capacity);  // Zero-initialize
+    return buffer;
+}
+
+// Free string allocated by str_new or str_dup
+func str_free(s: *mut void) {
+    free(s);
+}
+
+// ============================================================================
+// STRING CONVERSION (simplified)
+// ============================================================================
+
+// Convert integer to string (simplified - just prints it)
+func int_to_str(n: int32) {
+    printf("%d", n);
+}
+
+// Convert float to string (simplified - just prints it)
+func float_to_str(f: float64) {
+    printf("%f", f);
+}
+
+// ============================================================================
+// STRING UTILITIES
+// ============================================================================
+
+// Check if string is empty
+func str_is_empty(s: *const char) -> int32 {
+    let len: int64 = strlen(s);
+    if (len == 0) {
+        return 1;  // true
+    } else {
+        return 0;  // false
+    }
+}
+
+// Print string (for debugging)
+func str_print(s: *const char) {
+    printf("%s", s);
+}
+
+// Print string with newline
+func str_println(s: *const char) {
+    printf("%s\n", s);
+}
+
+// ============================================================================
+// USAGE EXAMPLES
+// ============================================================================
+
+// Example 1: String length
+// let len = str_len("Hello");
+// printf("Length: %ld\n", len);
+
+// Example 2: String comparison
+// if (str_eq("hello", "hello")) {
+//     printf("Strings are equal\n");
+// }
+
+// Example 3: String duplication
+// let copy = str_dup("Original");
+// str_println(copy);
+// str_free(copy);
+
+// Example 4: String buffer
+// let buf = str_new(100);
+// str_copy(buf, "Hello");
+// str_concat(buf, " World");
+// str_println(buf);
+// str_free(buf);
