@@ -1,0 +1,133 @@
+// ================================================
+// YEN OS Shell - Exemplos Práticos Simples
+// ================================================
+
+print "=== Exemplos de Shell em YEN ===";
+print "";
+
+// ============================================
+// 1. EXECUTAR COMANDOS E CAPTURAR SAÍDA
+// ============================================
+
+// Listar arquivos
+var files = process_shell("ls");
+print "Arquivos:";
+print files;
+
+// Ver diretório atual
+var pwd = process_shell("pwd");
+print "Diretório: " + pwd;
+
+// Data
+var date = process_shell("date");
+print "Data: " + date;
+
+// ============================================
+// 2. INFORMAÇÕES DO SISTEMA
+// ============================================
+
+print "=== Informações do Sistema ===";
+
+// Sistema operacional
+var os = process_shell("uname -s");
+print "OS: " + os;
+
+// Hostname
+var hostname = process_shell("hostname");
+print "Host: " + hostname;
+
+// Usuário
+var user = process_shell("whoami");
+print "User: " + user;
+
+// ============================================
+// 3. TRABALHAR COM ARQUIVOS
+// ============================================
+
+print "=== Trabalhando com Arquivos ===";
+
+// Criar arquivo
+process_exec("echo 'Hello YEN' > /tmp/test.txt");
+print "Arquivo criado!";
+
+// Ler arquivo
+var content = process_shell("cat /tmp/test.txt");
+print "Conteúdo: " + content;
+
+// Deletar arquivo
+process_exec("rm /tmp/test.txt");
+print "Arquivo deletado!";
+
+// ============================================
+// 4. NAVEGAÇÃO DE DIRETÓRIOS
+// ============================================
+
+print "=== Navegação ===";
+
+var original = process_cwd();
+print "Dir original: " + original;
+
+// Mudar para /tmp
+process_chdir("/tmp");
+print "Mudou para: " + process_cwd();
+
+// Voltar
+process_chdir(original);
+print "Voltou para: " + process_cwd();
+
+// ============================================
+// 5. PIPE E FILTROS
+// ============================================
+
+print "=== Pipe e Filtros ===";
+
+// Contar linhas
+var line_count = process_shell("ls | wc -l");
+print "Número de arquivos: " + line_count;
+
+// Buscar padrão
+var grep = process_shell("ls -la | grep '.yen'");
+print "Arquivos .yen:";
+print grep;
+
+// ============================================
+// 6. INFORMAÇÕES DE REDE
+// ============================================
+
+print "=== Rede ===";
+
+// Ping
+var ping = process_shell("ping -c 2 google.com");
+print ping;
+
+// ============================================
+// 7. VARIÁVEIS DE AMBIENTE
+// ============================================
+
+print "=== Variáveis de Ambiente ===";
+
+var home = process_shell("echo $HOME");
+print "HOME: " + home;
+
+var path = process_shell("echo $PATH");
+print "PATH: " + path;
+
+// ============================================
+// 8. EXECUTAR SCRIPTS
+// ============================================
+
+print "=== Executar Scripts ===";
+
+// Criar script bash
+process_exec("cat > /tmp/script.sh << 'EOF'\n#!/bin/bash\necho 'Script executado!'\ndate\nEOF");
+process_exec("chmod +x /tmp/script.sh");
+
+// Executar
+var output = process_shell("/tmp/script.sh");
+print output;
+
+// Limpar
+process_exec("rm /tmp/script.sh");
+
+print "";
+print "=== Fim dos Exemplos ===";

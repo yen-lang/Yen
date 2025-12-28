@@ -1,0 +1,78 @@
+{
+  "name": "yen-language",
+  "displayName": "YEN Language Support",
+  "description": "Syntax highlighting and language support for YEN programming language",
+  "version": "1.0.0",
+  "publisher": "yen-lang",
+  "icon": "images/icon.png",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets"
+  ],
+  "keywords": [
+    "yen",
+    "yen-lang",
+    "systems programming",
+    "scripting"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yen-lang/Yen"
+  },
+  "homepage": "https://github.com/yen-lang/Yen",
+  "bugs": {
+    "url": "https://github.com/yen-lang/Yen/issues"
+  },
+  "license": "MIT",
+  "contributes": {
+    "languages": [
+      {
+        "id": "yen",
+        "aliases": [
+          "YEN",
+          "yen"
+        ],
+        "extensions": [
+          ".yen"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "yen",
+        "scopeName": "source.yen",
+        "path": "./syntaxes/yen.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "yen",
+        "path": "./snippets/yen.json"
+      }
+    ],
+    "configuration": {
+      "title": "YEN",
+      "properties": {
+        "yen.interpreterPath": {
+          "type": "string",
+          "default": "yen",
+          "description": "Path to YEN interpreter executable"
+        },
+        "yen.compilerPath": {
+          "type": "string",
+          "default": "yenc",
+          "description": "Path to YEN compiler executable"
+        },
+        "yen.formatOnSave": {
+          "type": "boolean",
+          "default": false,
+          "description": "Format YEN files on save (not yet implemented)"
+        }
+      }
+    }
+  }
+}

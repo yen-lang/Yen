@@ -1,0 +1,202 @@
+// ================================================
+// YEN Shell Commands Demo
+// Demonstra execução de comandos via terminal
+// ================================================
+
+print "=== YEN Shell Commands Demo ===";
+print "";
+
+// ============================================
+// 1. process_shell - Executa e retorna saída
+// ============================================
+print "1. process_shell - Captura saída do comando";
+print "-------------------------------------------";
+
+// Listar arquivos do diretório atual
+print "Listando arquivos (ls -la):";
+var files = process_shell("ls -la");
+print files;
+print "";
+
+// Mostrar diretório atual
+print "Diretório atual (pwd):";
+var pwd = process_shell("pwd");
+print pwd;
+
+// Informações do sistema
+print "Informações do sistema (uname -a):";
+var sysinfo = process_shell("uname -a");
+print sysinfo;
+
+// Data e hora atual
+print "Data e hora (date):";
+var datetime = process_shell("date");
+print datetime;
+
+// Usuário atual
+print "Usuário atual (whoami):";
+var user = process_shell("whoami");
+print user;
+
+// Processos ativos
+print "Processos (ps aux | head -10):";
+var processes = process_shell("ps aux | head -10");
+print processes;
+
+// ============================================
+// 2. process_exec - Executa e retorna código
+// ============================================
+print "2. process_exec - Retorna código de saída";
+print "-------------------------------------------";
+
+// Criar diretório de teste
+print "Criando diretório /tmp/yen_test...";
+var result = process_exec("mkdir -p /tmp/yen_test");
+print "Código de saída: " + result;
+print "";
+
+// Criar arquivo
+print "Criando arquivo de teste...";
+var create_file = process_exec("echo 'Hello from YEN!' > /tmp/yen_test/hello.txt");
+print "Código de saída: " + create_file;
+print "";
+
+// Ler arquivo criado
+print "Lendo arquivo criado:";
+var content = process_shell("cat /tmp/yen_test/hello.txt");
+print content;
+
+// ============================================
+// 3. process_cwd - Diretório atual
+// ============================================
+print "3. process_cwd - Obter diretório atual";
+print "-------------------------------------------";
+var current_dir = process_cwd();
+print "Diretório de trabalho: " + current_dir;
+print "";
+
+// ============================================
+// 4. process_chdir - Mudar diretório
+// ============================================
+print "4. process_chdir - Mudar diretório";
+print "-------------------------------------------";
+print "Mudando para /tmp...";
+var chdir_result = process_chdir("/tmp");
+print "Resultado: " + chdir_result;
+
+var new_dir = process_cwd();
+print "Novo diretório: " + new_dir;
+print "";
+
+// Voltar ao diretório original
+process_chdir(current_dir);
+print "Voltou para: " + process_cwd();
+print "";
+
+// ============================================
+// 5. Comandos úteis do sistema
+// ============================================
+print "5. Comandos úteis do sistema";
+print "-------------------------------------------";
+
+// Espaço em disco
+print "Espaço em disco (df -h):";
+var disk = process_shell("df -h | head -5");
+print disk;
+
+// Memória
+print "Uso de memória (free -h ou vm_stat no macOS):";
+if (str_contains(sysinfo, "Darwin")) {
+    var memory = process_shell("vm_stat | head -10");
+    print memory;
+} else {
+    var memory = process_shell("free -h");
+    print memory;
+}
+
+// Variáveis de ambiente
+print "Variáveis de ambiente (printenv | head -5):";
+var envvars = process_shell("printenv | head -5");
+print envvars;
+
+// ============================================
+// 6. Comandos encadeados com pipes
+// ============================================
+print "6. Comandos com pipes e filtros";
+print "-------------------------------------------";
+
+// Contar arquivos .yen
+print "Contando arquivos .yen no diretório:";
+var count_yen = process_shell("find . -name '*.yen' | wc -l");
+print "Total de arquivos .yen: " + count_yen;
+
+// Buscar em arquivos
+print "Buscando 'func' em arquivos .yen:";
+var grep_result = process_shell("grep -r 'func' examples/*.yen | head -5");
+print grep_result;
+
+// ============================================
+// 7. Comandos de rede
+// ============================================
+print "7. Comandos de rede";
+print "-------------------------------------------";
+
+// Ping
+print "Testando conectividade (ping -c 3 google.com):";
+var ping = process_shell("ping -c 3 google.com");
+print ping;
+
+// IP local
+print "Endereço IP (ifconfig | grep inet):";
+var ip = process_shell("ifconfig | grep inet | head -3");
+print ip;
+
+// ============================================
+// 8. Processamento de saída
+// ============================================
+print "8. Processamento de saída de comandos";
+print "-------------------------------------------";
+
+// Listar arquivos e processar
+var file_list = process_shell("ls -1 examples/");
+var lines = str_split(file_list, "\n");
+
+print "Arquivos no diretório examples/:";
+for line in lines {
+    if (str_contains(line, ".yen")) {
+        print "  - " + line;
+    }
+}
+print "";
+
+// ============================================
+// 9. Execução condicional baseada em saída
+// ============================================
+print "9. Execução condicional";
+print "-------------------------------------------";
+
+var os_type = process_shell("uname");
+
+if (str_contains(os_type, "Darwin")) {
+    print "Sistema operacional: macOS";
+    var mac_version = process_shell("sw_vers -productVersion");
+    print "Versão: " + mac_version;
+} else if (str_contains(os_type, "Linux")) {
+    print "Sistema operacional: Linux";
+    var linux_version = process_shell("cat /etc/os-release | head -1");
+    print "Distribuição: " + linux_version;
+} else {
+    print "Sistema operacional: " + os_type;
+}
+
+// ============================================
+// 10. Limpeza
+// ============================================
+print "10. Limpeza";
+print "-------------------------------------------";
+print "Removendo arquivos de teste...";
+process_exec("rm -rf /tmp/yen_test");
+print "Limpeza concluída!";
+print "";
+
+print "=== Demo Finalizado ===";
