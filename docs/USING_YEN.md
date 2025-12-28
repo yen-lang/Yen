@@ -1,90 +1,103 @@
-# Como Usar YEN
+# How to Use YEN
 
-## ✅ Modo Recomendado: Interpretador (`yen`)
+## ✅ Recommended Mode: Interpreter (`yen`)
 
-O **interpretador YEN está 100% funcional** e é a forma recomendada de executar programas YEN.
+The **YEN interpreter is 100% functional** and is the recommended way to run YEN programs.
 
-### Executando Programas
+---
+
+## Running Programs
 
 ```bash
-# Sintaxe básica
+# Basic syntax
 ./yen script.yen
 
-# Exemplos funcionais
+# Working examples
 ./yen examples/hello.yen
 ./yen examples/fibonacci.yen
 ./yen examples/shell_commands.yen
 ./yen examples/system_automation.yen
 ```
 
-### Todas as Funcionalidades Disponíveis
+---
 
-O interpretador suporta **TODAS** as funcionalidades da linguagem:
+## All Available Features
 
-✅ **Sintaxe Completa**
-- Variáveis (`var`, `let`)
-- Funções
-- Classes e Structs
-- Pattern matching
-- Lambda expressions
-- Defer statements
-- Loops e condicionais
+The interpreter supports **ALL** language features:
 
-✅ **12 Bibliotecas Padrão**
-- Core (type checking, conversão)
-- Math (sqrt, pow, trigonometria, random)
-- String (split, join, upper, lower, replace)
-- Collections (push, pop, sort, reverse)
-- IO (read_file, write_file)
-- FS (exists, create_dir, remove)
-- Time (now, sleep)
-- Crypto (xor, hash, random_bytes)
-- Encoding (base64, hex)
-- Log (info, warn, error)
-- Env (get, set)
-- **Process (exec, shell, spawn, cwd, chdir)** ⭐
+### ✅ Full Syntax Support
 
-### Exemplos de Uso
+* Variables (`var`, `let`)
+* Functions
+* Classes and Structs
+* Pattern matching
+* Lambda expressions
+* Defer statements
+* Loops and conditionals
 
-#### 1. Shell Commands
+### ✅ 12 Standard Libraries
+
+* **Core** (type checking, conversion)
+* **Math** (sqrt, pow, trigonometry, random)
+* **String** (split, join, upper, lower, replace)
+* **Collections** (push, pop, sort, reverse)
+* **IO** (read_file, write_file)
+* **FS** (exists, create_dir, remove)
+* **Time** (now, sleep)
+* **Crypto** (xor, hash, random_bytes)
+* **Encoding** (base64, hex)
+* **Log** (info, warn, error)
+* **Env** (get, set)
+* **Process** (exec, shell, spawn, cwd, chdir) ⭐
+
+---
+
+## Usage Examples
+
+### 1. Shell Commands
 
 ```bash
 ./yen examples/os_shell_simple.yen
 ```
 
 ```yen
-// Executar comandos shell
+// Execute shell commands
 var files = process_shell("ls -la");
 print files;
 
-// Diretório atual
+// Current directory
 var dir = process_cwd();
 print "Working in: " + dir;
 
-// Executar e verificar código
+// Execute and check exit code
 var result = process_exec("mkdir /tmp/test");
 if (result == 0) {
     print "Success!";
 }
 ```
 
-#### 2. Automação do Sistema
+---
+
+### 2. System Automation
 
 ```bash
 ./yen examples/system_automation.yen
 ```
 
-Veja o arquivo completo para exemplos de:
-- Backup automático
-- Monitor de disco
-- Sistema de logs
-- Limpeza de arquivos temporários
-- Relatórios do sistema
+See the full file for examples such as:
 
-#### 3. Processamento de Dados
+* Automatic backups
+* Disk monitoring
+* Logging systems
+* Temporary file cleanup
+* System reports
+
+---
+
+### 3. Data Processing
 
 ```yen
-// Ler e processar arquivo
+// Read and process a file
 var content = io_read_file("data.txt");
 var lines = str_split(content, "\n");
 
@@ -95,7 +108,9 @@ for line in lines {
 }
 ```
 
-#### 4. Operações Matemáticas
+---
+
+### 4. Mathematical Operations
 
 ```yen
 var result = math_sqrt(16);
@@ -107,86 +122,90 @@ print "Random: " + random;  // 0.0 to 1.0
 
 ---
 
-## ⚠️ Compilador (`yenc`) - EM DESENVOLVIMENTO
+## ⚠️ Compiler (`yenc`) – UNDER DEVELOPMENT
 
-O compilador LLVM está em desenvolvimento e **não deve ser usado** no momento.
-
-### Status Atual
-
-❌ **NÃO FUNCIONAL** - Segmentation fault em runtime
-⚠️ Type checker implementado
-⚠️ Infraestrutura LLVM parcialmente completa
-⚠️ Geração de código incompleta
-
-### O Que Falta
-
-1. Correção de bugs críticos (segfault)
-2. Geração completa de LLVM IR para todas as expressões
-3. Linking com bibliotecas nativas
-4. Runtime para gerenciar valores dinâmicos
-5. Suporte para tipos complexos (listas, strings dinâmicas)
-6. Geração de código para pattern matching
-7. Suporte para lambdas e closures
-8. Otimizações
-
-### Por Que Não Funciona?
-
-O compilador LLVM é significativamente mais complexo que o interpretador porque:
-
-1. **Tipagem Dinâmica vs Estática**: YEN usa tipagem dinâmica em runtime, mas LLVM requer tipos estáticos. É necessário um sistema de runtime boxing/unboxing.
-
-2. **Valores Dinâmicos**: O sistema de `Value` (variant com int, double, string, list, etc.) precisa ser representado em LLVM IR com tagged unions ou vtables.
-
-3. **Bibliotecas Nativas**: As funções C++ nativas precisam ser linkadas corretamente com o código gerado.
-
-4. **Gerenciamento de Memória**: Strings, listas e outros tipos alocados dinamicamente precisam de um runtime de memória.
-
-5. **Closures**: Lambdas com captures requerem geração de estruturas de closure e trampolinas.
+The LLVM compiler is under development and **should not be used** at this time.
 
 ---
 
-## 📋 Recomendações
+### Current Status
 
-### Para Desenvolvimento
+* ❌ **NOT FUNCTIONAL** – runtime segmentation fault
+* ⚠️ Type checker implemented
+* ⚠️ LLVM infrastructure partially complete
+* ⚠️ Code generation incomplete
 
-**Use o interpretador (`yen`)**
+---
+
+### What Is Missing
+
+1. Critical bug fixes (segfaults)
+2. Full LLVM IR generation
+3. Native library linking
+4. Runtime for dynamic values
+5. Support for complex types (lists, dynamic strings)
+6. Pattern matching code generation
+7. Lambda and closure support
+8. Optimizations
+
+---
+
+### Why It Does Not Work Yet
+
+The LLVM compiler is significantly more complex than the interpreter because:
+
+1. **Dynamic vs Static Typing**
+   YEN uses dynamic typing at runtime, while LLVM requires static types. A boxing/unboxing runtime system is required.
+
+2. **Dynamic Values**
+   The `Value` system (variant holding int, double, string, list, etc.) must be represented in LLVM IR using tagged unions or vtables.
+
+3. **Native Libraries**
+   C++ native functions must be properly linked with the generated code.
+
+4. **Memory Management**
+   Dynamically allocated strings and lists require a memory runtime.
+
+5. **Closures**
+   Lambdas with captures require closure structures and trampolines.
+
+---
+
+## 📋 Recommendations
+
+### For Development
+
+**Use the interpreter (`yen`)**
+
 ```bash
-# Desenvolvimento iterativo
-./yen meu_script.yen
-
-# Modificar código
-vim meu_script.yen
-
-# Executar novamente
-./yen meu_script.yen
+./yen my_script.yen
 ```
 
-### Para Produção (Atual)
+---
 
-**Use o interpretador em um script wrapper**
+### For Production (Current)
+
+**Use the interpreter with a wrapper script**
 
 ```bash
 #!/bin/bash
 # deploy.sh
 
-# Copiar interpretador e script
 cp build/yen /opt/myapp/
 cp scripts/main.yen /opt/myapp/
 
-# Executar
 cd /opt/myapp
 ./yen main.yen
 ```
 
-### Para Produção (Futuro)
+---
 
-Quando o compilador estiver completo:
+### For Production (Future)
+
+Once the compiler is complete:
 
 ```bash
-# Compilar para executável nativo
 ./yenc main.yen -o myapp --opt=3
-
-# Distribuir executável standalone
 ./myapp
 ```
 
@@ -194,54 +213,57 @@ Quando o compilador estiver completo:
 
 ## 🚀 Performance
 
-### Interpretador
+### Interpreter
 
-**Vantagens:**
-- ✅ Startup instantâneo
-- ✅ Iteração rápida
-- ✅ Ideal para scripts e automação
-- ✅ Sem etapa de compilação
+**Advantages**
 
-**Performance:**
-- Adequado para a maioria dos casos de uso
-- Scripts de automação
-- Processamento de arquivos
-- Administração de sistemas
-- Prototipagem
+* Instant startup
+* Fast iteration
+* Ideal for scripting and automation
+* No compilation step
 
-### Compilador (Quando Pronto)
+**Use Cases**
 
-**Vantagens Planejadas:**
-- ⏱️ Performance próxima a C
-- 📦 Executável standalone
-- 🔧 Otimizações LLVM
-- 🚀 Ideal para aplicações de longa duração
+* Automation scripts
+* File processing
+* System administration
+* Prototyping
+* DevOps and CI/CD
 
 ---
 
-## 📊 Comparação
+### Compiler (Planned)
 
-| Recurso | Interpretador | Compilador |
-|---------|--------------|------------|
-| Status | ✅ Funcional | ❌ Em Desenvolvimento |
-| Startup | Instantâneo | N/A |
-| Performance | Boa | N/A |
-| Biblioteca Padrão | ✅ Completa | ❌ |
-| Shell Commands | ✅ Funciona | ❌ |
-| Pattern Matching | ✅ Funciona | ❌ |
-| Lambdas | ✅ Funciona | ❌ |
-| Deployment | Script + interpretador | N/A |
+**Expected Advantages**
+
+* Near-C performance
+* Standalone executable
+* LLVM optimizations
+* Ideal for long-running applications
 
 ---
 
-## 💡 Dicas
+## 📊 Comparison
 
-### 1. Use Shebang para Scripts Executáveis
+| Feature          | Interpreter          | Compiler         |
+| ---------------- | -------------------- | ---------------- |
+| Status           | ✅ Working            | ❌ In Development |
+| Startup          | Instant              | N/A              |
+| Performance      | Good                 | N/A              |
+| Standard Library | ✅ Complete           | ❌                |
+| Shell Commands   | ✅ Yes                | ❌                |
+| Pattern Matching | ✅ Yes                | ❌                |
+| Lambdas          | ✅ Yes                | ❌                |
+| Deployment       | Script + interpreter | N/A              |
+
+---
+
+## 💡 Tips
+
+### 1. Use Shebang for Executable Scripts
 
 ```yen
 #!/opt/Yen/build/yen
-// script.yen
-
 print "Hello from executable script!";
 ```
 
@@ -250,45 +272,45 @@ chmod +x script.yen
 ./script.yen
 ```
 
-### 2. Organizar Projetos
+---
+
+### 2. Project Structure
 
 ```
-meu_projeto/
+my_project/
 ├── src/
 │   ├── main.yen
 │   ├── utils.yen
 │   └── config.yen
 ├── tests/
 │   └── test_main.yen
-└── run.sh          # ./yen src/main.yen
+└── run.sh
 ```
 
-### 3. Debugging
+---
 
-Use `print` statements generosamente:
+### 3. Debugging
 
 ```yen
 func process_data(data) {
     print "[DEBUG] Processing: " + data;
-
     var result = transform(data);
     print "[DEBUG] Result: " + result;
-
     return result;
 }
 ```
 
+---
+
 ### 4. Error Handling
 
 ```yen
-// Verificar resultado de comandos
 var result = process_exec("mkdir /tmp/mydir");
 if (result != 0) {
     log_error("Failed to create directory!");
     return;
 }
 
-// Verificar se arquivo existe
 if (!fs_exists("config.txt")) {
     log_warn("Config file not found, using defaults");
 }
@@ -296,47 +318,48 @@ if (!fs_exists("config.txt")) {
 
 ---
 
-## 🔗 Mais Informações
+## 🔗 More Information
 
-- [README.md](../README.md) - Visão geral do projeto
-- [SYNTAX.md](SYNTAX.md) - Sintaxe completa da linguagem
-- [STDLIB.md](STDLIB.md) - Referência da biblioteca padrão
-- [PROCESS_SHELL.md](PROCESS_SHELL.md) - Guia de comandos shell
-- [COMPILER_STATUS.md](COMPILER_STATUS.md) - Status detalhado do compilador
+* `README.md` – Project overview
+* `SYNTAX.md` – Full language syntax
+* `STDLIB.md` – Standard library reference
+* `PROCESS_SHELL.md` – Shell command guide
+* `COMPILER_STATUS.md` – Detailed compiler status
 
 ---
 
 ## ❓ FAQ
 
-**P: Posso usar YEN em produção?**
-R: Sim! Use o interpretador para scripts e automação de sistemas.
+**Q: Can I use YEN in production?**
+Yes. Use the interpreter for scripts and automation.
 
-**P: O interpretador é confiável?**
-R: Sim, está 100% funcional com todas as funcionalidades implementadas e testadas.
+**Q: Is the interpreter reliable?**
+Yes. It is fully implemented and tested.
 
-**P: Quando o compilador ficará pronto?**
-R: O compilador é um trabalho em progresso. Acompanhe o repositório GitHub para atualizações.
+**Q: When will the compiler be ready?**
+It is a work in progress. Follow the GitHub repository for updates.
 
-**P: O interpretador é lento?**
-R: Para scripts e automação de sistemas, a performance é excelente. Para computação intensiva, aguarde o compilador.
+**Q: Is the interpreter slow?**
+No. Performance is excellent for scripting and automation.
 
-**P: Posso contribuir para o compilador?**
-R: Sim! Contribuições são bem-vindas. Veja [CONTRIBUTING.md](../CONTRIBUTING.md).
+**Q: Can I contribute?**
+Yes. Contributions are welcome. See `CONTRIBUTING.md`.
 
 ---
 
-## ✅ Conclusão
+## ✅ Conclusion
 
-**Use o interpretador YEN (`yen`) agora!**
+**Use the YEN interpreter (`yen`) today.**
 
-Ele está pronto para uso em:
-- ✅ Scripts de automação
-- ✅ Administração de sistemas
-- ✅ Processamento de arquivos
-- ✅ Integração com shell
-- ✅ Prototipagem rápida
-- ✅ DevOps e CI/CD
+It is production-ready for:
 
-O compilador será uma adição futura para casos de uso que exigem máxima performance, mas o interpretador já é uma ferramenta poderosa e completa!
+* Automation scripts
+* System administration
+* File processing
+* Shell integration
+* Rapid prototyping
+* DevOps and CI/CD
 
-**Happy coding with YEN! 🚀**
+The compiler will arrive later for high-performance use cases, but the interpreter is already a powerful and complete tool.
+
+**Happy coding with YEN.**
