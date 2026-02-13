@@ -1,0 +1,32 @@
+// tests/test_lambdas.yen - Lambda expressions and higher-order functions
+
+// Basic lambda
+let square = |x| x * x;
+print square(5); // Expected: 25
+print square(3); // Expected: 9
+
+// Lambda with two parameters
+let add = |a, b| a + b;
+print add(10, 20); // Expected: 30
+
+// Using lambda with map
+let nums = [1, 2, 3, 4, 5];
+let doubled = map(nums, |x| x * 2);
+print doubled[0]; // Expected: 2
+print doubled[4]; // Expected: 10
+
+// Using lambda with filter
+let evens = filter(nums, |x| x % 2 == 0);
+print len(evens); // Expected: 2
+print evens[0]; // Expected: 2
+print evens[1]; // Expected: 4
+
+// Using lambda with reduce
+let sum = reduce(nums, 0, |acc, x| acc + x);
+print sum; // Expected: 15
+
+// Nested function calls
+func apply(f, val) {
+    return f(val);
+}
+print apply(|x| x + 100, 42); // Expected: 142

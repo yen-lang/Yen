@@ -1,0 +1,25 @@
+// test_native_math.yen - New math functions
+
+// sign
+print math_sign(-5); // Expected: -1
+print math_sign(0); // Expected: 0
+print math_sign(42); // Expected: 1
+
+// lerp (linear interpolation)
+print math_lerp(0.0, 10.0, 0.5); // Expected: 5.0
+
+// is_nan / is_inf
+print math_is_nan(math_NAN); // Expected: true
+print math_is_nan(42.0); // Expected: false
+print math_is_inf(math_INF); // Expected: true
+print math_is_inf(0.0); // Expected: false
+
+// gcd / lcm
+print math_gcd(12, 8); // Expected: 4
+print math_lcm(4, 6); // Expected: 12
+
+// factorial
+print math_factorial(5); // Expected: 120
+print math_factorial(0); // Expected: 1
+
+print "math ok";

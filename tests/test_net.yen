@@ -1,0 +1,22 @@
+// test_net.yen - Networking module (socket basics)
+
+import 'net.socket';
+
+// Create and close a TCP socket
+let sock = socket_tcp();
+print sock >= 0; // Expected: true
+socket_close(sock);
+
+// Create and close a UDP socket
+let udp = socket_udp();
+print udp >= 0; // Expected: true
+socket_close(udp);
+
+// Test server socket lifecycle
+let server = socket_tcp();
+socket_bind(server, "127.0.0.1", 19876);
+socket_listen(server);
+// Don't try to accept (would block), just close
+socket_close(server);
+
+print "net ok";

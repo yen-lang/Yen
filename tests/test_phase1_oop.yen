@@ -1,0 +1,281 @@
+// ============================================================================
+// Phase 1: OOP Foundation Tests
+// ============================================================================
+
+// 1.1 Inheritance (extends + super)
+class Animal {
+    let name;
+    let sound;
+    func init(name) {
+        this.name = name;
+        this.sound = "...";
+    }
+    func speak() {
+        return this.name + " says " + this.sound;
+    }
+}
+
+class Dog extends Animal {
+    func init(name) {
+        super.init(name);
+        this.sound = "Woof!";
+    }
+    func fetch() {
+        return this.name + " fetches the ball!";
+    }
+}
+
+class GoldenRetriever extends Dog {
+    let color;
+    func init(name) {
+        super.init(name);
+        this.color = "golden";
+    }
+    func describe() {
+        return this.name + " is " + this.color;
+    }
+}
+
+let dog = Dog("Rex");
+print dog.speak();       // Rex says Woof!
+print dog.fetch();       // Rex fetches the ball!
+
+let goldie = GoldenRetriever("Buddy");
+print goldie.speak();    // Buddy says Woof! (inherited from Animal via Dog)
+print goldie.fetch();    // Buddy fetches the ball! (inherited from Dog)
+print goldie.describe(); // Buddy is golden
+
+// 1.2 Static Methods & Fields
+class MathUtils {
+    static let PI = 3.14159;
+    static func square(x) {
+        return x * x;
+    }
+    static func cube(x) {
+        return x * x * x;
+    }
+}
+print MathUtils.PI;         // 3.14159
+print MathUtils.square(5);  // 25
+print MathUtils.cube(3);    // 27
+
+// 1.3 Access Modifiers (pub/priv)
+class Account {
+    priv let balance;
+    pub let owner;
+
+    func init(owner, balance) {
+        this.owner = owner;
+        this.balance = balance;
+    }
+
+    pub func getBalance() {
+        return this.balance;
+    }
+
+    priv func secret() {
+        return "secret!";
+    }
+
+    pub func reveal() {
+        return this.secret();
+    }
+}
+
+let acc = Account("Alice", 1000);
+print acc.owner;         // Alice
+print acc.getBalance();  // 1000
+print acc.reveal();      // secret!
+
+// Accessing private from outside should throw
+try {
+    print acc.balance;
+} catch (e) {
+    print "Access denied: private field"; // Expected
+}
+
+// 1.4 Getters and Setters
+class Circle {
+    let radius;
+    func init(r) {
+        this.radius = r;
+    }
+    get area() {
+        return 3.14159 * this.radius * this.radius;
+    }
+    set area(a) {
+        this.radius = (a / 3.14159) ** 0.5;
+    }
+}
+
+let c = Circle(5);
+print c.area;        // ~78.5
+c.area = 314.159;    // sets radius to 10
+print c.radius;      // 10.0 (approx)
+
+// 1.5 toString() Protocol
+class Point {
+    let x;
+    let y;
+    func init(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+    func toString() {
+        return "Point(" + str(this.x) + ", " + str(this.y) + ")";
+    }
+}
+
+let p = Point(3, 4);
+print p;  // Point(3, 4)
+
+// 1.6 Operator Overloading
+class Vec2 {
+    let x;
+    let y;
+    func init(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+    func __add(other) {
+        return Vec2(this.x + other.x, this.y + other.y);
+    }
+    func __sub(other) {
+        return Vec2(this.x - other.x, this.y - other.y);
+    }
+    func __mul(other) {
+        return Vec2(this.x * other.x, this.y * other.y);
+    }
+    func __eq(other) {
+        return this.x == other.x && this.y == other.y;
+    }
+    func __neg() {
+        return Vec2(-this.x, -this.y);
+    }
+    func toString() {
+        return "Vec2(" + str(this.x) + ", " + str(this.y) + ")";
+    }
+}
+
+let a = Vec2(1, 2);
+let b = Vec2(3, 4);
+let sum = a + b;
+print sum;  // Vec2(4, 6)
+let diff = b - a;
+print diff; // Vec2(2, 2)
+print a == Vec2(1, 2);  // true
+print a == b;            // false
+let neg = -a;
+print neg;  // Vec2(-1, -2)
+
+// 1.7 is Type Check Operator
+print 42 is int;           // true
+print 3.14 is float;       // true
+print "hi" is string;      // true
+print true is bool;        // true
+print [1,2] is list;       // true
+print None is None;        // true
+
+let pt = Point(1, 2);
+print pt is Point;         // true
+
+// is with inheritance
+print dog is Dog;          // true
+print dog is Animal;       // true
+print goldie is GoldenRetriever; // true
+print goldie is Dog;       // true
+print goldie is Animal;    // true
+
+// 1.8 Abstract Methods
+class Shape {
+    func area();        // abstract - no body
+    func perimeter();   // abstract - no body
+    func describe() {
+        return "I am a shape";
+    }
+}
+
+class Rect extends Shape {
+    let w;
+    let h;
+    func init(w, h) {
+        this.w = w;
+        this.h = h;
+    }
+    func area() {
+        return this.w * this.h;
+    }
+    func perimeter() {
+        return 2 * (this.w + this.h);
+    }
+}
+
+let rect = Rect(5, 3);
+print rect.area();       // 15
+print rect.perimeter();  // 16
+print rect.describe();   // I am a shape
+
+// Abstract class can't be instantiated
+try {
+    let s = Shape();
+} catch (e) {
+    print "Cannot instantiate abstract class"; // Expected
+}
+
+// 1.9 Method Chaining
+class Builder {
+    let parts;
+    func init() {
+        this.parts = [];
+    }
+    func add(p) {
+        this.parts = this.parts + [p];
+    }
+    func build() {
+        return str_join(this.parts, ", ");
+    }
+}
+
+let result = Builder().add("A").add("B").add("C").build();
+print result;  // A, B, C
+
+// 1.10 Traits + impl
+trait Printable {
+    func display();
+}
+
+trait Serializable {
+    func serialize();
+    func defaultMethod() {
+        return "default from trait";
+    }
+}
+
+class User {
+    let name;
+    let email;
+    func init(name, email) {
+        this.name = name;
+        this.email = email;
+    }
+    func display() {
+        return "User: " + this.name;
+    }
+    func serialize() {
+        return this.name + ":" + this.email;
+    }
+}
+
+impl Printable for User { }
+impl Serializable for User { }
+
+let user = User("Alice", "alice@example.com");
+print user.display();     // User: Alice
+print user.serialize();   // Alice:alice@example.com
+print user.defaultMethod(); // default from trait
+
+// is works with traits
+print user is Printable;    // true
+print user is Serializable; // true
+
+print "All Phase 1 tests passed!";

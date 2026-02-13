@@ -1,0 +1,39 @@
+// test_destructuring.yen - List destructuring
+
+// Basic destructuring
+let [x, y, z] = [10, 20, 30];
+print x; // Expected: 10
+print y; // Expected: 20
+print z; // Expected: 30
+
+// Destructuring with var (mutable)
+var [a, b] = [1, 2];
+print a; // Expected: 1
+a = 99;
+print a; // Expected: 99
+
+// Destructuring with fewer names than elements
+let [first, second] = [100, 200, 300];
+print first; // Expected: 100
+print second; // Expected: 200
+
+// Destructuring from function return
+func get_point() {
+    return [3, 4];
+}
+let [px, py] = get_point();
+print px; // Expected: 3
+print py; // Expected: 4
+
+// Destructuring with enumerate
+let items = ["alpha", "beta", "gamma"];
+for pair in enumerate(items) {
+    let [idx, val] = pair;
+    print "${idx}: ${val}";
+}
+// Expected:
+// 0: alpha
+// 1: beta
+// 2: gamma
+
+print "destructuring ok";

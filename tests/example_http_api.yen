@@ -1,0 +1,211 @@
+// example_http_api.yen - REST API Demo
+// Demonstrates ALL HTTP methods: GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS
+// Self-contained: starts server in goroutine, runs client requests, shuts down
+
+import 'net.http';
+import 'async';
+
+let PORT = 18090;
+
+// ─── Server: REST API with in-memory store ──────────────
+
+func run_api_server(server, ready_ch, done_ch) {
+    // In-memory database
+    var items = {
+        "1": {"id": "1", "name": "Widget", "price": 9.99},
+        "2": {"id": "2", "name": "Gadget", "price": 24.99}
+    };
+    var next_id = 3;
+
+    // Helper: extract ID from /api/items/123
+    func extract_id(path) {
+        let parts = str_split(path, "/");
+        if (len(parts) >= 4) {
+            return parts[3];
+        }
+        return "";
+    }
+
+    // Helper: send JSON response
+    func json_response(client, status, data) {
+        http_server_respond(client, status,
+            {"Content-Type": "application/json"}, json_to_string(data));
+    }
+
+    send(ready_ch, true);
+
+    // Handle 9 requests
+    var count = 0;
+    while (count < 9) {
+        let req = http_server_next(server);
+        let method = req["method"];
+        let path = req["path"];
+        let client = req["client"];
+        let body = req["body"];
+        count = count + 1;
+
+        print "  [Server] " + method + " " + path;
+
+        // ── GET /api/items ── List all items
+        if (path == "/api/items" && method == "GET") {
+            let all = map_values(items);
+            json_response(client, 200, all);
+        }
+
+        // ── POST /api/items ── Create new item
+        else if (path == "/api/items" && method == "POST") {
+            var new_item = json_from_string(body);
+            let id = str(next_id);
+            next_id = next_id + 1;
+            map_set(new_item, "id", id);
+            map_set(items, id, new_item);
+            json_response(client, 201, new_item);
+        }
+
+        // ── OPTIONS /api/items ── CORS preflight
+        else if (path == "/api/items" && method == "OPTIONS") {
+            http_server_respond(client, 204,
+                {"Allow": "GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS",
+                 "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH",
+                 "Access-Control-Allow-Origin": "*"},
+                "");
+        }
+
+        // ── HEAD /api/items ── Headers only
+        else if (path == "/api/items" && method == "HEAD") {
+            http_server_respond(client, 200,
+                {"Content-Type": "application/json"}, "");
+        }
+
+        // ── GET /api/items/:id ── Read single item
+        else if (str_starts_with(path, "/api/items/") && method == "GET") {
+            let id = extract_id(path);
+            if (map_has(items, id)) {
+                json_response(client, 200, map_get(items, id, {}));
+            } else {
+                json_response(client, 404, {"error": "Item not found"});
+            }
+        }
+
+        // ── PUT /api/items/:id ── Replace item entirely
+        else if (str_starts_with(path, "/api/items/") && method == "PUT") {
+            let id = extract_id(path);
+            var updated = json_from_string(body);
+            map_set(updated, "id", id);
+            map_set(items, id, updated);
+            json_response(client, 200, updated);
+        }
+
+        // ── PATCH /api/items/:id ── Partial update
+        else if (str_starts_with(path, "/api/items/") && method == "PATCH") {
+            let id = extract_id(path);
+            if (map_has(items, id)) {
+                let existing = map_get(items, id, {});
+                let patch = json_from_string(body);
+                var merged = map_merge(existing, patch);
+                map_set(merged, "id", id);
+                map_set(items, id, merged);
+                json_response(client, 200, merged);
+            } else {
+                json_response(client, 404, {"error": "Item not found"});
+            }
+        }
+
+        // ── DELETE /api/items/:id ── Remove item
+        else if (str_starts_with(path, "/api/items/") && method == "DELETE") {
+            let id = extract_id(path);
+            if (map_has(items, id)) {
+                map_remove(items, id);
+                json_response(client, 200, {"deleted": true, "id": id});
+            } else {
+                json_response(client, 404, {"error": "Item not found"});
+            }
+        }
+
+        // ── 404 fallback ──
+        else {
+            json_response(client, 404, {"error": "Not found"});
+        }
+    }
+
+    send(done_ch, true);
+}
+
+// ─── Start server and run client ────────────────────────
+
+let server = http_server(PORT);
+let ready_ch = chan(1);
+let done_ch = chan(1);
+
+go run_api_server(server, ready_ch, done_ch);
+recv(ready_ch);
+sleep(50);
+
+let base = "http://127.0.0.1:" + str(PORT);
+
+print "=== Yen REST API Demo ===";
+print "Server running on port " + str(PORT);
+
+// ─── 1. GET /api/items ── List all ──────────────────────
+print "\n--- GET /api/items (list all) ---";
+let r1 = http_get(base + "/api/items");
+print "Status: " + str(r1["status"]);
+print "Body:   " + r1["body"];
+
+// ─── 2. POST /api/items ── Create ───────────────────────
+print "\n--- POST /api/items (create) ---";
+let r2 = http_post(base + "/api/items",
+    '{"name": "Doohickey", "price": 14.99}', "application/json");
+print "Status: " + str(r2["status"]);
+print "Body:   " + r2["body"];
+
+// ─── 3. GET /api/items/1 ── Read single ─────────────────
+print "\n--- GET /api/items/1 (read) ---";
+let r3 = http_get(base + "/api/items/1");
+print "Status: " + str(r3["status"]);
+print "Body:   " + r3["body"];
+
+// ─── 4. PUT /api/items/1 ── Replace ─────────────────────
+print "\n--- PUT /api/items/1 (replace) ---";
+let r4 = http_put(base + "/api/items/1",
+    '{"name": "Super Widget", "price": 19.99}', "application/json");
+print "Status: " + str(r4["status"]);
+print "Body:   " + r4["body"];
+
+// ─── 5. PATCH /api/items/2 ── Partial update ────────────
+print "\n--- PATCH /api/items/2 (partial update) ---";
+let r5 = http_patch(base + "/api/items/2",
+    '{"price": 29.99}', "application/json");
+print "Status: " + str(r5["status"]);
+print "Body:   " + r5["body"];
+
+// ─── 6. DELETE /api/items/1 ── Delete ───────────────────
+print "\n--- DELETE /api/items/1 (delete) ---";
+let r6 = http_delete(base + "/api/items/1");
+print "Status: " + str(r6["status"]);
+print "Body:   " + r6["body"];
+
+// ─── 7. OPTIONS /api/items ── Preflight ─────────────────
+print "\n--- OPTIONS /api/items (CORS preflight) ---";
+let r7 = http_request("OPTIONS", base + "/api/items", {}, "");
+print "Status: " + str(r7["status"]);
+
+// ─── 8. HEAD /api/items ── Headers only ─────────────────
+print "\n--- HEAD /api/items (headers only) ---";
+let r8 = http_request("HEAD", base + "/api/items", {}, "");
+print "Status: " + str(r8["status"]);
+print "Body:   '" + r8["body"] + "' (empty = correct)";
+
+// ─── 9. GET /api/items ── Final state ───────────────────
+print "\n--- GET /api/items (final state) ---";
+let r9 = http_get(base + "/api/items");
+print "Status: " + str(r9["status"]);
+print "Body:   " + r9["body"];
+
+// ─── Cleanup ────────────────────────────────────────────
+recv(done_ch);
+http_server_close(server);
+close_chan(ready_ch);
+close_chan(done_ch);
+
+print "\nAll 9 HTTP methods demonstrated successfully!";

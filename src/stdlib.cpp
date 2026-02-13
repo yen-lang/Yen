@@ -13,7 +13,7 @@
 #include <sys/stat.h>
 
 // Math functions
-Value stdlib_sqrt(std::vector<Value> args) {
+Value stdlib_sqrt(std::vector<Value>& args) {
     if (args.size() != 1) throw std::runtime_error("sqrt expects 1 argument.");
     if (args[0].holds_alternative<double>()) return std::sqrt(args[0].get<double>());
     if (args[0].holds_alternative<int>()) return std::sqrt(args[0].get<int>());
@@ -21,20 +21,20 @@ Value stdlib_sqrt(std::vector<Value> args) {
 }
 
 // System functions
-Value stdlib_time(std::vector<Value> args) {
+Value stdlib_time(std::vector<Value>& args) {
     if (args.size() != 0) throw std::runtime_error("time expects 0 arguments.");
     auto duration = std::chrono::system_clock::now().time_since_epoch();
     return static_cast<double>(std::chrono::duration_cast<std::chrono::milliseconds>(duration).count());
 }
 
-Value stdlib_exit(std::vector<Value> args) {
+Value stdlib_exit(std::vector<Value>& args) {
     if (args.size() != 1) throw std::runtime_error("exit expects 1 argument.");
     if (args[0].holds_alternative<int>()) std::exit(args[0].get<int>());
     throw std::runtime_error("exit expects an integer exit code.");
 }
 
 // Type conversion functions
-Value stdlib_str(std::vector<Value> args) {
+Value stdlib_str(std::vector<Value>& args) {
     if (args.size() != 1) throw std::runtime_error("str() expects 1 argument.");
 
     return std::visit(overloaded {
@@ -54,7 +54,7 @@ Value stdlib_str(std::vector<Value> args) {
     }, args[0].data);
 }
 
-Value stdlib_int(std::vector<Value> args) {
+Value stdlib_int(std::vector<Value>& args) {
     if (args.size() != 1) throw std::runtime_error("int() expects 1 argument.");
 
     return std::visit(overloaded {
@@ -73,7 +73,7 @@ Value stdlib_int(std::vector<Value> args) {
     }, args[0].data);
 }
 
-Value stdlib_float(std::vector<Value> args) {
+Value stdlib_float(std::vector<Value>& args) {
     if (args.size() != 1) throw std::runtime_error("float() expects 1 argument.");
 
     return std::visit(overloaded {
@@ -92,7 +92,7 @@ Value stdlib_float(std::vector<Value> args) {
     }, args[0].data);
 }
 
-Value stdlib_type(std::vector<Value> args) {
+Value stdlib_type(std::vector<Value>& args) {
     if (args.size() != 1) throw std::runtime_error("type() expects 1 argument.");
 
     return std::visit(overloaded {
@@ -112,7 +112,7 @@ Value stdlib_type(std::vector<Value> args) {
     }, args[0].data);
 }
 
-Value stdlib_len(std::vector<Value> args) {
+Value stdlib_len(std::vector<Value>& args) {
     if (args.size() != 1) throw std::runtime_error("len() expects 1 argument.");
 
     return std::visit(overloaded {
@@ -123,7 +123,7 @@ Value stdlib_len(std::vector<Value> args) {
     }, args[0].data);
 }
 
-Value stdlib_range(std::vector<Value> args) {
+Value stdlib_range(std::vector<Value>& args) {
     if (args.size() < 1 || args.size() > 3) {
         throw std::runtime_error("range() expects 1-3 arguments.");
     }
@@ -172,31 +172,32 @@ Value stdlib_range(std::vector<Value> args) {
 }
 
 // List methods (functional style - return modified copies)
-Value stdlib_list_push(std::vector<Value> args) {
+Value stdlib_list_push(std::vector<Value>& args) {
     if (args.size() != 2) throw std::runtime_error("push() expects 2 arguments (list, value).");
     if (!args[0].holds_alternative<std::vector<Value>>()) {
         throw std::runtime_error("push() requires a list.");
     }
 
-    auto list = args[0].get<std::vector<Value>>(); // Copy
+    auto& list = const_cast<std::vector<Value>&>(args[0].get<std::vector<Value>>());
     list.push_back(args[1]);
-    return list; // Return modified copy
+    return Value(); // Returns null; list modified in-place via write-back
 }
 
-Value stdlib_list_pop(std::vector<Value> args) {
+Value stdlib_list_pop(std::vector<Value>& args) {
     if (args.size() != 1) throw std::runtime_error("pop() expects 1 argument (list).");
     if (!args[0].holds_alternative<std::vector<Value>>()) {
         throw std::runtime_error("pop() requires a list.");
     }
 
-    auto list = args[0].get<std::vector<Value>>(); // Copy
+    auto& list = const_cast<std::vector<Value>&>(args[0].get<std::vector<Value>>());
     if (list.empty()) throw std::runtime_error("pop() on empty list.");
 
+    Value last = list.back();
     list.pop_back();
-    return list; // Return list without last element
+    return last; // Returns removed element; list modified in-place via write-back
 }
 
-Value stdlib_list_insert(std::vector<Value> args) {
+Value stdlib_list_insert(std::vector<Value>& args) {
     if (args.size() != 3) throw std::runtime_error("insert() expects 3 arguments (list, index, value).");
     if (!args[0].holds_alternative<std::vector<Value>>()) {
         throw std::runtime_error("insert() requires a list.");
@@ -216,7 +217,7 @@ Value stdlib_list_insert(std::vector<Value> args) {
     return list;
 }
 
-Value stdlib_list_remove(std::vector<Value> args) {
+Value stdlib_list_remove(std::vector<Value>& args) {
     if (args.size() != 2) throw std::runtime_error("remove() expects 2 arguments (list, value).");
     if (!args[0].holds_alternative<std::vector<Value>>()) {
         throw std::runtime_error("remove() requires a list.");
@@ -234,7 +235,7 @@ Value stdlib_list_remove(std::vector<Value> args) {
     return list;
 }
 
-Value stdlib_list_contains(std::vector<Value> args) {
+Value stdlib_list_contains(std::vector<Value>& args) {
     if (args.size() != 2) throw std::runtime_error("contains() expects 2 arguments (list, value).");
     if (!args[0].holds_alternative<std::vector<Value>>()) {
         throw std::runtime_error("contains() requires a list.");
@@ -249,7 +250,7 @@ Value stdlib_list_contains(std::vector<Value> args) {
     return false;
 }
 
-Value stdlib_list_clear(std::vector<Value> args) {
+Value stdlib_list_clear(std::vector<Value>& args) {
     if (args.size() != 1) throw std::runtime_error("clear() expects 1 argument (list).");
     if (!args[0].holds_alternative<std::vector<Value>>()) {
         throw std::runtime_error("clear() requires a list.");
@@ -258,7 +259,7 @@ Value stdlib_list_clear(std::vector<Value> args) {
     return std::vector<Value>(); // Return empty list
 }
 
-Value stdlib_list_sort(std::vector<Value> args) {
+Value stdlib_list_sort(std::vector<Value>& args) {
     if (args.size() != 1) throw std::runtime_error("sort() expects 1 argument (list).");
     if (!args[0].holds_alternative<std::vector<Value>>()) {
         throw std::runtime_error("sort() requires a list.");
@@ -270,7 +271,7 @@ Value stdlib_list_sort(std::vector<Value> args) {
 }
 
 // String functions
-Value stdlib_string_split(std::vector<Value> args) {
+Value stdlib_string_split(std::vector<Value>& args) {
     if (args.size() != 2) throw std::runtime_error("split() expects 2 arguments (string, delimiter).");
     if (!args[0].holds_alternative<std::string>() || !args[1].holds_alternative<std::string>()) {
         throw std::runtime_error("split() requires two strings.");
@@ -302,7 +303,7 @@ Value stdlib_string_split(std::vector<Value> args) {
     return result;
 }
 
-Value stdlib_string_join(std::vector<Value> args) {
+Value stdlib_string_join(std::vector<Value>& args) {
     if (args.size() != 2) throw std::runtime_error("join() expects 2 arguments (list, separator).");
     if (!args[0].holds_alternative<std::vector<Value>>() || !args[1].holds_alternative<std::string>()) {
         throw std::runtime_error("join() requires a list and a string.");
@@ -329,7 +330,7 @@ Value stdlib_string_join(std::vector<Value> args) {
     return result;
 }
 
-Value stdlib_string_substring(std::vector<Value> args) {
+Value stdlib_string_substring(std::vector<Value>& args) {
     if (args.size() < 2 || args.size() > 3) {
         throw std::runtime_error("substring() expects 2-3 arguments (string, start, [end]).");
     }
@@ -360,7 +361,7 @@ Value stdlib_string_substring(std::vector<Value> args) {
     return str.substr(start);
 }
 
-Value stdlib_string_indexOf(std::vector<Value> args) {
+Value stdlib_string_indexOf(std::vector<Value>& args) {
     if (args.size() != 2) throw std::runtime_error("indexOf() expects 2 arguments (string, substring).");
     if (!args[0].holds_alternative<std::string>() || !args[1].holds_alternative<std::string>()) {
         throw std::runtime_error("indexOf() requires two strings.");
@@ -377,7 +378,7 @@ Value stdlib_string_indexOf(std::vector<Value> args) {
     return static_cast<int>(pos);
 }
 
-Value stdlib_string_toUpper(std::vector<Value> args) {
+Value stdlib_string_toUpper(std::vector<Value>& args) {
     if (args.size() != 1) throw std::runtime_error("toUpper() expects 1 argument.");
     if (!args[0].holds_alternative<std::string>()) {
         throw std::runtime_error("toUpper() requires a string.");
@@ -388,7 +389,7 @@ Value stdlib_string_toUpper(std::vector<Value> args) {
     return str;
 }
 
-Value stdlib_string_toLower(std::vector<Value> args) {
+Value stdlib_string_toLower(std::vector<Value>& args) {
     if (args.size() != 1) throw std::runtime_error("toLower() expects 1 argument.");
     if (!args[0].holds_alternative<std::string>()) {
         throw std::runtime_error("toLower() requires a string.");
@@ -399,7 +400,7 @@ Value stdlib_string_toLower(std::vector<Value> args) {
     return str;
 }
 
-Value stdlib_string_trim(std::vector<Value> args) {
+Value stdlib_string_trim(std::vector<Value>& args) {
     if (args.size() != 1) throw std::runtime_error("trim() expects 1 argument.");
     if (!args[0].holds_alternative<std::string>()) {
         throw std::runtime_error("trim() requires a string.");
@@ -428,14 +429,14 @@ double to_double(const Value& v) {
 }
 
 // Math functions
-Value stdlib_math_pow(std::vector<Value> args) {
+Value stdlib_math_pow(std::vector<Value>& args) {
     if (args.size() != 2) throw std::runtime_error("pow() expects 2 arguments.");
     double base = to_double(args[0]);
     double exp = to_double(args[1]);
     return std::pow(base, exp);
 }
 
-Value stdlib_math_abs(std::vector<Value> args) {
+Value stdlib_math_abs(std::vector<Value>& args) {
     if (args.size() != 1) throw std::runtime_error("abs() expects 1 argument.");
 
     if (args[0].holds_alternative<int>()) {
@@ -444,22 +445,22 @@ Value stdlib_math_abs(std::vector<Value> args) {
     return std::abs(to_double(args[0]));
 }
 
-Value stdlib_math_floor(std::vector<Value> args) {
+Value stdlib_math_floor(std::vector<Value>& args) {
     if (args.size() != 1) throw std::runtime_error("floor() expects 1 argument.");
     return std::floor(to_double(args[0]));
 }
 
-Value stdlib_math_ceil(std::vector<Value> args) {
+Value stdlib_math_ceil(std::vector<Value>& args) {
     if (args.size() != 1) throw std::runtime_error("ceil() expects 1 argument.");
     return std::ceil(to_double(args[0]));
 }
 
-Value stdlib_math_round(std::vector<Value> args) {
+Value stdlib_math_round(std::vector<Value>& args) {
     if (args.size() != 1) throw std::runtime_error("round() expects 1 argument.");
     return std::round(to_double(args[0]));
 }
 
-Value stdlib_math_min(std::vector<Value> args) {
+Value stdlib_math_min(std::vector<Value>& args) {
     if (args.size() < 1) throw std::runtime_error("min() expects at least 1 argument.");
 
     // Check if all inputs are int
@@ -486,7 +487,7 @@ Value stdlib_math_min(std::vector<Value> args) {
     return minVal;
 }
 
-Value stdlib_math_max(std::vector<Value> args) {
+Value stdlib_math_max(std::vector<Value>& args) {
     if (args.size() < 1) throw std::runtime_error("max() expects at least 1 argument.");
 
     // Check if all inputs are int
@@ -513,23 +514,23 @@ Value stdlib_math_max(std::vector<Value> args) {
     return maxVal;
 }
 
-Value stdlib_math_sin(std::vector<Value> args) {
+Value stdlib_math_sin(std::vector<Value>& args) {
     if (args.size() != 1) throw std::runtime_error("sin() expects 1 argument.");
     return std::sin(to_double(args[0]));
 }
 
-Value stdlib_math_cos(std::vector<Value> args) {
+Value stdlib_math_cos(std::vector<Value>& args) {
     if (args.size() != 1) throw std::runtime_error("cos() expects 1 argument.");
     return std::cos(to_double(args[0]));
 }
 
-Value stdlib_math_tan(std::vector<Value> args) {
+Value stdlib_math_tan(std::vector<Value>& args) {
     if (args.size() != 1) throw std::runtime_error("tan() expects 1 argument.");
     return std::tan(to_double(args[0]));
 }
 
 // File I/O functions
-Value stdlib_file_readFile(std::vector<Value> args) {
+Value stdlib_file_readFile(std::vector<Value>& args) {
     if (args.size() != 1) throw std::runtime_error("readFile() expects 1 argument.");
     if (!args[0].holds_alternative<std::string>()) {
         throw std::runtime_error("readFile() requires a string path.");
@@ -548,7 +549,7 @@ Value stdlib_file_readFile(std::vector<Value> args) {
     return buffer.str();
 }
 
-Value stdlib_file_writeFile(std::vector<Value> args) {
+Value stdlib_file_writeFile(std::vector<Value>& args) {
     if (args.size() != 2) throw std::runtime_error("writeFile() expects 2 arguments (path, content).");
     if (!args[0].holds_alternative<std::string>() || !args[1].holds_alternative<std::string>()) {
         throw std::runtime_error("writeFile() requires two strings.");
@@ -571,7 +572,7 @@ Value stdlib_file_writeFile(std::vector<Value> args) {
     return Value(); // Return null on success
 }
 
-Value stdlib_file_appendFile(std::vector<Value> args) {
+Value stdlib_file_appendFile(std::vector<Value>& args) {
     if (args.size() != 2) throw std::runtime_error("appendFile() expects 2 arguments (path, content).");
     if (!args[0].holds_alternative<std::string>() || !args[1].holds_alternative<std::string>()) {
         throw std::runtime_error("appendFile() requires two strings.");
@@ -594,7 +595,7 @@ Value stdlib_file_appendFile(std::vector<Value> args) {
     return Value(); // Return null on success
 }
 
-Value stdlib_file_fileExists(std::vector<Value> args) {
+Value stdlib_file_fileExists(std::vector<Value>& args) {
     if (args.size() != 1) throw std::runtime_error("fileExists() expects 1 argument.");
     if (!args[0].holds_alternative<std::string>()) {
         throw std::runtime_error("fileExists() requires a string path.");

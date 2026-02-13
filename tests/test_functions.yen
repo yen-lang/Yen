@@ -30,7 +30,7 @@ func increment(currentCount) { // Global increment function
     return currentCount + 1;
 }
 
-let myCounterValue = counter();
+var myCounterValue = counter();
 myCounterValue = increment(myCounterValue);
 print myCounterValue; // Expected: 1
 myCounterValue = increment(myCounterValue);

@@ -1,0 +1,58 @@
+// test_higher_order.yen - Higher-order built-in functions
+
+let nums = [5, 3, 8, 1, 9, 2, 7];
+
+// sort_by
+let sorted = sort_by(nums, |x| x);
+print sorted[0]; // Expected: 1
+print sorted[6]; // Expected: 9
+
+// find
+let found = find(nums, |x| x > 6);
+print found; // Expected: 8
+
+// any / all
+let has_big = any(nums, |x| x > 8);
+print has_big; // Expected: true
+
+let all_pos = all(nums, |x| x > 0);
+print all_pos; // Expected: true
+
+let all_big = all(nums, |x| x > 5);
+print all_big; // Expected: false
+
+// flat_map
+let nested = [[1, 2], [3, 4], [5]];
+let flat = flat_map(nested, |x| x);
+print len(flat); // Expected: 5
+
+// zip
+let keys = ["a", "b", "c"];
+let vals = [1, 2, 3];
+let pairs = zip(keys, vals);
+print len(pairs); // Expected: 3
+
+// enumerate
+let items = ["x", "y", "z"];
+let indexed = enumerate(items);
+print len(indexed); // Expected: 3
+
+// take / drop
+let first3 = take(nums, 3);
+print len(first3); // Expected: 3
+print first3[0]; // Expected: 5
+
+let rest = drop(nums, 5);
+print len(rest); // Expected: 2
+
+// group_by
+let words = ["cat", "car", "dog", "cow", "dart"];
+let grouped = group_by(words, |w| w[0]);
+print map_size(grouped); // Expected: 3
+
+// map_filter (returns non-null values)
+let filtered = map_filter([1, 2, 3, 4, 5], |x| x > 3 ? x * 10 : None);
+print len(filtered); // Expected: 2
+print filtered[0]; // Expected: 40
+
+print "higher-order ok";

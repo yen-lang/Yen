@@ -1,0 +1,99 @@
+// example_http_real.yen - Real HTTPS Requests Demo
+// Makes actual requests to real websites using libcurl
+// Supports HTTPS, redirects, compression, all HTTP methods
+
+import 'net.http';
+import 'os';
+
+print "=== Yen HTTP Client (powered by libcurl) ===\n";
+
+// ─── 1. HTTPS GET ───────────────────────────────────────
+print "--- 1. HTTPS GET (httpbin.org) ---";
+let r1 = http_get("https://hackersec.com");
+print "Status: " + str(r1["status"]);
+let body1 = r1["body"];
+print "Body (first 200 chars): " + str_substring(body1, 0, 200);
+print "";
+
+// ─── 2. HTTPS POST with JSON ────────────────────────────
+print "--- 2. HTTPS POST with JSON ---";
+let payload = '{"language": "yen", "features": ["goroutines", "channels", "http"]}';
+let r2 = http_post("https://httpbin.org/post", payload, "application/json");
+print "Status: " + str(r2["status"]);
+let body2 = r2["body"];
+print "Body (first 300 chars): " + str_substring(body2, 0, 300);
+print "";
+
+// ─── 3. PUT request ─────────────────────────────────────
+print "--- 3. HTTPS PUT ---";
+let r3 = http_put("https://httpbin.org/put", '{"name": "Updated Item"}', "application/json");
+print "Status: " + str(r3["status"]);
+print "Body (first 200 chars): " + str_substring(r3["body"], 0, 200);
+print "";
+
+// ─── 4. PATCH request ───────────────────────────────────
+print "--- 4. HTTPS PATCH ---";
+let r4 = http_patch("https://httpbin.org/patch", '{"price": 42.99}', "application/json");
+print "Status: " + str(r4["status"]);
+print "";
+
+// ─── 5. DELETE request ──────────────────────────────────
+print "--- 5. HTTPS DELETE ---";
+let r5 = http_delete("https://httpbin.org/delete");
+print "Status: " + str(r5["status"]);
+print "";
+
+// ─── 6. Custom headers ─────────────────────────────────
+print "--- 6. Custom Headers ---";
+let r6 = http_request("GET", "https://httpbin.org/headers",
+    {"X-Yen-Language": "1.0", "Accept": "application/json", "X-Custom": "hello-world"}, "");
+print "Status: " + str(r6["status"]);
+print "Body: " + str_substring(r6["body"], 0, 300);
+print "";
+
+// ─── 7. Follow redirects automatically ──────────────────
+print "--- 7. Redirect Following ---";
+let r7 = http_get("https://httpbin.org/redirect/3");
+print "Status (after 3 redirects): " + str(r7["status"]);
+print "";
+
+// ─── 8. HTTP Headers (HEAD request) ─────────────────────
+print "--- 8. HEAD Request (http_headers) ---";
+let h8 = http_headers("https://httpbin.org/get");
+print "Content-Type: " + str(map_get(h8, "content-type", "unknown"));
+print "Status: " + str(map_get(h8, "_status", 0));
+print "";
+
+// ─── 9. Download file ───────────────────────────────────
+print "--- 9. Download File ---";
+let dl_status = http_download("https://httpbin.org/json", "/tmp/yen_download_test.json");
+print "Download status: " + str(dl_status);
+let dl_content = os_read("/tmp/yen_download_test.json");
+print "Downloaded content (first 150 chars): " + str_substring(dl_content, 0, 150);
+print "";
+
+// ─── 10. Response headers ───────────────────────────────
+print "--- 10. Response Headers ---";
+let r10 = http_get("https://httpbin.org/response-headers?X-Yen=works&Server=Yen");
+print "Status: " + str(r10["status"]);
+let hdrs = r10["headers"];
+print "Content-Type: " + str(map_get(hdrs, "content-type", "?"));
+print "";
+
+// ─── 11. Status codes ───────────────────────────────────
+print "--- 11. Status Code Handling ---";
+let r404 = http_get("https://httpbin.org/status/404");
+print "404 test: " + str(r404["status"]);
+let r500 = http_get("https://httpbin.org/status/500");
+print "500 test: " + str(r500["status"]);
+print "";
+
+// ─── 12. Form data POST ────────────────────────────────
+print "--- 12. Form Data POST ---";
+let form = "username=yen_user&password=secure123&lang=yen";
+let r12 = http_post("https://httpbin.org/post", form, "application/x-www-form-urlencoded");
+print "Status: " + str(r12["status"]);
+print "Body (first 200 chars): " + str_substring(r12["body"], 0, 200);
+print "";
+
+print "=== All HTTPS requests completed successfully! ===";

@@ -1,0 +1,52 @@
+// ============================================================
+//  TCP SHELL CLIENT - Yen Language
+//  Connects to the TCP Shell Server on port 4444
+//
+//  Terminal 1:  ./build/yen examples/tcp_shell_server.yen
+//  Terminal 2:  ./build/yen examples/tcp_shell_client.yen
+// ============================================================
+
+import 'net.socket';
+
+let HOST = "127.0.0.1";
+let PORT = 4444;
+
+print "[*] Connecting to ${HOST}:${PORT}...";
+
+let sock = socket_tcp();
+socket_connect(sock, HOST, PORT);
+
+print "[+] Connected!";
+print "";
+
+// Receive and display the welcome banner
+let banner = socket_recv(sock);
+print banner;
+print "";
+
+// Interactive command loop
+var active = true;
+while (active) {
+    let cmd = input("remote$");
+
+    if (cmd == "") {
+        // skip empty commands
+    } else if (cmd == "exit" || cmd == "quit") {
+        socket_send(sock, "exit");
+        let response = socket_recv(sock);
+        print "Goodbye!";
+        active = false;
+    } else {
+        // Send command to server
+        socket_send(sock, cmd);
+
+        // Receive and display response
+        let response = socket_recv(sock);
+        if (response != "") {
+            print response;
+        }
+    }
+}
+
+socket_close(sock);
+print "[*] Disconnected";

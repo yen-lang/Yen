@@ -1,0 +1,54 @@
+// tests/test_operators.yen - New operators test suite
+
+// Modulo operator
+print 10 % 3; // Expected: 1
+print 17 % 5; // Expected: 2
+print 100 % 10; // Expected: 0
+
+// Exponentiation
+print 2 ** 10; // Expected: 1024
+print 3 ** 3; // Expected: 27
+print 5 ** 0; // Expected: 1
+
+// Bitwise AND
+print 12 & 10; // Expected: 8 (1100 & 1010 = 1000)
+
+// Bitwise OR
+print 12 | 10; // Expected: 14 (1100 | 1010 = 1110)
+
+// Bitwise XOR
+print 12 ^ 10; // Expected: 6 (1100 ^ 1010 = 0110)
+
+// Bitwise shift left
+print 1 << 4; // Expected: 16
+
+// Bitwise shift right
+print 256 >> 3; // Expected: 32
+
+// Unary minus
+let x = 5;
+print -x; // Expected: -5
+print -10 + 15; // Expected: 5
+
+// Bitwise NOT
+print ~0; // Expected: -1
+print ~255; // Expected: -256
+
+// Compound assignment
+var a = 10;
+a += 5;
+print a; // Expected: 15
+a -= 3;
+print a; // Expected: 12
+a *= 2;
+print a; // Expected: 24
+a /= 4;
+print a; // Expected: 6
+a %= 4;
+print a; // Expected: 2
+
+// Operator precedence
+print 2 + 3 * 4; // Expected: 14
+print (2 + 3) * 4; // Expected: 20
+print 2 ** 3 + 1; // Expected: 9
+print 10 & 14 | 1; // Expected: 11 (10 & 14 = 10, 10 | 1 = 11)

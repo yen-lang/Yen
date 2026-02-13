@@ -1,0 +1,33 @@
+// test_json.yen - JSON serialization
+
+// to_json
+print json_to_string(42); // Expected: 42
+print json_to_string("hello"); // Expected: "hello"
+print json_to_string(true); // Expected: true
+print json_to_string(None); // Expected: null
+
+// List to JSON
+let nums = [1, 2, 3];
+print json_to_string(nums); // Expected: [1, 2, 3]
+
+// Map to JSON
+let obj = {"name": "Yen", "version": 1};
+let json = json_to_string(obj);
+print str_contains(json, "Yen"); // Expected: true
+
+// from_json - parse JSON string
+let parsed = json_from_string("[1, 2, 3]");
+print len(parsed); // Expected: 3
+print parsed[0]; // Expected: 1
+
+let obj2 = json_from_string("{\"lang\": \"Yen\", \"fast\": true}");
+print map_get(obj2, "lang", ""); // Expected: Yen
+print map_get(obj2, "fast", false); // Expected: true
+
+// Round-trip
+let data = {"items": [1, 2, 3], "active": true};
+let json_str = json_to_string(data);
+let back = json_from_string(json_str);
+print map_has(back, "items"); // Expected: true
+
+print "json ok";

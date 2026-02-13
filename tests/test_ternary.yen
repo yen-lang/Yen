@@ -1,0 +1,38 @@
+// test_ternary.yen - Ternary expressions and null coalescing
+
+// Basic ternary
+let x = true ? 1 : 0;
+print x; // Expected: 1
+
+let y = false ? "yes" : "no";
+print y; // Expected: no
+
+// Nested ternary (right-associative)
+let grade = 85;
+let letter = grade >= 90 ? "A" : grade >= 80 ? "B" : grade >= 70 ? "C" : "F";
+print letter; // Expected: B
+
+// Ternary with expressions
+let a = 10;
+let b = 20;
+let max_val = a > b ? a : b;
+print max_val; // Expected: 20
+
+// Null coalescing
+let val = None ?? "default";
+print val; // Expected: default
+
+let val2 = 42 ?? "default";
+print val2; // Expected: 42
+
+// Chained null coalescing
+let first = None;
+let second = None;
+let third = "found";
+let result = first ?? second ?? third;
+print result; // Expected: found
+
+// Ternary + null coalescing combo
+let maybe = None;
+let out = maybe ?? 0 > 0 ? "positive" : "zero or less";
+print "done"; // Expected: done

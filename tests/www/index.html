@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yen Web Server</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <header>
+        <h1>Welcome to Yen</h1>
+        <p>This page is being served by a web server written entirely in the Yen programming language.</p>
+    </header>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/about.html">About</a>
+        <a href="/api-docs.html">API Docs</a>
+        <a href="/data/">Data Files</a>
+        <a href="/scripts/">Scripts</a>
+    </nav>
+    <main>
+        <section>
+            <h2>Static File Server</h2>
+            <p>This server demonstrates Yen's HTTP capabilities:</p>
+            <ul>
+                <li>Serves static files with correct MIME types (HTML, CSS, JS, JSON, TXT, SVG...)</li>
+                <li>Generates directory listings automatically</li>
+                <li>Resolves <code>index.html</code> in directories</li>
+                <li>Supports GET and HEAD methods</li>
+                <li>Returns proper HTTP status codes (200, 404, 405)</li>
+                <li>Logs all requests to console</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Quick Start</h2>
+            <pre><code>cd tests
+../build/yen webserver.yen</code></pre>
+            <p>Then open <a href="http://localhost:8080">http://localhost:8080</a> in your browser.</p>
+        </section>
+        <section>
+            <h2>How It Works</h2>
+            <pre><code>import 'net.http';
+import 'os';
+
+let server = http_server(8080);
+
+while (true) {
+    let req = http_server_next(server);
+    let content = os_read("./www" + req["path"]);
+    http_server_respond(req["client"], 200,
+        {"Content-Type": "text/html"}, content);
+}</code></pre>
+        </section>
+    </main>
+    <footer>
+        <p>Powered by <strong>Yen Language</strong> &mdash; A modern scripting language with Go-style concurrency</p>
+    </footer>
+    <script src="/scripts/main.js"></script>
+</body>
+</html>

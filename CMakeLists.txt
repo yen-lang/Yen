@@ -9,6 +9,28 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include_directories(include)
 
 # ============================================================================
+# LIBCURL DETECTION (for HTTP/HTTPS support)
+# ============================================================================
+
+find_package(CURL QUIET)
+if(NOT CURL_FOUND)
+    # Try Homebrew paths on macOS
+    find_library(CURL_LIBRARIES NAMES curl PATHS /opt/homebrew/lib /usr/local/lib)
+    find_path(CURL_INCLUDE_DIRS curl/curl.h PATHS /opt/homebrew/include /usr/local/include)
+    if(CURL_LIBRARIES AND CURL_INCLUDE_DIRS)
+        set(CURL_FOUND TRUE)
+    endif()
+endif()
+
+if(CURL_FOUND)
+    message(STATUS "Found libcurl: ${CURL_LIBRARIES}")
+    include_directories(${CURL_INCLUDE_DIRS})
+    add_definitions(-DHAVE_LIBCURL)
+else()
+    message(WARNING "libcurl not found - HTTP client will use raw sockets (no HTTPS)")
+endif()
+
+# ============================================================================
 # SOURCE FILES
 # ============================================================================
 
@@ -88,6 +110,11 @@ endif()
 
 # Build interpreter (always)
 add_executable(yen ${INTERPRETER_SOURCES})
+
+# Link libcurl to interpreter
+if(CURL_FOUND)
+    target_link_libraries(yen ${CURL_LIBRARIES})
+endif()
 
 # Build compiler (only if LLVM is available)
 if(HAVE_LLVM)

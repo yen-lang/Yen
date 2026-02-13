@@ -1,0 +1,53 @@
+// test_os.yen - OS interaction module
+
+import 'os';
+
+// Platform info
+let p = os_platform();
+print str_contains(p, "os") || p == "linux" || p == "windows"; // Expected: true
+
+let arch = os_arch();
+print str_contains(arch, "64") || str_contains(arch, "arm"); // Expected: true
+
+// Current working directory
+let cwd = os_cwd();
+print str_contains(cwd, "/"); // Expected: true
+
+// Environment variables
+os_set_env("YEN_TEST_VAR", "hello_yen");
+let val = os_env("YEN_TEST_VAR");
+print val; // Expected: hello_yen
+
+// Process ID
+let pid = os_pid();
+print pid > 0; // Expected: true
+
+// Execute command
+let result = os_exec("echo hello_from_yen");
+print str_contains(result, "hello_from_yen"); // Expected: true
+
+// File operations
+os_write("/tmp/yen_test_os.txt", "test content");
+print os_exists("/tmp/yen_test_os.txt"); // Expected: true
+let content = os_read("/tmp/yen_test_os.txt");
+print content; // Expected: test content
+
+// Directory listing
+let files = os_ls("/tmp");
+print len(files) > 0; // Expected: true
+
+// File stat
+let info = os_stat("/tmp/yen_test_os.txt");
+print map_get(info, "is_file", false); // Expected: true
+print map_get(info, "is_dir", false); // Expected: false
+
+// Cleanup
+os_rm("/tmp/yen_test_os.txt");
+print os_exists("/tmp/yen_test_os.txt"); // Expected: false
+
+// Mkdir
+os_mkdir("/tmp/yen_test_dir");
+print os_is_dir("/tmp/yen_test_dir"); // Expected: true
+os_rm("/tmp/yen_test_dir");
+
+print "os ok";

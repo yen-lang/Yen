@@ -1,0 +1,30 @@
+// test_import_module.yen - Test native module import system
+
+// Import regex module
+import 'regex';
+
+// Test that regex functions are now available
+let matched = regex_match("hello123", "[a-z]+[0-9]+");
+print matched; // Expected: true
+
+let not_matched = regex_match("hello", "^[0-9]+$");
+print not_matched; // Expected: false
+
+// Import OS module
+import 'os';
+let cwd = os_cwd();
+print str_contains(cwd, "/"); // Expected: true
+
+let platform = os_platform();
+print platform; // Expected: macos (or linux)
+
+// Import async module
+import 'async';
+let ch = chan(1);
+print typeof(ch); // Expected: int
+
+// Double import should be idempotent
+import 'regex';
+import 'os';
+
+print "import module ok";

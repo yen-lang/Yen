@@ -1,0 +1,120 @@
+// ============================================
+// Phase 4 Test: Advanced OOP (8 features)
+// ============================================
+
+// 4.1 Data Classes
+print "=== 4.1 Data Classes ===";
+data class Point { let x; let y; }
+let p = Point(3, 4);
+print p;                          // Point(x: 3, y: 4)
+print p.x;                        // 3
+print p.y;                        // 4
+print p == Point(3, 4);           // true
+print p == Point(1, 2);           // false
+
+// 4.2 Sealed Classes
+print "=== 4.2 Sealed Classes ===";
+sealed class Config {
+    let value;
+    func init(v) { this.value = v; }
+}
+let cfg = Config("test");
+print cfg.value;                   // test
+
+// 4.3 Object Destructuring (already done in Phase 2)
+print "=== 4.3 Object Destructuring ===";
+let person = {"name": "Alice", "age": 30};
+let {name, age} = person;
+print name;                        // Alice
+print age;                         // 30
+
+// 4.4 Lazy Properties
+print "=== 4.4 Lazy Properties ===";
+class DataLoader {
+    let source;
+    func init(s) { this.source = s; }
+    lazy let processed = "processed_" + this.source;
+}
+let loader = DataLoader("raw_data");
+print loader.source;               // raw_data
+print loader.processed;            // processed_raw_data
+
+// 4.5 Multiple Trait Implementation (Mixins)
+print "=== 4.5 Mixins ===";
+trait Serializable {
+    func serialize();
+}
+trait Loggable {
+    func log() {
+        print "logging";
+    }
+}
+class User impl Serializable, Loggable {
+    let name;
+    func init(n) { this.name = n; }
+    func serialize() { return this.name; }
+}
+let u = User("Bob");
+print u.serialize();               // Bob
+
+// 4.6 Clone Protocol
+print "=== 4.6 Clone Protocol ===";
+class Box {
+    let value;
+    func init(v) { this.value = v; }
+}
+let b1 = Box(42);
+let b2 = b1.clone();
+print b2.value;                    // 42
+b2.value = 100;
+print b1.value;                    // 42 (not affected by clone change)
+print b2.value;                    // 100
+
+// 4.7 Iterable Protocol
+print "=== 4.7 Iterable Protocol ===";
+class Counter {
+    let max;
+    let current;
+    func init(max) {
+        this.max = max;
+        this.current = 0;
+    }
+    func __iter() {
+        this.current = 0;
+        return this;
+    }
+    func __next() {
+        if (this.current >= this.max) {
+            return None;
+        }
+        let v = this.current;
+        this.current = this.current + 1;
+        return v;
+    }
+}
+var sum = 0;
+for x in Counter(5) {
+    sum = sum + x;
+}
+print sum;                          // 10 (0+1+2+3+4)
+
+// 4.8 Comparable Protocol (__cmp)
+print "=== 4.8 Comparable Protocol ===";
+class Student {
+    let name;
+    let grade;
+    func init(n, g) {
+        this.name = n;
+        this.grade = g;
+    }
+    func __cmp(other) {
+        return this.grade - other.grade;
+    }
+}
+let s1 = Student("Alice", 90);
+let s2 = Student("Bob", 85);
+print s1 > s2;                     // true (90 > 85)
+print s1 < s2;                     // false
+print s1 >= s2;                    // true
+
+print "=== All Phase 4 Tests Complete ===";

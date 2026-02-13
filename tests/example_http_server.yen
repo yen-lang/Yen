@@ -1,0 +1,78 @@
+// example_http_server.yen - HTTP Web Server + Client Demo
+// Demonstrates: import, http_server, go (goroutine), channels, http_get, http_post
+
+import 'net.http';
+import 'async';
+
+let PORT = 18080;
+
+// Create the HTTP server
+let server = http_server(PORT);
+print "Server started on port " + str(PORT);
+
+// Channel to signal when server is ready to be tested
+let ready_ch = chan(1);
+let done_ch = chan(1);
+
+// --- Server goroutine: handles 3 requests then stops ---
+func run_server(server, ready_ch, done_ch) {
+    send(ready_ch, true);
+
+    // Request 1: GET /
+    let req1 = http_server_next(server);
+    print "[Server] " + req1["method"] + " " + req1["path"];
+    let headers1 = {"Content-Type": "text/html"};
+    http_server_respond(req1["client"], 200, headers1, "<h1>Welcome to Yen!</h1>");
+
+    // Request 2: GET /api/status
+    let req2 = http_server_next(server);
+    print "[Server] " + req2["method"] + " " + req2["path"];
+    let headers2 = {"Content-Type": "application/json"};
+    http_server_respond(req2["client"], 200, headers2, '{"status": "ok", "lang": "yen"}');
+
+    // Request 3: POST /api/echo
+    let req3 = http_server_next(server);
+    print "[Server] " + req3["method"] + " " + req3["path"] + " body=" + req3["body"];
+    let headers3 = {"Content-Type": "text/plain"};
+    http_server_respond(req3["client"], 200, headers3, "Echo: " + req3["body"]);
+
+    send(done_ch, true);
+}
+
+// Start server in background goroutine
+go run_server(server, ready_ch, done_ch);
+
+// Wait for server to be ready
+recv(ready_ch);
+sleep(50);  // Small delay to ensure accept() is called
+
+// --- Client: make requests ---
+let base = "http://127.0.0.1:" + str(PORT);
+
+// GET /
+print "\n--- GET / ---";
+let res1 = http_get(base + "/");
+print "[Client] Status: " + str(res1["status"]);
+print "[Client] Body: " + res1["body"];
+
+// GET /api/status
+print "\n--- GET /api/status ---";
+let res2 = http_get(base + "/api/status");
+print "[Client] Status: " + str(res2["status"]);
+print "[Client] Body: " + res2["body"];
+
+// POST /api/echo
+print "\n--- POST /api/echo ---";
+let res3 = http_post(base + "/api/echo", "Hello from Yen!", "text/plain");
+print "[Client] Status: " + str(res3["status"]);
+print "[Client] Body: " + res3["body"];
+
+// Wait for server goroutine to finish
+recv(done_ch);
+
+// Cleanup
+http_server_close(server);
+close_chan(ready_ch);
+close_chan(done_ch);
+
+print "\nAll done!";

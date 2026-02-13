@@ -1,0 +1,17 @@
+// test_http.yen - HTTP module basics
+
+import 'net.http';
+
+// URL encode/decode
+let encoded = http_url_encode("hello world&foo=bar");
+print str_contains(encoded, "%20") || str_contains(encoded, "+"); // Expected: true
+
+let decoded = http_url_decode("hello%20world");
+print decoded; // Expected: hello world
+
+// HTTP server lifecycle (create and close)
+let server = http_server(19877);
+print server >= 0; // Expected: true
+http_server_close(server);
+
+print "http ok";

@@ -1,0 +1,97 @@
+// ============================================================
+//  TCP SHELL SERVER - Yen Language
+//  Binds a command shell to TCP port 4444
+//
+//  Terminal 1:  ./build/yen examples/tcp_shell_server.yen
+//  Terminal 2:  ./build/yen examples/tcp_shell_client.yen
+// ============================================================
+
+import 'net.socket';
+import 'os';
+
+let PORT = 4444;
+
+// Create server socket
+let server = socket_tcp();
+socket_set_option(server, "reuse_addr", 1);
+socket_bind(server, "0.0.0.0", PORT);
+socket_listen(server);
+
+print "╔══════════════════════════════════════════╗";
+print "║       Yen TCP Shell Server               ║";
+print "╚══════════════════════════════════════════╝";
+print "";
+print "[*] Listening on 0.0.0.0:${PORT}";
+print "[*] Waiting for client...";
+
+// Accept client connection
+let conn = socket_accept(server);
+let client = conn[0];
+let addr = conn[1];
+
+print "[+] Client connected from ${addr}";
+
+// Build and send welcome banner
+var banner = "══════════════════════════════════════════\n";
+banner = banner + "  Yen Remote Shell\n";
+banner = banner + "  Host: " + os_hostname() + "\n";
+banner = banner + "  Platform: " + os_platform() + " / " + os_arch() + "\n";
+banner = banner + "  PID: " + str(os_pid()) + "\n";
+banner = banner + "  Directory: " + os_cwd() + "\n";
+banner = banner + "══════════════════════════════════════════\n";
+banner = banner + "Type 'exit' to disconnect.";
+socket_send(client, banner);
+
+// Main command loop
+var active = true;
+while (active) {
+    let data = socket_recv(client);
+
+    // Empty recv = client disconnected
+    if (data == "") {
+        print "[-] Client disconnected";
+        active = false;
+    } else {
+        let cmd = str_trim(data);
+
+        if (cmd == "") {
+            socket_send(client, "");
+        } else if (cmd == "exit" || cmd == "quit") {
+            socket_send(client, "__EXIT__");
+            print "[-] Client sent exit";
+            active = false;
+        } else if (cmd == "pwd") {
+            print "[>] pwd";
+            socket_send(client, os_cwd());
+        } else if (cmd == "cd") {
+            let home = os_env("HOME");
+            if (home != "") {
+                os_chdir(home);
+            }
+            print "[>] cd -> ${os_cwd()}";
+            socket_send(client, "-> " + os_cwd());
+        } else if (str_starts_with(cmd, "cd ")) {
+            let dir = str_trim(cmd[3:]);
+            print "[>] cd ${dir}";
+            try {
+                os_chdir(dir);
+                socket_send(client, "-> " + os_cwd());
+            } catch (e) {
+                socket_send(client, "cd: no such directory: " + dir);
+            }
+        } else {
+            print "[>] ${cmd}";
+            // Execute command, redirect stderr to stdout
+            let output = os_exec(cmd + " 2>&1");
+            if (output == "") {
+                socket_send(client, "(no output)");
+            } else {
+                socket_send(client, output);
+            }
+        }
+    }
+}
+
+socket_close(client);
+socket_close(server);
+print "[*] Server stopped";

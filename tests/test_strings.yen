@@ -1,0 +1,39 @@
+// tests/test_strings.yen - String operations
+
+let s = "Hello, World!";
+print len(s); // Expected: 13
+print str_upper(s); // Expected: HELLO, WORLD!
+print str_lower(s); // Expected: hello, world!
+print str_contains(s, "World"); // Expected: true
+print str_contains(s, "world"); // Expected: false
+print str_starts_with(s, "Hello"); // Expected: true
+print str_ends_with(s, "World!"); // Expected: true
+
+// String split and join
+let parts = str_split("a,b,c", ",");
+print len(parts); // Expected: 3
+print parts[0]; // Expected: a
+print parts[1]; // Expected: b
+print parts[2]; // Expected: c
+
+let joined = str_join(parts, "-");
+print joined; // Expected: a-b-c
+
+// String trim
+print str_trim("  hello  "); // Expected: hello
+
+// String repeat
+print str_repeat("ab", 3); // Expected: ababab
+
+// String replace
+print str_replace("hello world", "world", "Yen"); // Expected: hello Yen
+
+// Substring
+print substring("Hello World", 0, 5); // Expected: Hello
+
+// String concatenation
+print "Hello" + " " + "Yen"; // Expected: Hello Yen
+
+// Escape sequences
+print "line1\nline2";
+print "tab\there";

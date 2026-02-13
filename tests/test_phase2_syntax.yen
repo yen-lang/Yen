@@ -1,0 +1,138 @@
+// ============================================
+// Phase 2 Test: Yen-Exclusive Syntax (10 features)
+// ============================================
+
+// 2.1 Method calls on primitives
+print "=== 2.1 Primitive Methods ===";
+
+// String methods
+print "hello".upper();          // HELLO
+print "WORLD".lower();          // world
+print "  hi  ".trim();          // hi
+print "a,b,c".split(",");       // [a, b, c]
+print "hello world".replace("world", "yen");  // hello yen
+print "hello".contains("ell");  // true
+print "hello".starts_with("he"); // true
+print "hello".ends_with("lo");   // true
+print "hello".reverse();         // olleh
+print "abc".chars();             // [a, b, c]
+print "hello".length();          // 5
+
+// List methods
+print [1, 2, 3].length();       // 3
+print [3, 1, 2].sort();         // [1, 2, 3]
+print [1, 2, 3].reverse();      // [3, 2, 1]
+print [1, 2, 3].contains(2);    // true
+print [1, 2, 3].contains(5);    // false
+print ["a", "b", "c"].join("-"); // a-b-c
+print [1, 2, 3].push(4);        // [1, 2, 3, 4]
+
+// Number methods
+print (-42).abs();               // 42
+print 3.7.floor();               // 3
+print 3.2.ceil();                // 4
+print 3.5.round();               // 4
+
+// 2.2 unless (inverse if)
+print "=== 2.2 Unless ===";
+let x = 5;
+unless (x == 0) {
+    print "not zero";           // not zero
+}
+
+// 2.3 until (inverse while)
+print "=== 2.3 Until ===";
+var count = 0;
+until (count >= 3) {
+    count++;
+}
+print count;                     // 3
+
+// 2.4 guard clause
+print "=== 2.4 Guard ===";
+func process(val) {
+    guard val > 0 else { return "negative"; }
+    return val * 2;
+}
+print process(5);    // 10
+print process(-1);   // negative
+
+// 2.5 repeat loop
+print "=== 2.5 Repeat ===";
+var total = 0;
+repeat 5 {
+    total = total + 1;
+}
+print total;                     // 5
+
+var items = [];
+repeat 3 as i {
+    items = items + [i];
+}
+print items;                     // [0, 1, 2]
+
+// 2.6 Chained comparisons
+print "=== 2.6 Chained Comparisons ===";
+var val = 5;
+print 1 < val < 10;             // true
+print 0 <= val <= 5;            // true
+print 10 < val < 20;            // false
+print 1 < 5 < 10;              // true
+print 1 > 5 > 10;              // false
+
+// 2.7 Optional chaining (?.)
+print "=== 2.7 Optional Chaining ===";
+class Person {
+    let name;
+    let address;
+    func init(n, a) {
+        this.name = n;
+        this.address = a;
+    }
+}
+class Address {
+    let city;
+    func init(c) { this.city = c; }
+}
+let p1 = Person("Alice", Address("NYC"));
+print p1?.name;                  // Alice
+print p1?.address?.city;         // NYC
+let p2 = None;
+print p2?.name;                  // None
+
+// 2.8 Named arguments
+print "=== 2.8 Named Arguments ===";
+func greet(name, greeting = "Hello") {
+    return greeting + ", " + name + "!";
+}
+print greet("Alice");                         // Hello, Alice!
+print greet(greeting: "Hi", name: "Bob");     // Hi, Bob!
+print greet("Charlie", greeting: "Hey");      // Hey, Charlie!
+
+func calc(a, b, c) {
+    return a - b + c;
+}
+print calc(c: 30, a: 10, b: 5);              // 35
+
+// 2.9 extend blocks
+print "=== 2.9 Extend Blocks ===";
+extend String {
+    func is_empty(s) {
+        return str_length(s) == 0;
+    }
+}
+print "".is_empty();             // true
+print "hi".is_empty();           // false
+
+// 2.10 Multiline & Raw strings
+print "=== 2.10 Multiline & Raw Strings ===";
+let raw = r"C:\Users\no\escapes";
+print raw;                       // C:\Users\no\escapes
+
+let multi = """
+line one
+line two
+line three""";
+print multi;
+
+print "=== All Phase 2 Tests Complete ===";

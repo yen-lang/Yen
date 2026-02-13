@@ -1,0 +1,239 @@
+// webserver.yen - Static File Server for Yen
+// Like Python's: python3 -m http.server 8080
+// Usage: cd tests && ../build/yen webserver.yen
+// Serves files from ./www/ on port 8080
+
+import 'net.http';
+import 'os';
+
+// ─── Configuration ──────────────────────────────────────
+let PORT = 80;
+let WEB_ROOT = os_cwd() + "/www";
+
+// ─── MIME Type Detection ────────────────────────────────
+func get_mime_type(path) {
+    if (str_ends_with(path, ".html") || str_ends_with(path, ".htm")) {
+        return "text/html; charset=utf-8";
+    }
+    if (str_ends_with(path, ".css")) {
+        return "text/css; charset=utf-8";
+    }
+    if (str_ends_with(path, ".js")) {
+        return "application/javascript; charset=utf-8";
+    }
+    if (str_ends_with(path, ".json")) {
+        return "application/json; charset=utf-8";
+    }
+    if (str_ends_with(path, ".txt")) {
+        return "text/plain; charset=utf-8";
+    }
+    if (str_ends_with(path, ".xml")) {
+        return "application/xml; charset=utf-8";
+    }
+    if (str_ends_with(path, ".svg")) {
+        return "image/svg+xml";
+    }
+    if (str_ends_with(path, ".ico")) {
+        return "image/x-icon";
+    }
+    if (str_ends_with(path, ".png")) {
+        return "image/png";
+    }
+    if (str_ends_with(path, ".jpg") || str_ends_with(path, ".jpeg")) {
+        return "image/jpeg";
+    }
+    if (str_ends_with(path, ".gif")) {
+        return "image/gif";
+    }
+    if (str_ends_with(path, ".woff")) {
+        return "font/woff";
+    }
+    if (str_ends_with(path, ".woff2")) {
+        return "font/woff2";
+    }
+    if (str_ends_with(path, ".csv")) {
+        return "text/csv";
+    }
+    if (str_ends_with(path, ".pdf")) {
+        return "application/pdf";
+    }
+    return "application/octet-stream";
+}
+
+// ─── Directory Listing Generator ────────────────────────
+func generate_listing(dir_path, url_path) {
+    let entries = os_ls(dir_path);
+
+    var html = '<!DOCTYPE html><html><head>';
+    html = html + '<title>Index of ' + url_path + '</title>';
+    html = html + '<style>';
+    html = html + 'body{font-family:monospace;margin:2em;background:#fafafa;color:#333}';
+    html = html + 'h1{color:#2c3e50;border-bottom:2px solid #e74c3c;padding-bottom:0.5em}';
+    html = html + 'table{border-collapse:collapse;width:100%}';
+    html = html + 'td,th{text-align:left;padding:8px 16px;border-bottom:1px solid #eee}';
+    html = html + 'th{background:#f0f0f0;color:#2c3e50}';
+    html = html + 'a{color:#e74c3c;text-decoration:none}';
+    html = html + 'a:hover{text-decoration:underline}';
+    html = html + 'tr:hover{background:#f5f5f5}';
+    html = html + '.size{color:#888;text-align:right}';
+    html = html + '</style></head><body>';
+    html = html + '<h1>Index of ' + url_path + '</h1>';
+    html = html + '<table><tr><th>Name</th><th class="size">Size</th></tr>';
+
+    // Parent directory link
+    if (url_path != "/") {
+        html = html + '<tr><td><a href="../">..</a></td><td class="size">-</td></tr>';
+    }
+
+    // List entries
+    for entry in entries {
+        let full_path = dir_path + "/" + entry;
+
+        var link = url_path;
+        if (!str_ends_with(link, "/")) {
+            link = link + "/";
+        }
+        link = link + entry;
+
+        if (os_is_dir(full_path)) {
+            html = html + '<tr><td><a href="' + link + '/">' + entry + '/</a></td>';
+            html = html + '<td class="size">-</td></tr>';
+        } else {
+            let info = os_stat(full_path);
+            let size = str(map_get(info, "size", 0));
+            html = html + '<tr><td><a href="' + link + '">' + entry + '</a></td>';
+            html = html + '<td class="size">' + size + ' B</td></tr>';
+        }
+    }
+
+    html = html + '</table>';
+    html = html + '<hr><p style="color:#888;font-size:0.85em">Yen Web Server on port ' + str(PORT) + '</p>';
+    html = html + '</body></html>';
+    return html;
+}
+
+// ─── 404 Page ───────────────────────────────────────────
+func page_404(path) {
+    var html = '<!DOCTYPE html><html><head>';
+    html = html + '<title>404 Not Found</title>';
+    html = html + '<style>body{font-family:sans-serif;margin:4em;text-align:center;color:#333}';
+    html = html + 'h1{font-size:4em;color:#e74c3c;margin-bottom:0}';
+    html = html + 'p{font-size:1.2em;color:#666}</style></head><body>';
+    html = html + '<h1>404</h1>';
+    html = html + '<p>The file <code>' + path + '</code> was not found.</p>';
+    html = html + '<p><a href="/" style="color:#e74c3c">Back to Home</a></p>';
+    html = html + '</body></html>';
+    return html;
+}
+
+// ─── 405 Page ───────────────────────────────────────────
+func page_405(method) {
+    var html = '<!DOCTYPE html><html><head><title>405 Method Not Allowed</title>';
+    html = html + '<style>body{font-family:sans-serif;margin:4em;text-align:center;color:#333}';
+    html = html + 'h1{font-size:4em;color:#e74c3c;margin-bottom:0}</style></head><body>';
+    html = html + '<h1>405</h1>';
+    html = html + '<p>Method <code>' + method + '</code> is not allowed.</p>';
+    html = html + '</body></html>';
+    return html;
+}
+
+// ─── Path Security ──────────────────────────────────────
+func is_safe_path(path) {
+    if (str_contains(path, "..")) {
+        return false;
+    }
+    return true;
+}
+
+// ─── Strip query string ────────────────────────────────
+func strip_query(path) {
+    let idx = str_index_of(path, "?");
+    if (idx >= 0) {
+        return str_substring(path, 0, idx);
+    }
+    return path;
+}
+
+// ─── Send Response Helper ───────────────────────────────
+func respond(client, status, content_type, body) {
+    let headers = {"Content-Type": content_type, "Server": "Yen/1.0"};
+    http_server_respond(client, status, headers, body);
+}
+
+// ─── Start Server ───────────────────────────────────────
+if (!os_exists(WEB_ROOT)) {
+    print "Error: web root directory not found: " + WEB_ROOT;
+    print "Make sure to run from the tests/ directory:";
+    print "  cd tests && ../build/yen webserver.yen";
+    os_exit(1);
+}
+
+let server = http_server(PORT);
+print "┌─────────────────────────────────────────┐";
+print "│        Yen Static File Server            │";
+print "├─────────────────────────────────────────┤";
+print "│  Serving:  " + WEB_ROOT;
+print "│  Address:  http://0.0.0.0:" + str(PORT);
+print "│  Stop:     Ctrl+C                        │";
+print "└─────────────────────────────────────────┘";
+print "";
+
+// ─── Main Event Loop ────────────────────────────────────
+while (true) {
+    let req = http_server_next(server);
+    let method = req["method"];
+    let raw_path = req["path"];
+    let client = req["client"];
+    let path = strip_query(raw_path);
+
+    // Only GET and HEAD allowed
+    if (method != "GET" && method != "HEAD") {
+        print "  " + method + " " + path + " -> 405";
+        respond(client, 405, "text/html; charset=utf-8", page_405(method));
+        continue;
+    }
+
+    // Security check
+    if (!is_safe_path(path)) {
+        print "  " + method + " " + path + " -> 403";
+        respond(client, 403, "text/plain", "403 Forbidden");
+        continue;
+    }
+
+    // Resolve filesystem path
+    let full_path = WEB_ROOT + path;
+
+    if (os_is_dir(full_path)) {
+        // Check for index.html
+        var index_path = full_path;
+        if (!str_ends_with(index_path, "/")) {
+            index_path = index_path + "/";
+        }
+        index_path = index_path + "index.html";
+
+        if (os_exists(index_path)) {
+            let content = os_read(index_path);
+            let body = method == "HEAD" ? "" : content;
+            print "  " + method + " " + path + " -> 200 (index.html)";
+            respond(client, 200, "text/html; charset=utf-8", body);
+        } else {
+            // Generate directory listing
+            let listing = generate_listing(full_path, path);
+            let body = method == "HEAD" ? "" : listing;
+            print "  " + method + " " + path + " -> 200 (listing)";
+            respond(client, 200, "text/html; charset=utf-8", body);
+        }
+    } else if (os_exists(full_path)) {
+        // Serve file
+        let content = os_read(full_path);
+        let mime = get_mime_type(full_path);
+        let body = method == "HEAD" ? "" : content;
+        print "  " + method + " " + path + " -> 200 (" + mime + ")";
+        respond(client, 200, mime, body);
+    } else {
+        // 404
+        let body = method == "HEAD" ? "" : page_404(path);
+        print "  " + method + " " + path + " -> 404";
+        respond(client, 404, "text/html; charset=utf-8", body);
+    }
+}

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Yen</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <header>
+        <h1>About Yen</h1>
+        <p>A modern scripting language built for simplicity and power.</p>
+    </header>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/about.html">About</a>
+        <a href="/api-docs.html">API Docs</a>
+        <a href="/data/">Data Files</a>
+    </nav>
+    <main>
+        <section>
+            <h2>Language Features</h2>
+            <ul>
+                <li><strong>Clean syntax</strong> &mdash; <code>let</code> / <code>var</code> for immutable/mutable bindings</li>
+                <li><strong>Functions &amp; lambdas</strong> &mdash; <code>func name() {}</code> and <code>|x| x * 2</code></li>
+                <li><strong>Pattern matching</strong> &mdash; <code>match (val) { 1 => "one"; _ => "other" }</code></li>
+                <li><strong>Pipe operator</strong> &mdash; <code>data |> transform |> print</code></li>
+                <li><strong>Go-style concurrency</strong> &mdash; <code>go func()</code> with channels</li>
+                <li><strong>Try/catch/throw</strong> &mdash; structured error handling</li>
+                <li><strong>Classes &amp; structs</strong> &mdash; OOP with methods and fields</li>
+                <li><strong>Destructuring</strong> &mdash; <code>let [a, b, c] = list;</code></li>
+                <li><strong>String interpolation</strong> &mdash; <code>"Hello ${name}!"</code></li>
+                <li><strong>Spread operator</strong> &mdash; <code>[...a, ...b]</code> and <code>func(...args)</code></li>
+            </ul>
+        </section>
+        <section>
+            <h2>Standard Library</h2>
+            <ul>
+                <li><code>import 'net.http'</code> &mdash; HTTP client &amp; server</li>
+                <li><code>import 'net.socket'</code> &mdash; TCP/UDP sockets</li>
+                <li><code>import 'regex'</code> &mdash; Regular expressions</li>
+                <li><code>import 'os'</code> &mdash; File system, process, environment</li>
+                <li><code>import 'async'</code> &mdash; Channels, goroutines, sleep</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Example</h2>
+            <pre><code>import 'net.http';
+import 'async';
+
+let server = http_server(8080);
+
+func handle(server) {
+    while (true) {
+        let req = http_server_next(server);
+        print "[${req['method']}] ${req['path']}";
+        http_server_respond(req["client"], 200,
+            {"Content-Type": "text/plain"},
+            "Hello from Yen!");
+    }
+}
+
+go handle(server);
+print "Server running on :8080";</code></pre>
+        </section>
+    </main>
+    <footer>
+        <p>Powered by <strong>Yen Language</strong></p>
+    </footer>
+</body>
+</html>
