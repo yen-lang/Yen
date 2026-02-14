@@ -130,3 +130,44 @@ if(HAVE_LLVM)
 else()
     message(STATUS "Building only yen (interpreter)")
 endif()
+
+# ============================================================================
+# INSTALL TARGETS
+# ============================================================================
+
+install(TARGETS yen RUNTIME DESTINATION bin)
+
+# Install stdlib files
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/stdlib/ DESTINATION lib/yen/stdlib)
+
+# ============================================================================
+# CPACK PACKAGING
+# ============================================================================
+
+set(CPACK_PACKAGE_NAME "yen")
+set(CPACK_PACKAGE_VERSION "1.1.0")
+set(CPACK_PACKAGE_VENDOR "Yen Language")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Yen Programming Language Interpreter")
+set(CPACK_PACKAGE_DESCRIPTION "A modern, expressive programming language with a tree-walking interpreter")
+set(CPACK_PACKAGE_HOMEPAGE_URL "https://github.com/yen-lang/yen")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
+set(CPACK_PACKAGE_CONTACT "yen-lang")
+
+# Platform-specific packaging
+if(WIN32)
+    set(CPACK_GENERATOR "ZIP;NSIS")
+    set(CPACK_NSIS_DISPLAY_NAME "Yen Language")
+    set(CPACK_NSIS_PACKAGE_NAME "Yen")
+    set(CPACK_NSIS_MODIFY_PATH ON)
+    set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
+elseif(APPLE)
+    set(CPACK_GENERATOR "TGZ;productbuild")
+    set(CPACK_SYSTEM_NAME "macos")
+elseif(UNIX)
+    set(CPACK_GENERATOR "TGZ;DEB")
+    set(CPACK_DEBIAN_PACKAGE_MAINTAINER "yen-lang")
+    set(CPACK_DEBIAN_PACKAGE_SECTION "devel")
+    set(CPACK_DEBIAN_PACKAGE_DEPENDS "libcurl4-openssl-dev")
+endif()
+
+include(CPack)
