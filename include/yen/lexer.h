@@ -20,10 +20,13 @@ private:
     char advance();
     char peek() const;
     char peekNext() const;
-    void addToken(TokenType type, const std::string& lexeme = "");
+    void addToken(TokenType type);
+    void addToken(TokenType type, const std::string& lexeme);
     void scanToken();
 
-    void string();
+    void string(char quote = '"');
+    void rawString();
+    void tripleString();
     void number();
     void identifier();
     bool match(char expected);

@@ -1,0 +1,32 @@
+// test_block_lambda.yen - Multi-line block lambdas
+
+// Block lambda with return
+let compute = |x| {
+    var result = x * 2;
+    result = result + 10;
+    return result;
+};
+
+print compute(5); // Expected: 20
+
+// Block lambda in higher-order function
+let nums = [1, 2, 3, 4, 5];
+let processed = map(nums, |x| {
+    if (x % 2 == 0) {
+        return x * 10;
+    }
+    return x;
+});
+print processed[0]; // Expected: 1
+print processed[1]; // Expected: 20
+print processed[3]; // Expected: 40
+
+// Block lambda with local variables
+let transform = |a, b| {
+    let sum = a + b;
+    let product = a * b;
+    return sum + product;
+};
+print transform(3, 4); // Expected: 19 (7 + 12)
+
+print "block lambda ok";

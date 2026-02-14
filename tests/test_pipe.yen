@@ -1,0 +1,29 @@
+// tests/test_pipe.yen - Pipe operator test
+
+func double(x) {
+    return x * 2;
+}
+
+func add_ten(x) {
+    return x + 10;
+}
+
+func negate(x) {
+    return -x;
+}
+
+// Basic pipe
+let result = 5 |> double;
+print result; // Expected: 10
+
+// Chained pipes
+let result2 = 5 |> double |> add_ten;
+print result2; // Expected: 20
+
+// Pipe with negate
+let result3 = 3 |> double |> negate;
+print result3; // Expected: -6
+
+// Pipe with expression
+let result4 = (2 + 3) |> double |> add_ten;
+print result4; // Expected: 20

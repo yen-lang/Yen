@@ -1,0 +1,29 @@
+// tests/test_maps.yen - Map literals and operations
+
+// Map literal
+let m = {"name": "Yen", "version": 1};
+print m["name"]; // Expected: Yen
+print m["version"]; // Expected: 1
+
+// Empty map
+let empty = {};
+print map_size(empty); // Expected: 0
+
+// Map operations
+print map_has(m, "name"); // Expected: true
+print map_has(m, "missing"); // Expected: false
+
+let keys = map_keys(m);
+print len(keys); // Expected: 2
+
+// Map set and get (requires var for in-place modification)
+var m2 = {};
+map_set(m2, "x", 100);
+map_set(m2, "y", 200);
+print map_get(m2, "x", 0); // Expected: 100
+print map_get(m2, "missing", -1); // Expected: -1
+print map_size(m2); // Expected: 2
+
+// Map merge
+let merged = map_merge(m, m2);
+print map_size(merged); // Expected: 4

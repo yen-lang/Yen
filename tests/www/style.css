@@ -1,0 +1,151 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    max-width: 840px;
+    margin: 0 auto;
+    padding: 2em;
+    background: #fafafa;
+}
+
+header {
+    margin-bottom: 2em;
+    padding-bottom: 1em;
+    border-bottom: 2px solid #e74c3c;
+}
+
+h1 {
+    color: #2c3e50;
+    font-size: 2em;
+    margin-bottom: 0.25em;
+}
+
+header p {
+    color: #666;
+    font-size: 1.1em;
+}
+
+h2 {
+    color: #e74c3c;
+    margin: 1.5em 0 0.5em;
+    font-size: 1.3em;
+}
+
+nav {
+    background: #2c3e50;
+    padding: 0.75em 1em;
+    border-radius: 6px;
+    margin-bottom: 2em;
+}
+
+nav a {
+    color: #ecf0f1;
+    text-decoration: none;
+    margin-right: 1.5em;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+nav a:hover {
+    color: #e74c3c;
+}
+
+main {
+    margin-bottom: 2em;
+}
+
+section {
+    background: #fff;
+    padding: 1.5em;
+    border-radius: 6px;
+    margin-bottom: 1.5em;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+ul {
+    margin-left: 1.5em;
+    margin-bottom: 1em;
+}
+
+li {
+    margin-bottom: 0.3em;
+}
+
+pre {
+    background: #2c3e50;
+    color: #ecf0f1;
+    padding: 1em;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 0.5em 0;
+}
+
+code {
+    font-family: "SF Mono", "Fira Code", Menlo, Consolas, monospace;
+    font-size: 0.9em;
+}
+
+p code {
+    background: #f0f0f0;
+    padding: 0.15em 0.4em;
+    border-radius: 3px;
+    color: #e74c3c;
+}
+
+a {
+    color: #e74c3c;
+}
+
+footer {
+    border-top: 1px solid #ddd;
+    padding-top: 1em;
+    color: #888;
+    font-size: 0.9em;
+    text-align: center;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1em 0;
+}
+
+th, td {
+    text-align: left;
+    padding: 0.6em 1em;
+    border-bottom: 1px solid #eee;
+}
+
+th {
+    background: #f5f5f5;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+tr:hover {
+    background: #fafafa;
+}
+
+.method {
+    display: inline-block;
+    padding: 0.15em 0.5em;
+    border-radius: 3px;
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 0.85em;
+    color: #fff;
+}
+
+.get { background: #27ae60; }
+.post { background: #2980b9; }
+.put { background: #f39c12; }
+.patch { background: #8e44ad; }
+.delete { background: #e74c3c; }
+.head { background: #95a5a6; }
+.options { background: #1abc9c; }

@@ -16,14 +16,16 @@ struct ObjectInstance {
 
 struct ClassInstance {
     std::unordered_map<std::string, struct Value> fields;
-    std::string className; // ADDED THIS
+    std::string className;
+    std::string parentClassName;  // For inheritance (empty if no parent)
 };
 
 struct FunctionStmt;
 struct Expression;
+struct Statement;
 
 struct NativeFunction {
-    using FunctionType = Value(*)(std::vector<struct Value>);
+    using FunctionType = Value(*)(std::vector<struct Value>&);
     FunctionType function;
     int arity;
 
@@ -36,15 +38,22 @@ struct NativeFunction {
 // Lambda/closure representation
 struct LambdaValue {
     std::vector<std::string> parameters;
-    const Expression* body;  // Pointer to lambda body expression
+    const Expression* body;           // Pointer to lambda body expression (may be null for block)
+    const Statement* blockBody;       // Pointer to block body (may be null for expr)
     std::shared_ptr<std::unordered_map<std::string, Value>> captured_env;  // Captured variables
+    std::shared_ptr<std::vector<const Expression*>> defaultExprs;  // Default parameter expressions
 
     LambdaValue(std::vector<std::string> params, const Expression* body_expr,
                 std::shared_ptr<std::unordered_map<std::string, Value>> env = nullptr)
-        : parameters(std::move(params)), body(body_expr), captured_env(env) {}
+        : parameters(std::move(params)), body(body_expr), blockBody(nullptr), captured_env(env) {}
+
+    LambdaValue(std::vector<std::string> params, const Expression* body_expr,
+                const Statement* block_body,
+                std::shared_ptr<std::unordered_map<std::string, Value>> env = nullptr)
+        : parameters(std::move(params)), body(body_expr), blockBody(block_body), captured_env(env) {}
 
     bool operator==(const LambdaValue& other) const {
-        return body == other.body;  // Compare by body pointer
+        return body == other.body && blockBody == other.blockBody;
     }
 };
 

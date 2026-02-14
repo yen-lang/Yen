@@ -1,0 +1,36 @@
+// tests/test_match.yen - Pattern matching
+
+let x = 42;
+match (x) {
+    0 => print "zero";
+    1 => print "one";
+    42 => print "the answer"; // Expected: the answer
+    _ => print "something else";
+}
+
+// Match with strings
+let lang = "Yen";
+match (lang) {
+    "Rust" => print "Rust";
+    "Go" => print "Go";
+    "Yen" => print "Yen language!"; // Expected: Yen language!
+    _ => print "unknown";
+}
+
+// Match with ranges
+let score = 85;
+match (score) {
+    0..60 => print "F";
+    60..70 => print "D";
+    70..80 => print "C";
+    80..90 => print "B"; // Expected: B
+    90..=100 => print "A";
+    _ => print "invalid";
+}
+
+// Match with boolean
+let flag = true;
+match (flag) {
+    true => print "flag is true"; // Expected: flag is true
+    false => print "flag is false";
+}

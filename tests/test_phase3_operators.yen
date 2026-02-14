@@ -1,0 +1,128 @@
+// ============================================
+// Phase 3 Test: New Operators & Expressions (10 features)
+// ============================================
+
+// 3.1 not in operator
+print "=== 3.1 Not In ===";
+let fruits = ["apple", "banana", "cherry"];
+print "grape" not in fruits;       // true
+print "apple" not in fruits;       // false
+
+let m = {"a": 1, "b": 2};
+print "c" not in m;               // true
+print "a" not in m;               // false
+
+print "xyz" not in "hello";      // true
+print "ell" not in "hello";      // false
+
+// 3.2 Bitwise compound assignments
+print "=== 3.2 Bitwise Compound Assignments ===";
+var x = 0xFF;
+x &= 0x0F;
+print x;                          // 15
+
+var y = 0x0F;
+y |= 0xF0;
+print y;                          // 255
+
+var z = 0xFF;
+z ^= 0x0F;
+print z;                          // 240
+
+var a = 1;
+a <<= 4;
+print a;                          // 16
+
+var b = 256;
+b >>= 4;
+print b;                          // 16
+
+// 3.3 Exponent assignment
+print "=== 3.3 Exponent Assignment ===";
+var p = 2;
+p **= 10;
+print p;                          // 1024
+
+// 3.4 List comprehensions
+print "=== 3.4 List Comprehensions ===";
+let squares = [x ** 2 for x in [1, 2, 3, 4, 5]];
+print squares;                    // [1, 4, 9, 16, 25]
+
+let evens = [x for x in [1, 2, 3, 4, 5, 6] if x % 2 == 0];
+print evens;                      // [2, 4, 6]
+
+let doubled = [x * 2 for x in [1, 2, 3]];
+print doubled;                    // [2, 4, 6]
+
+// 3.5 Map comprehensions
+print "=== 3.5 Map Comprehensions ===";
+let sq = {"a": 1, "b": 2, "c": 3};
+print sq;
+// Map comprehension with simple key
+let names = ["alice", "bob"];
+let greeting = {n: "hello" for n in names};
+print greeting;
+
+// 3.6 Compose operator (>>>)
+print "=== 3.6 Compose Operator ===";
+func double_val(x) { return x * 2; }
+func add_one(x) { return x + 1; }
+
+let transform = double_val >>> add_one;
+print transform(5);               // 11
+
+let triple = double_val >>> double_val >>> add_one;
+print triple(3);                   // 13
+
+// 3.7 Walrus operator (:=)
+print "=== 3.7 Walrus Operator ===";
+if (let val := 42) {
+    print val;                     // 42
+}
+
+let items2 = [1, 2, 3, 4, 5];
+if (let len := list_length(items2)) {
+    print len;                     // 5
+}
+
+// 3.8 Null-coalescing assignment (?=)
+print "=== 3.8 Null-Coalescing Assignment ===";
+var opt = None;
+opt ?= 42;
+print opt;                         // 42
+opt ?= 100;
+print opt;                         // 42 (not changed since opt is already non-null)
+
+// 3.9 Multi-catch
+print "=== 3.9 Multi-Catch ===";
+try {
+    throw "TypeError: invalid type";
+} catch (TypeError | ValueError as e) {
+    print "Caught: " + e;
+}
+
+try {
+    throw "Some other error";
+} catch (e) {
+    print "Fallback: " + e;
+}
+
+// 3.10 Enum with associated data
+print "=== 3.10 Enum with Associated Data ===";
+enum Shape {
+    Circle(radius),
+    Rect(w, h),
+    Point
+}
+
+let c = Shape.Circle(5.0);
+print c.radius;                    // 5.0
+
+let r = Shape.Rect(10, 20);
+print r.w;                         // 10
+print r.h;                         // 20
+
+// Point is a simple enum (integer)
+print Shape.Point;                 // 0
+
+print "=== All Phase 3 Tests Complete ===";

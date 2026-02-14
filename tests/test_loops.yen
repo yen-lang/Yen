@@ -1,5 +1,5 @@
 // tests/test_loops.yen
-let i = 0;
+var i = 0;
 while (i < 3) {
     print "While loop iteration: " + str(i); // Expected: While loop iteration: 0, 1, 2
     i = i + 1;
@@ -15,7 +15,7 @@ for item in list {
 print "---";
 
 // Test break and continue
-let j = 0;
+var j = 0;
 while (j < 5) {
     j = j + 1;
     if (j == 2) {

@@ -1,0 +1,39 @@
+// test_regex.yen - Regular expressions
+
+import 'regex';
+
+// Full match
+print regex_match("hello", "hello"); // Expected: true
+print regex_match("hello world", "hello"); // Expected: false (not full match)
+print regex_match("12345", "[0-9]+"); // Expected: true
+
+// Search (partial match)
+let found = regex_search("hello world 123", "[0-9]+");
+print found; // Expected: 123
+
+let not_found = regex_search("hello world", "[0-9]+");
+print typeof(not_found); // Expected: null
+
+// Find all matches
+let all = regex_find_all("a1 b2 c3 d4", "[a-z][0-9]");
+print len(all); // Expected: 4
+print all[0]; // Expected: a1
+print all[3]; // Expected: d4
+
+// Replace
+let replaced = regex_replace("hello 123 world 456", "[0-9]+", "NUM");
+print replaced; // Expected: hello NUM world NUM
+
+// Split
+let parts = regex_split("one,two,,three", ",+");
+print len(parts); // Expected: 3
+print parts[0]; // Expected: one
+print parts[2]; // Expected: three
+
+// Captures
+let caps = regex_captures("2025-01-15", "([0-9]{4})-([0-9]{2})-([0-9]{2})");
+print len(caps); // Expected: 4 (full match + 3 groups)
+print caps[1]; // Expected: 2025
+print caps[2]; // Expected: 01
+
+print "regex ok";

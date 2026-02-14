@@ -1,0 +1,37 @@
+// tests/test_collections.yen - List and collection operations
+
+var list = [10, 20, 30, 40, 50];
+
+// Basic operations
+print len(list); // Expected: 5
+print list[0]; // Expected: 10
+print list[4]; // Expected: 50
+
+// Push and pop (modifies in place)
+push(list, 60);
+print len(list); // Expected: 6
+print list[5]; // Expected: 60
+
+// Iteration
+for item in [1, 2, 3] {
+    print "item: " + str(item);
+}
+// Expected:
+// item: 1
+// item: 2
+// item: 3
+
+// Nested lists
+let matrix = [[1, 2], [3, 4]];
+print matrix[0][0]; // Expected: 1
+print matrix[1][1]; // Expected: 4
+
+// List contains
+print list_contains([1, 2, 3], 2); // Expected: true
+print list_contains([1, 2, 3], 5); // Expected: false
+
+// List slice
+let sliced = list_slice([10, 20, 30, 40, 50], 1, 3);
+print len(sliced); // Expected: 2
+print sliced[0]; // Expected: 20
+print sliced[1]; // Expected: 30

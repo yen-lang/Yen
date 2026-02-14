@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yen REST API Documentation</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <header>
+        <h1>REST API Documentation</h1>
+        <p>All HTTP methods supported by Yen's <code>net.http</code> module.</p>
+    </header>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/about.html">About</a>
+        <a href="/api-docs.html">API Docs</a>
+        <a href="/data/">Data Files</a>
+    </nav>
+    <main>
+        <section>
+            <h2>HTTP Client Functions</h2>
+            <table>
+                <tr>
+                    <th>Function</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td><code>http_get(url)</code></td>
+                    <td><span class="method get">GET</span> request, returns <code>{status, body, headers}</code></td>
+                </tr>
+                <tr>
+                    <td><code>http_post(url, body, type?)</code></td>
+                    <td><span class="method post">POST</span> request with body</td>
+                </tr>
+                <tr>
+                    <td><code>http_put(url, body, type?)</code></td>
+                    <td><span class="method put">PUT</span> request to replace resource</td>
+                </tr>
+                <tr>
+                    <td><code>http_patch(url, body, type?)</code></td>
+                    <td><span class="method patch">PATCH</span> request for partial update</td>
+                </tr>
+                <tr>
+                    <td><code>http_delete(url)</code></td>
+                    <td><span class="method delete">DELETE</span> request to remove resource</td>
+                </tr>
+                <tr>
+                    <td><code>http_request(method, url, headers?, body?)</code></td>
+                    <td>Generic request with any method (<span class="method head">HEAD</span>, <span class="method options">OPTIONS</span>, etc.)</td>
+                </tr>
+            </table>
+        </section>
+
+        <section>
+            <h2>HTTP Server Functions</h2>
+            <table>
+                <tr>
+                    <th>Function</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td><code>http_server(port)</code></td>
+                    <td>Create HTTP server on port, returns handle</td>
+                </tr>
+                <tr>
+                    <td><code>http_server_next(handle)</code></td>
+                    <td>Wait for request, returns <code>{method, path, headers, body, client}</code></td>
+                </tr>
+                <tr>
+                    <td><code>http_server_respond(client, status, headers, body)</code></td>
+                    <td>Send HTTP response to client</td>
+                </tr>
+                <tr>
+                    <td><code>http_server_close(handle)</code></td>
+                    <td>Shut down server</td>
+                </tr>
+            </table>
+        </section>
+
+        <section>
+            <h2>Example: REST API Server</h2>
+            <pre><code>import 'net.http';
+
+let server = http_server(3000);
+
+while (true) {
+    let req = http_server_next(server);
+    let method = req["method"];
+    let path = req["path"];
+
+    if (method == "GET" && path == "/api/items") {
+        http_server_respond(req["client"], 200,
+            {"Content-Type": "application/json"},
+            json_to_string(items));
+
+    } else if (method == "POST" && path == "/api/items") {
+        let item = json_from_string(req["body"]);
+        // ... create item ...
+        http_server_respond(req["client"], 201,
+            {"Content-Type": "application/json"},
+            json_to_string(item));
+
+    } else if (method == "DELETE") {
+        // ... delete item ...
+        http_server_respond(req["client"], 200,
+            {"Content-Type": "application/json"},
+            '{"deleted": true}');
+    }
+}</code></pre>
+        </section>
+
+        <section>
+            <h2>Example: HTTP Client Requests</h2>
+            <pre><code>import 'net.http';
+
+// GET
+let res = http_get("http://localhost:3000/api/items");
+print res["body"];
+
+// POST
+let res = http_post("http://localhost:3000/api/items",
+    '{"name": "Widget"}', "application/json");
+
+// PUT
+let res = http_put("http://localhost:3000/api/items/1",
+    '{"name": "Updated"}', "application/json");
+
+// PATCH
+let res = http_patch("http://localhost:3000/api/items/1",
+    '{"price": 29.99}', "application/json");
+
+// DELETE
+let res = http_delete("http://localhost:3000/api/items/1");
+
+// HEAD / OPTIONS (generic)
+let res = http_request("HEAD", "http://localhost:3000/api/items", {}, "");
+let res = http_request("OPTIONS", "http://localhost:3000/api/items", {}, "");</code></pre>
+        </section>
+    </main>
+    <footer>
+        <p>Powered by <strong>Yen Language</strong></p>
+    </footer>
+</body>
+</html>

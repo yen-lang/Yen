@@ -4,43 +4,102 @@
 #include <string>
 
 enum class TokenType {
-    // Keywords
-    Let, Var, If, Else, While, Loop, Func, Return, True, False, Print, Input, Break,
-    Continue, Struct, Class, This, Import, Export, Extern, Const, Mut,
-    Enum, Match, Switch, Arrow, Case, Default,
-    As, Unsafe, Some, None, Ok, Err, Option, Result,
-    Defer, Assert, Pub, Priv, Impl, Trait, Self_,
+    // Variable declarations
+    Let, Var, Const, Mut,
+
+    // Control flow
+    If, Else, While, Do, Loop, For, In,
+    Break, Continue,
+    Match, Switch, Case, Default,
+    Defer, Assert,
+    Go,  // go expr; (goroutine-style concurrency)
+
+    // Error handling
+    Try, Catch, Throw, Finally,
+
+    // Functions and types
+    Func, Return,
+    Struct, Class, Enum,
+    Extern, Unsafe,
+    As,
+    Pub, Priv, Impl, Trait, Self_,
+    This,
+    Extends, Super, Static, Is,
+    Unless, Until, Guard, Repeat, Extend,
+    Data, Sealed, Lazy,
+
+    // Module system
+    Import, Export,
+
+    // Option and Result
+    Option, Some, None,
+    Result, Ok, Err,
 
     // Literals
     Identifier, Number, String,
+    True, False,
 
-    // Operators
+    // I/O
+    Print, Input,
+
+    // Arithmetic operators
     Plus, Minus, Star, Slash, Percent,
-    Equal, EqualEqual, BangEqual,
+    DoubleStar,  // ** exponentiation
+    PlusPlus, MinusMinus,  // ++ -- (increment/decrement)
+    PlusEqual, MinusEqual, StarEqual, SlashEqual, PercentEqual,  // Compound assignment
+    DoubleStarEqual,   // **= exponent assignment
+    AmpersandEqual,    // &=
+    PipeEqual,         // |=
+    CaretEqual,        // ^=
+    LeftShiftEqual,    // <<=
+    RightShiftEqual,   // >>=
+
+    // Comparison operators
+    EqualEqual, BangEqual,
     Less, LessEqual, Greater, GreaterEqual,
+
+    // Logical operators
     And, Or, Not, AndAnd, OrOr,
-    Question,  // ? for try operator
-    Pipe,      // | for lambdas
-    DoubleStar, // ** for exponentiation
-    PlusEqual, MinusEqual, StarEqual, SlashEqual,  // Compound assignment
-    Ampersand, BitOr, Caret, Tilde,  // Bitwise operators
-    LeftShift, RightShift,  // << >>
-    DotDot, DotDotEqual,  // .. and ..= for ranges
-    Underscore,  // _ for pattern matching
+
+    // Bitwise operators
+    Ampersand,   // & (bitwise AND)
+    Pipe,        // | (bitwise OR / lambda delimiter)
+    Caret,       // ^ (bitwise XOR)
+    Tilde,       // ~ (bitwise NOT)
+    LeftShift,   // <<
+    RightShift,  // >>
+
+    // Special operators
+    Question,      // ? (ternary operator)
+    QuestionQuestion, // ?? (null coalescing)
+    QuestionDot,   // ?. (optional chaining)
+    DotDot,        // .. (exclusive range)
+    DotDotEqual,   // ..= (inclusive range)
+    DotDotDot,     // ... (spread operator)
+    Underscore,    // _ (wildcard)
+    PipeArrow,     // |> (pipe operator)
+    ReturnArrow,   // -> (return type annotation)
+    Arrow,         // => (match arm / fat arrow)
+    Compose,       // >>> (function composition)
+    ColonEqual,    // := (walrus operator)
+    QuestionEqual, // ?= (null-coalescing assignment)
 
     // Delimiters
-    LParen, RParen,
-    LBrace, RBrace,
-    Comma, Semicolon, Colon, Assign, LBracket, RBracket, Dot,
-    For, In,
+    LParen, RParen,     // ( )
+    LBrace, RBrace,     // { }
+    LBracket, RBracket, // [ ]
+    Comma, Semicolon, Colon, Dot,
+    Assign,             // =
 
     // Special
     Eof, Invalid,
 
     // Type keywords
     Int, Float, Str, Bool,
-    IntType, FloatType, BoolType, StrType
+    IntType, FloatType, BoolType, StrType,
 
+    // Compatibility aliases (kept for existing code)
+    BitOr = Pipe
 };
 
 struct Token {

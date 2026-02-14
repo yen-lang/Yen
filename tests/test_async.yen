@@ -1,0 +1,49 @@
+// test_async.yen - Async/concurrency module
+
+import 'async';
+
+// Create a buffered channel
+let ch = chan(10);
+print typeof(ch); // Expected: int
+
+// Send and receive (buffered, so no blocking)
+send(ch, "hello");
+send(ch, 42);
+send(ch, true);
+
+let v1 = recv(ch);
+print v1; // Expected: hello
+
+let v2 = recv(ch);
+print v2; // Expected: 42
+
+let v3 = recv(ch);
+print v3; // Expected: true
+
+// Try receive on empty channel
+let empty = try_recv(ch);
+print typeof(empty); // Expected: null
+
+// Close channel
+close_chan(ch);
+
+// Sleep (short)
+sleep(10);
+
+// Test goroutine with channel communication
+let result_ch = chan(1);
+
+// Spawn a goroutine that sends a value
+func compute_and_send(ch) {
+    let result = 21 * 2;
+    send(ch, result);
+}
+go compute_and_send(result_ch);
+
+// Receive the result
+let answer = recv(result_ch);
+print answer; // Expected: 42
+
+close_chan(result_ch);
+
+print "async ok";

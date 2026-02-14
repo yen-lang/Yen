@@ -1,0 +1,33 @@
+// test_native_collections.yen - New collection functions
+
+// sum
+print list_sum([1, 2, 3, 4, 5]); // Expected: 15
+print list_sum([1.5, 2.5]); // Expected: 4.0
+
+// min / max
+print list_min([5, 3, 8, 1]); // Expected: 1
+print list_max([5, 3, 8, 1]); // Expected: 8
+
+// fill
+let zeros = list_fill(4, 0);
+print len(zeros); // Expected: 4
+print zeros[0]; // Expected: 0
+
+// range
+let r = list_range(0, 5, 1);
+print len(r); // Expected: 5
+print r[0]; // Expected: 0
+print r[4]; // Expected: 4
+
+let r2 = list_range(10, 0, -2);
+print len(r2); // Expected: 5
+print r2[0]; // Expected: 10
+print r2[4]; // Expected: 2
+
+// chunk
+let chunked = list_chunk([1, 2, 3, 4, 5], 2);
+print len(chunked); // Expected: 3
+print len(chunked[0]); // Expected: 2
+print len(chunked[2]); // Expected: 1
+
+print "collections ok";

@@ -1,0 +1,26 @@
+// test_utility.yen - Utility functions
+
+// assert_eq (should not throw)
+assert_eq(1 + 1, 2);
+assert_eq("hello", "hello");
+assert_eq(true, true);
+
+// assert_ne (should not throw)
+assert_ne(1, 2);
+assert_ne("a", "b");
+
+// todo - should throw
+try {
+    todo();
+} catch (e) {
+    print str_contains(e, "not yet implemented"); // Expected: true
+}
+
+// assert_eq failure
+try {
+    assert_eq(1, 2);
+} catch (e) {
+    print str_contains(e, "Assertion"); // Expected: true
+}
+
+print "utility ok";

@@ -1,0 +1,116 @@
+// http_client.yen - Interactive HTTP Client
+// Usage: ./build/yen tests/http_client.yen
+// Like curl but interactive - input a URL, pick a method, see the response
+
+import 'net.http';
+
+print "┌─────────────────────────────────────────┐";
+print "│         Yen HTTP Client                  │";
+print "│  Type a URL to make a request            │";
+print "│  Type 'exit' to quit                     │";
+print "└─────────────────────────────────────────┘";
+print "";
+
+while (true) {
+    print "─────────────────────────────────────────";
+    let url = input("URL> ");
+
+    if (url == "exit" || url == "quit" || url == "q") {
+        print "Bye!";
+        break;
+    }
+
+    if (str_is_empty(str_trim(url))) {
+        continue;
+    }
+
+    // Auto-add https:// if no scheme
+    var final_url = url;
+    if (!str_starts_with(url, "http://") && !str_starts_with(url, "https://")) {
+        final_url = "https://" + url;
+    }
+
+    // Choose method
+    let method = input("Method [GET/POST/PUT/PATCH/DELETE/HEAD]> ");
+    var m = str_upper(str_trim(method));
+    if (str_is_empty(m)) {
+        m = "GET";
+    }
+
+    var body = "";
+    var content_type = "application/json";
+
+    // For methods with body
+    if (m == "POST" || m == "PUT" || m == "PATCH") {
+        body = input("Body> ");
+        let ct = input("Content-Type [application/json]> ");
+        if (!str_is_empty(str_trim(ct))) {
+            content_type = ct;
+        }
+    }
+
+    print "";
+    print ">>> " + m + " " + final_url;
+
+    try {
+        var res = {};
+
+        if (m == "GET") {
+            res = http_get(final_url);
+        } else if (m == "POST") {
+            res = http_post(final_url, body, content_type);
+        } else if (m == "PUT") {
+            res = http_put(final_url, body, content_type);
+        } else if (m == "PATCH") {
+            res = http_patch(final_url, body, content_type);
+        } else if (m == "DELETE") {
+            res = http_delete(final_url);
+        } else if (m == "HEAD") {
+            let hdrs = http_headers(final_url);
+            print "";
+            print "<<< Status: " + str(map_get(hdrs, "_status", 0));
+            print "<<< Headers:";
+            let keys = map_keys(hdrs);
+            for k in keys {
+                if (k != "_status") {
+                    print "    " + k + ": " + str(map_get(hdrs, k, ""));
+                }
+            }
+            print "";
+            continue;
+        } else {
+            // Generic method via http_request
+            res = http_request(m, final_url, {}, body);
+        }
+
+        // Display response
+        print "";
+        print "<<< Status: " + str(res["status"]);
+
+        // Headers
+        let headers = res["headers"];
+        let hdr_keys = map_keys(headers);
+        print "<<< Headers:";
+        for k in hdr_keys {
+            print "    " + k + ": " + str(map_get(headers, k, ""));
+        }
+
+        // Body
+        let response_body = res["body"];
+        print "";
+        if (str_length(response_body) > 2000) {
+            print "<<< Body (" + str(str_length(response_body)) + " bytes, showing first 2000):";
+            print str_substring(response_body, 0, 2000);
+            print "... (truncated)";
+        } else {
+            print "<<< Body (" + str(str_length(response_body)) + " bytes):";
+            print response_body;
+        }
+
+    } catch (e) {
+        print "";
+        print "!!! Error: " + str(e);
+    }
+
+    print "";
+}

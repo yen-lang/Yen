@@ -1,0 +1,31 @@
+// test_native_strings.yen - New string functions
+
+// pad
+print str_pad_left("42", 5, "0"); // Expected: 00042
+print str_pad_right("hi", 6, "."); // Expected: hi....
+
+// reverse
+print str_reverse("hello"); // Expected: olleh
+
+// count
+print str_count("banana", "an"); // Expected: 2
+
+// is_empty / is_numeric
+print str_is_empty(""); // Expected: true
+print str_is_empty("x"); // Expected: false
+print str_is_numeric("12345"); // Expected: true
+print str_is_numeric("12.5"); // Expected: true
+print str_is_numeric("abc"); // Expected: false
+
+// char_code / from_char_code
+print str_char_code("A"); // Expected: 65
+print str_from_char_code(65); // Expected: A
+
+// to_bytes / from_bytes
+let bytes = str_to_bytes("Hi");
+print len(bytes); // Expected: 2
+print bytes[0]; // Expected: 72
+let back = str_from_bytes(bytes);
+print back; // Expected: Hi
+
+print "strings ok";

@@ -1,0 +1,38 @@
+// tests/test_try_catch.yen - Error handling test suite
+
+// Basic try/catch
+try {
+    throw "Something went wrong";
+} catch (e) {
+    print "Caught: " + e; // Expected: Caught: Something went wrong
+}
+
+// Try/catch with runtime error
+try {
+    let x = 10 / 0;
+    print "This should not print";
+} catch (e) {
+    print "Division error caught"; // Expected: Division error caught
+}
+
+// Nested try/catch
+try {
+    try {
+        throw "inner error";
+    } catch (e) {
+        print "Inner: " + e; // Expected: Inner: inner error
+        throw "outer error";
+    }
+} catch (e) {
+    print "Outer: " + e; // Expected: Outer: outer error
+}
+
+// Try without error
+try {
+    let x = 42;
+    print "No error: " + str(x); // Expected: No error: 42
+} catch (e) {
+    print "This should not print";
+}
+
+print "After try/catch"; // Expected: After try/catch

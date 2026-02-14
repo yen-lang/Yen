@@ -1,0 +1,35 @@
+// test_dowhile.yen - Do-while loops
+
+// Basic do-while
+var count = 0;
+do {
+    count += 1;
+} while (count < 5);
+print count; // Expected: 5
+
+// Do-while always runs at least once
+var ran = false;
+do {
+    ran = true;
+} while (false);
+print ran; // Expected: true
+
+// Do-while with break
+var i = 0;
+do {
+    i += 1;
+    if (i == 3) { break; }
+} while (i < 10);
+print i; // Expected: 3
+
+// Do-while with continue
+var sum = 0;
+var j = 0;
+do {
+    j += 1;
+    if (j % 2 == 0) { continue; }
+    sum += j;
+} while (j < 6);
+print sum; // Expected: 9 (1+3+5)
+
+print "do-while ok";

@@ -1,0 +1,406 @@
+// ============================================================
+//  YEN LANGUAGE SHOWCASE
+//  A language with its own soul - not another clone
+// ============================================================
+
+print "╔══════════════════════════════════════════╗";
+print "║          YEN LANGUAGE SHOWCASE           ║";
+print "╚══════════════════════════════════════════╝";
+print "";
+
+// ─── 1. Immutability by default: let vs var ──────────────
+print "--- 1. Variables: let (immutable) vs var (mutable) ---";
+let name = "Yen";
+var counter = 0;
+print "Welcome to ${name}!";
+print "counter starts at ${counter}";
+print "";
+
+// ─── 2. Increment / Decrement (++, --) ──────────────────
+print "--- 2. Increment / Decrement ---";
+var i = 0;
+i++;
+i++;
+i++;
+print "After 3x i++: ${i}";
+i--;
+print "After i--: ${i}";
+print "";
+
+// ─── 3. Pipe-driven data flow ────────────────────────────
+print "--- 3. Pipe Operator |> ---";
+func double(x) { return x * 2; }
+func add_one(x) { return x + 1; }
+let piped = 5 |> double |> add_one;
+print "5 |> double |> add_one = ${piped}";
+print "";
+
+// ─── 4. Expressive lambdas + higher-order functions ──────
+print "--- 4. Lambdas & Higher-Order Functions ---";
+let nums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+let evens = filter(nums, |x| x % 2 == 0);
+let squares = map(evens, |x| x ** 2);
+let total = reduce(squares, 0, |acc, x| acc + x);
+print "Sum of squares of evens 1..10: ${total}";
+
+// Block lambda with logic
+let classify = |n| {
+    if (n < 0) { return "negative"; }
+    if (n == 0) { return "zero"; }
+    return "positive";
+};
+print "classify(-3) = ${classify(-3)}";
+print "classify(0)  = ${classify(0)}";
+print "classify(7)  = ${classify(7)}";
+print "";
+
+// ─── 5. Default parameters ──────────────────────────────
+print "--- 5. Default Parameters ---";
+func greet(name, greeting = "Hello", punctuation = "!") {
+    return greeting + ", " + name + punctuation;
+}
+print greet("World");
+print greet("Yen", "Ola");
+print greet("Dev", "Hey", "!!!");
+
+// Lambda with defaults
+let repeat = |text, times = 3| text * times;
+print "repeat('ha'): " + repeat("ha");
+print "repeat('ha', 5): " + repeat("ha", 5);
+print "";
+
+// ─── 6. Ternary + Null Coalescing ───────────────────────
+print "--- 6. Ternary & Null Coalescing ---";
+let grade = 85;
+let letter = grade >= 90 ? "A" : grade >= 80 ? "B" : "C";
+print "Grade ${grade} = ${letter}";
+
+let maybe = None;
+let safe = maybe ?? "fallback";
+print "None ?? 'fallback' = ${safe}";
+print "";
+
+// ─── 7. Negative Indexing ────────────────────────────────
+print "--- 7. Negative Indexing (Python-style) ---";
+let colors = ["red", "green", "blue", "yellow", "purple"];
+print "First:  ${colors[0]}";
+print "Last:   ${colors[-1]}";
+print "Second to last: ${colors[-2]}";
+
+let word = "Yen Language";
+print "First char: ${word[0]}";
+print "Last char:  ${word[-1]}";
+print "";
+
+// ─── 8. Slicing ─────────────────────────────────────────
+print "--- 8. Slicing ---";
+let data = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+print "data[2:5]  = ${data[2:5]}";
+print "data[:4]   = ${data[:4]}";
+print "data[7:]   = ${data[7:]}";
+print "data[-3:]  = ${data[-3:]}";
+
+let msg = "Hello, World!";
+print "msg[0:5]   = ${msg[0:5]}";
+print "msg[7:]    = ${msg[7:]}";
+print "msg[-6:]   = ${msg[-6:]}";
+print "";
+
+// ─── 9. 'in' Operator ──────────────────────────────────
+print "--- 9. 'in' Operator (Membership) ---";
+let fruits = ["apple", "banana", "cherry", "mango"];
+print "'banana' in fruits: ${\"banana\" in fruits}";
+print "'grape'  in fruits: ${\"grape\" in fruits}";
+
+let config = {"host": "localhost", "port": 8080, "debug": true};
+print "'host' in config: ${\"host\" in config}";
+print "'pass' in config: ${\"pass\" in config}";
+
+let sentence = "The quick brown fox jumps";
+print "'fox' in sentence: ${\"fox\" in sentence}";
+print "'cat' in sentence: ${\"cat\" in sentence}";
+print "";
+
+// ─── 10. String Multiplication ──────────────────────────
+print "--- 10. String Multiplication ---";
+let border = "═" * 40;
+print border;
+print "  " + "Yen " * 5;
+print border;
+
+let indent = "  " * 4;
+print indent + "8 spaces deep";
+print "ha" * 3 + "!";
+print "";
+
+// ─── 11. Spread Operator ────────────────────────────────
+print "--- 11. Spread Operator ---";
+let front = [1, 2, 3];
+let back = [7, 8, 9];
+let combined = [...front, 4, 5, 6, ...back];
+print "Spread: ${combined}";
+print "";
+
+// ─── 12. Destructuring ─────────────────────────────────
+print "--- 12. Destructuring ---";
+let [x, y, z] = [10, 20, 30];
+print "let [x, y, z] = [10, 20, 30] → x=${x}, y=${y}, z=${z}";
+
+func get_bounds() { return [0, 100]; }
+let [lo, hi] = get_bounds();
+print "Bounds: ${lo}..${hi}";
+print "";
+
+// ─── 13. For-in Destructuring ───────────────────────────
+print "--- 13. For-in Destructuring ---";
+
+// With enumerate
+let langs = ["Yen", "Python", "Go", "Rust"];
+print "Languages:";
+for [idx, lang] in enumerate(langs) {
+    print "  ${idx}: ${lang}";
+}
+
+// With zip
+let keys = ["name", "type", "year"];
+let vals = ["Yen", "interpreted", 2025];
+print "Zipped:";
+for [k, v] in zip(keys, vals) {
+    print "  ${k} = ${v}";
+}
+
+// With manual pairs
+let rgb = [["R", 255], ["G", 128], ["B", 0]];
+print "Colors:";
+for [channel, value] in rgb {
+    print "  ${channel}: ${value}";
+}
+print "";
+
+// ─── 14. Pattern Matching ───────────────────────────────
+print "--- 14. Pattern Matching ---";
+func http_status(code) {
+    match (code) {
+        200 => { return "OK"; }
+        301 => { return "Moved"; }
+        404 => { return "Not Found"; }
+        500 => { return "Server Error"; }
+        _ => { return "Unknown (${code})"; }
+    }
+}
+let codes = [200, 301, 404, 500, 418];
+for code in codes {
+    print "  ${code} → ${http_status(code)}";
+}
+print "";
+
+// ─── 15. Classes ────────────────────────────────────────
+print "--- 15. Classes ---";
+class Vec2 {
+    let x;
+    let y;
+
+    func init(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    func mag() {
+        return (this.x ** 2 + this.y ** 2) ** 0.5;
+    }
+
+    func add(other) {
+        return Vec2(this.x + other.x, this.y + other.y);
+    }
+
+    func show() {
+        return "Vec2(${this.x}, ${this.y})";
+    }
+}
+
+let a = Vec2(3, 4);
+let b = Vec2(1, 2);
+let c = a.add(b);
+print "${a.show()} + ${b.show()} = ${c.show()}";
+print "Magnitude of ${a.show()}: ${a.mag()}";
+print "";
+
+// ─── 16. Error Handling: try/catch/finally ──────────────
+print "--- 16. try/catch/finally ---";
+
+func safe_divide(a, b) {
+    var result = 0;
+    try {
+        if (b == 0) { throw "division by zero"; }
+        result = a / b;
+    } catch (e) {
+        print "  Caught: ${e}";
+        result = 0;
+    } finally {
+        print "  Finally block ran (a=${a}, b=${b})";
+    }
+    return result;
+}
+
+print "10 / 3 = ${safe_divide(10, 3)}";
+print "10 / 0 = ${safe_divide(10, 0)}";
+print "";
+
+// ─── 17. Do-While ───────────────────────────────────────
+print "--- 17. Do-While Loop ---";
+var n = 1;
+do {
+    n *= 2;
+} while (n < 100);
+print "First power of 2 >= 100: ${n}";
+print "";
+
+// ─── 18. Higher-Order Functions Gallery ─────────────────
+print "--- 18. Higher-Order Functions ---";
+let words = ["apple", "banana", "avocado", "cherry", "apricot"];
+
+let a_words = filter(words, |w| w[0] == "a");
+print "Words starting with 'a': ${a_words}";
+
+let sorted = sort_by(words, |w| len(w));
+print "Sorted by length: ${sorted}";
+
+let has_long = any(words, |w| len(w) > 6);
+print "Has word > 6 chars: ${has_long}";
+
+let all_short = all(words, |w| len(w) < 20);
+print "All words < 20 chars: ${all_short}";
+
+let found = find(words, |w| w[-1] == "o");
+print "First word ending in 'o': ${found}";
+
+let pairs = zip(0..5, words);
+print "Zipped with indices: ${pairs}";
+
+let lengths = map(words, |w| len(w));
+print "Lengths: ${lengths}";
+
+let first3 = take(words, 3);
+print "First 3: ${first3}";
+
+let rest = drop(words, 3);
+print "After dropping 3: ${rest}";
+print "";
+
+// ─── 19. Maps & JSON ────────────────────────────────────
+print "--- 19. Maps & JSON ---";
+let person = {"name": "Alice", "age": 30, "city": "NYC"};
+let entries = map_entries(person);
+print "Person:";
+for [k, v] in entries {
+    print "  ${k}: ${v}";
+}
+
+let json = json_to_string(person);
+print "JSON: ${json}";
+let parsed = json_from_string(json);
+print "Parsed name: ${map_get(parsed, \"name\", \"?\")}";
+print "";
+
+// ─── 20. Ranges & Bitwise ───────────────────────────────
+print "--- 20. Ranges & Bitwise ---";
+let range_ex = 0..5;
+let range_inc = 0..=5;
+print "0..5  (exclusive): ${range_ex}";
+print "0..=5 (inclusive): ${range_inc}";
+
+let flags = 0b1010 | 0b0101;
+print "0b1010 | 0b0101 = ${flags} (0b1111)";
+print "0xFF = ${0xFF}";
+print "~0b1010 & 0xF = ${~0b1010 & 0xF}";
+print "";
+
+// ─── 21. Compound Assignment ────────────────────────────
+print "--- 21. Compound Assignment ---";
+var score = 100;
+score += 50;
+print "100 += 50  → ${score}";
+score -= 30;
+print "    -= 30  → ${score}";
+score *= 2;
+print "    *= 2   → ${score}";
+score /= 4;
+print "    /= 4   → ${score}";
+score %= 7;
+print "    %= 7   → ${score}";
+print "";
+
+// ─── 22. String Features ────────────────────────────────
+print "--- 22. String Features ---";
+let text = "Hello, Yen World!";
+print "Original:    ${text}";
+print "Upper:       ${str_upper(text)}";
+print "Lower:       ${str_lower(text)}";
+print "Reversed:    ${str_reverse(text)}";
+print "Contains Yen: ${str_contains(text, \"Yen\")}";
+print "Split by ' ': ${str_split(text, \" \")}";
+let yen_repeat = "Yen! " * 3;
+print "Repeat:      ${yen_repeat}";
+print "Slice [0:5]: ${text[0:5]}";
+print "Slice [-6:]: ${text[-6:]}";
+print "";
+
+// ─── 23. Collection Utilities ───────────────────────────
+print "--- 23. Collection Utilities ---";
+var items = [5, 3, 8, 1, 9, 2, 7];
+let sorted_items = list_sort(items);
+print "Sorted:   ${sorted_items}";
+print "Reversed: ${list_reverse(sorted_items)}";
+print "Sum:      ${list_sum(items)}";
+print "Min:      ${list_min(items)}";
+print "Max:      ${list_max(items)}";
+print "Unique:   ${list_unique([1, 2, 2, 3, 3, 3])}";
+print "Flatten:  ${list_flatten([[1, 2], [3, 4], [5]])}";
+print "";
+
+// ─── 24. Combined Example: Mini Data Pipeline ──────────
+print "--- 24. Combined Example: Data Pipeline ---";
+
+let students = [
+    ["Alice", 92],
+    ["Bob", 78],
+    ["Charlie", 95],
+    ["Diana", 88],
+    ["Eve", 61]
+];
+
+print "Student Report:";
+print "-" * 35;
+
+var passed = 0;
+var total_score = 0;
+
+for [student_name, score] in students {
+    let grade = score >= 90 ? "A" : score >= 80 ? "B" : score >= 70 ? "C" : "F";
+    let status = score >= 70 ? "PASS" : "FAIL";
+    print "  ${student_name}: ${score} (${grade}) [${status}]";
+    total_score += score;
+    if (score >= 70) {
+        passed++;
+    }
+}
+
+print "-" * 35;
+let avg = total_score / len(students);
+print "Average: ${avg} | Passed: ${passed}/${len(students)}";
+print "";
+
+// ─── 25. Defer ──────────────────────────────────────────
+print "--- 25. Defer (LIFO) ---";
+{
+    defer print "  3. Last deferred (runs first)";
+    defer print "  2. Second deferred";
+    defer print "  1. First deferred (runs last)";
+    print "  0. Inside block";
+}
+print "";
+
+// ─── Final ──────────────────────────────────────────────
+print "╔══════════════════════════════════════════╗";
+print "║       All features working! ✓            ║";
+print "╚══════════════════════════════════════════╝";

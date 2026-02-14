@@ -1,0 +1,277 @@
+// test_new_features.yen - Tests for all new language features
+// Features: ++/--, negative indexing, slicing, 'in' operator,
+//           default params, finally, string multiply, for destructuring
+
+print "=== Testing New Language Features ===";
+print "";
+
+// ─── 1. Increment / Decrement ────────────────────────────
+print "--- 1. Increment/Decrement (++ / --) ---";
+var counter = 0;
+counter++;
+counter++;
+counter++;
+assert(counter == 3, "counter++ should be 3");
+counter--;
+assert(counter == 2, "counter-- should be 2");
+print "counter after 3x++ and 1x--: " + str(counter);
+
+var x = 10;
+x++;
+assert(x == 11, "x++ from 10 should be 11");
+print "PASS: ++ and -- work";
+print "";
+
+// ─── 2. Negative Indexing ────────────────────────────────
+print "--- 2. Negative Indexing ---";
+let list = [10, 20, 30, 40, 50];
+assert(list[-1] == 50, "list[-1] should be 50");
+assert(list[-2] == 40, "list[-2] should be 40");
+assert(list[-5] == 10, "list[-5] should be 10");
+
+let greeting = "Hello";
+assert(greeting[-1] == "o", "str[-1] should be 'o'");
+assert(greeting[-5] == "H", "str[-5] should be 'H'");
+
+// Negative index assignment
+var arr = [1, 2, 3, 4, 5];
+arr[-1] = 99;
+assert(arr[4] == 99, "arr[-1]=99 should set last element");
+arr[-3] = 77;
+assert(arr[2] == 77, "arr[-3]=77 should set index 2");
+
+print "PASS: negative indexing works";
+print "";
+
+// ─── 3. Slicing ──────────────────────────────────────────
+print "--- 3. Slicing ---";
+let nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+let first3 = nums[0:3];
+assert(len(first3) == 3, "nums[0:3] should have 3 elements");
+assert(first3[0] == 0, "first3[0] should be 0");
+assert(first3[2] == 2, "first3[2] should be 2");
+
+let mid = nums[3:7];
+assert(len(mid) == 4, "nums[3:7] should have 4 elements");
+assert(mid[0] == 3, "mid[0] should be 3");
+
+// Omit start: [:5]
+let head = nums[:5];
+assert(len(head) == 5, "nums[:5] should have 5 elements");
+assert(head[4] == 4, "head[4] should be 4");
+
+// Omit end: [7:]
+let tail = nums[7:];
+assert(len(tail) == 3, "nums[7:] should have 3 elements");
+assert(tail[0] == 7, "tail[0] should be 7");
+
+// Negative slicing
+let last3 = nums[-3:];
+assert(len(last3) == 3, "nums[-3:] should have 3 elements");
+assert(last3[0] == 7, "last3[0] should be 7");
+
+// String slicing
+let msg = "Hello, World!";
+let hello = msg[0:5];
+assert(hello == "Hello", "msg[0:5] should be 'Hello'");
+let world = msg[7:12];
+assert(world == "World", "msg[7:12] should be 'World'");
+let last6 = msg[-6:];
+assert(last6 == "World!", "msg[-6:] should be 'World!'");
+
+print "PASS: slicing works";
+print "";
+
+// ─── 4. 'in' Operator ───────────────────────────────────
+print "--- 4. 'in' Operator ---";
+
+// List membership
+let fruits = ["apple", "banana", "cherry"];
+assert("apple" in fruits, "'apple' should be in fruits");
+assert(!("grape" in fruits), "'grape' should NOT be in fruits");
+
+// Number membership
+let numbers = [1, 2, 3, 4, 5];
+assert(3 in numbers, "3 should be in numbers");
+assert(!(10 in numbers), "10 should NOT be in numbers");
+
+// Map key membership
+let config = {"host": "localhost", "port": 8080};
+assert("host" in config, "'host' should be in config");
+assert(!("password" in config), "'password' should NOT be in config");
+
+// String containment
+let sentence = "The quick brown fox";
+assert("quick" in sentence, "'quick' should be in sentence");
+assert(!("slow" in sentence), "'slow' should NOT be in sentence");
+
+print "PASS: 'in' operator works";
+print "";
+
+// ─── 5. Default Parameters ──────────────────────────────
+print "--- 5. Default Parameters ---";
+
+func greet(name, greeting = "Hello") {
+    return greeting + ", " + name + "!";
+}
+
+let g1 = greet("World");
+assert(g1 == "Hello, World!", "greet with default");
+let g2 = greet("World", "Hi");
+assert(g2 == "Hi, World!", "greet with custom");
+
+func power(base, exp = 2) {
+    var result = 1;
+    for i in 0..exp {
+        result = result * base;
+    }
+    return result;
+}
+
+assert(power(5) == 25, "power(5) should use default exp=2");
+assert(power(2, 10) == 1024, "power(2, 10) should be 1024");
+
+func make_list(a, b = 0, c = 0) {
+    return [a, b, c];
+}
+let l1 = make_list(1);
+assert(l1[0] == 1, "make_list(1)[0]");
+assert(l1[1] == 0, "make_list(1)[1] default");
+assert(l1[2] == 0, "make_list(1)[2] default");
+let l2 = make_list(1, 2);
+assert(l2[1] == 2, "make_list(1,2)[1]");
+let l3 = make_list(1, 2, 3);
+assert(l3[2] == 3, "make_list(1,2,3)[2]");
+
+// Lambda with defaults
+let add = |a, b = 10| a + b;
+assert(add(5) == 15, "lambda default: add(5) should be 15");
+assert(add(5, 20) == 25, "lambda: add(5, 20) should be 25");
+
+print "PASS: default parameters work";
+print "";
+
+// ─── 6. try/catch/finally ────────────────────────────────
+print "--- 6. try/catch/finally ---";
+
+var finally_ran = false;
+try {
+    let result = 42;
+} catch (e) {
+    print "Should not get here";
+} finally {
+    finally_ran = true;
+}
+assert(finally_ran, "finally should run on success path");
+
+var catch_ran = false;
+var finally_ran2 = false;
+try {
+    throw "test error";
+} catch (e) {
+    catch_ran = true;
+    assert(e == "test error", "catch should get error message");
+} finally {
+    finally_ran2 = true;
+}
+assert(catch_ran, "catch should have run");
+assert(finally_ran2, "finally should run on error path too");
+
+print "PASS: try/catch/finally works";
+print "";
+
+// ─── 7. String Multiplication ────────────────────────────
+print "--- 7. String Multiplication ---";
+
+let dashes = "-" * 20;
+assert(str_length(dashes) == 20, "'-' * 20 should have length 20");
+assert(dashes == "--------------------", "dashes content");
+
+let abc3 = "abc" * 3;
+assert(abc3 == "abcabcabc", "'abc' * 3");
+
+let rev = 3 * "ha";
+assert(rev == "hahaha", "3 * 'ha'");
+
+let zero = "test" * 0;
+assert(zero == "", "'test' * 0 should be empty");
+
+let neg = "test" * -1;
+assert(neg == "", "'test' * -1 should be empty");
+
+print "PASS: string multiplication works";
+print "";
+
+// ─── 8. For-in Destructuring ─────────────────────────────
+print "--- 8. For-in Destructuring ---";
+
+// With enumerate
+let items = ["a", "b", "c"];
+var enum_results = [];
+for [i, val] in enumerate(items) {
+    push(enum_results, str(i) + ":" + val);
+}
+assert(len(enum_results) == 3, "enumerate should give 3 pairs");
+assert(enum_results[0] == "0:a", "first enumerated");
+assert(enum_results[2] == "2:c", "last enumerated");
+
+// With zip
+let keys = ["name", "age", "city"];
+let values = ["Alice", 30, "NYC"];
+var zip_results = [];
+for [k, v] in zip(keys, values) {
+    push(zip_results, k + "=" + str(v));
+}
+assert(len(zip_results) == 3, "zip should give 3 pairs");
+assert(zip_results[0] == "name=Alice", "first zipped");
+
+// Manual pairs
+let pairs = [[1, "one"], [2, "two"], [3, "three"]];
+var pair_results = [];
+for [num, word] in pairs {
+    push(pair_results, str(num) + "-" + word);
+}
+assert(pair_results[0] == "1-one", "first pair");
+assert(pair_results[2] == "3-three", "last pair");
+
+print "PASS: for-in destructuring works";
+print "";
+
+// ─── Combined Features ──────────────────────────────────
+print "--- Combined Features ---";
+
+// Use slicing + in + for destructuring together
+let data = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+let subset = data[2:6];
+assert(30 in subset, "30 should be in subset");
+assert(!(10 in subset), "10 should NOT be in subset");
+
+// Increment in loop
+var sum = 0;
+var i = 0;
+while (i < 5) {
+    sum += data[i];
+    i++;
+}
+assert(sum == 150, "sum of first 5 should be 150");
+
+// Default params with in
+func has_item(list, item, default_val = false) {
+    if (item in list) {
+        return true;
+    }
+    return default_val;
+}
+assert(has_item(fruits, "apple"), "has_item should find apple");
+assert(!has_item(fruits, "grape"), "has_item should not find grape");
+
+// String multiply + slicing
+let border = "=-" * 20;
+let half = border[:20];
+assert(str_length(half) == 20, "half border should be 20 chars");
+
+print "PASS: combined features work";
+print "";
+
+print "=== All New Feature Tests Passed! ===";
